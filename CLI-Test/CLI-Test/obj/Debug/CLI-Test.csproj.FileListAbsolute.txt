@@ -5,3 +5,9 @@ C:\Users\dcover\source\repos\CLI-Test\CLI-Test\obj\Debug\CLI-Test.csproj.CoreCom
 C:\Users\dcover\source\repos\CLI-Test\CLI-Test\obj\Debug\CLI-Test.exe
 C:\Users\dcover\source\repos\CLI-Test\CLI-Test\obj\Debug\CLI-Test.pdb
 C:\Users\dcover\source\repos\CLI-Test\CLI-Test\obj\Debug\CLI-Test.csprojAssemblyReference.cache
+C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\bin\Debug\CLI-Test.exe.config
+C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\bin\Debug\CLI-Test.exe
+C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\bin\Debug\CLI-Test.pdb
+C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.csproj.CoreCompileInputs.cache
+C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.exe
+C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.pdb

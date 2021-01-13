@@ -19,6 +19,17 @@ namespace CLI_Test
         {
             try
             {
+                if (args.Length == 0)
+                {
+                    Array knownArgs = Enum.GetValues(typeof(ClassInArgument));
+                    foreach(object knownArg in knownArgs)
+                    {
+                        Console.WriteLine(knownArg.ToString());
+                    }
+                    throw new Exception("No arguments passed");
+                }
+
+
                 // which class to run against
                 string programClass = args[0];
                 ClassInArgument classesInArgument = new ClassInArgument();
