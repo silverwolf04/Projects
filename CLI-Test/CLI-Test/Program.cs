@@ -15,6 +15,15 @@ namespace CLI_Test
             PropertySetUsingClass
         }
 
+        public static void ArgCheck(string[] args, int argCount)
+        {
+            int argLength = args.Length - 1;
+            if(argLength != argCount)
+            {
+                throw new Exception("Argument length is shorter than required");
+            }
+        }
+
         static void Main(string[] args)
         {
             try
@@ -29,7 +38,6 @@ namespace CLI_Test
                     throw new Exception("No arguments passed");
                 }
 
-
                 // which class to run against
                 string programClass = args[0];
                 ClassInArgument classesInArgument = new ClassInArgument();
@@ -40,6 +48,8 @@ namespace CLI_Test
                 {
                     //eprint
                     case ClassInArgument.Eprint:
+                        Program.ArgCheck(args, 5);
+
                         // the inputfile to read from
                         string inputFile = args[1];
 
@@ -63,7 +73,6 @@ namespace CLI_Test
                         break;
                     // urlgenerate
                     case ClassInArgument.UrlGenerate:
-                        Console.WriteLine("Program Class=" + programClass);
                         UrlGenerator urlGenerator = new UrlGenerator();
                         urlGenerator.BuildUrl(args[1], args[2], args[3], args[4]);
                         break;
