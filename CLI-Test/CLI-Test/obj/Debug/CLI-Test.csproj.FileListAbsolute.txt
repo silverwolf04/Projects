@@ -1,0 +1,7 @@
+C:\Users\dcover\source\repos\CLI-Test\CLI-Test\bin\Debug\CLI-Test.exe.config
+C:\Users\dcover\source\repos\CLI-Test\CLI-Test\bin\Debug\CLI-Test.exe
+C:\Users\dcover\source\repos\CLI-Test\CLI-Test\bin\Debug\CLI-Test.pdb
+C:\Users\dcover\source\repos\CLI-Test\CLI-Test\obj\Debug\CLI-Test.csproj.CoreCompileInputs.cache
+C:\Users\dcover\source\repos\CLI-Test\CLI-Test\obj\Debug\CLI-Test.exe
+C:\Users\dcover\source\repos\CLI-Test\CLI-Test\obj\Debug\CLI-Test.pdb
+C:\Users\dcover\source\repos\CLI-Test\CLI-Test\obj\Debug\CLI-Test.csprojAssemblyReference.cache
