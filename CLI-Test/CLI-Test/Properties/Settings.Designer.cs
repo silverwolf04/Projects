@@ -25,9 +25,7 @@ namespace CLI_Test.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("User Id=onbmgr;Password=lwfGyHx7W4vfB;Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADD" +
-            "RESS=(PROTOCOL=TCP)(HOST=dbandbrh6.mines.edu)(PORT=1521)))(CONNECT_DATA=(SID=ROC" +
-            "K)))")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Put Oracle Connection String here")]
         public string ConnectionString {
             get {
                 return ((string)(this["ConnectionString"]));

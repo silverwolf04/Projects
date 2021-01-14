@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ConnectionString" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">User Id=onbmgr;Password=lwfGyHx7W4vfB;Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=dbandbrh6.mines.edu)(PORT=1521)))(CONNECT_DATA=(SID=ROCK)))</Value>
+      <Value Profile="(Default)">Put Oracle Connection String here</Value>
     </Setting>
   </Settings>
 </SettingsFile>
