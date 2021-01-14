@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Data;
 
 namespace CLI_Test
 {
@@ -12,7 +13,8 @@ namespace CLI_Test
             PageDownload,
             ToCharTest,
             PropertySetUsingStruct,
-            PropertySetUsingClass
+            PropertySetUsingClass,
+            OracleDatabaseAdapter
         }
 
         public static void ArgCheck(string[] args, int argCount)
@@ -108,6 +110,30 @@ namespace CLI_Test
                             number = args[3]
                         };
                         propertySetUsingClass.ReadValues();
+                        break;
+                    case ClassInArgument.OracleDatabaseAdapter:
+                        OracleDatabaseAdapter oracleDatabaseAdapter = new OracleDatabaseAdapter();
+                        oracleDatabaseAdapter.OracleQuery(args[1], null, out DataTable dataTable);
+
+                        if (dataTable.Rows.Count > 0)
+                        {
+                            int i = 0;
+                            foreach (DataRow row in dataTable.Rows)
+                            {
+                                i++;
+
+                                foreach (DataColumn col in dataTable.Columns)
+                                {
+                                    Console.WriteLine(String.Format("RowNum:{0}" + Environment.NewLine + "Column:{1}" + Environment.NewLine + "Value:{2}",
+                                                                                                        i.ToString(), col.ColumnName, row[col].ToString()), "Output");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No rows were returned");
+                        }
+                        dataTable.Dispose();
                         break;
                 }
             }

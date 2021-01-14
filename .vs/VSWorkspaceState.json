@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\CLI-Test"
+    "\\CLI-Test",
+    "\\OracleTest"
   ],
   "SelectedNode": "\\CLI-Test\\CLI-Test.sln",
   "PreviewInSolutionExplorer": false

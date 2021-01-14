@@ -11,3 +11,14 @@ C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\bin\Debug\CLI-Test.pdb
 C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.csproj.CoreCompileInputs.cache
 C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.exe
 C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.pdb
+E:\github_repos\Projects\CLI-Test\CLI-Test\bin\Debug\CLI-Test.exe.config
+E:\github_repos\Projects\CLI-Test\CLI-Test\bin\Debug\CLI-Test.exe
+E:\github_repos\Projects\CLI-Test\CLI-Test\bin\Debug\CLI-Test.pdb
+E:\github_repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.csproj.CoreCompileInputs.cache
+E:\github_repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.exe
+E:\github_repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.pdb
+E:\github_repos\Projects\CLI-Test\CLI-Test\bin\Debug\Hyland.Unity.dll
+E:\github_repos\Projects\CLI-Test\CLI-Test\bin\Debug\Oracle.ManagedDataAccess.dll
+E:\github_repos\Projects\CLI-Test\CLI-Test\bin\Debug\Hyland.Types.dll
+E:\github_repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.csproj.CopyComplete
+E:\github_repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.csprojAssemblyReference.cache

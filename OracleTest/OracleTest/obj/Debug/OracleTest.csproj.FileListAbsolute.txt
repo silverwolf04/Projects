@@ -8,3 +8,13 @@ C:\Users\dcover\source\repos\OracleTest\OracleTest\obj\Debug\OracleTest.csproj.C
 C:\Users\dcover\source\repos\OracleTest\OracleTest\obj\Debug\OracleTest.exe
 C:\Users\dcover\source\repos\OracleTest\OracleTest\obj\Debug\OracleTest.pdb
 C:\Users\dcover\source\repos\OracleTest\OracleTest\obj\Debug\OracleTest.Form1.resources
+E:\github_repos\Projects\OracleTest\OracleTest\bin\Debug\OracleTest.exe.config
+E:\github_repos\Projects\OracleTest\OracleTest\bin\Debug\OracleTest.exe
+E:\github_repos\Projects\OracleTest\OracleTest\bin\Debug\OracleTest.pdb
+E:\github_repos\Projects\OracleTest\OracleTest\obj\Debug\OracleTest.csprojAssemblyReference.cache
+E:\github_repos\Projects\OracleTest\OracleTest\obj\Debug\OracleTest.Form1.resources
+E:\github_repos\Projects\OracleTest\OracleTest\obj\Debug\OracleTest.Properties.Resources.resources
+E:\github_repos\Projects\OracleTest\OracleTest\obj\Debug\OracleTest.csproj.GenerateResource.cache
+E:\github_repos\Projects\OracleTest\OracleTest\obj\Debug\OracleTest.csproj.CoreCompileInputs.cache
+E:\github_repos\Projects\OracleTest\OracleTest\obj\Debug\OracleTest.exe
+E:\github_repos\Projects\OracleTest\OracleTest\obj\Debug\OracleTest.pdb
