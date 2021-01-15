@@ -22,3 +22,7 @@ E:\github_repos\Projects\CLI-Test\CLI-Test\bin\Debug\Oracle.ManagedDataAccess.dl
 E:\github_repos\Projects\CLI-Test\CLI-Test\bin\Debug\Hyland.Types.dll
 E:\github_repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.csproj.CopyComplete
 E:\github_repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.csprojAssemblyReference.cache
+C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\bin\Debug\Hyland.Unity.dll
+C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\bin\Debug\Oracle.ManagedDataAccess.dll
+C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\bin\Debug\Hyland.Types.dll
+C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.csproj.CopyComplete

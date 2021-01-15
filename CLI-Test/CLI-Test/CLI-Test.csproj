@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Encryptonite.cs" />
     <Compile Include="EprintCustomReport.cs" />
     <Compile Include="OracleDatabaseAdapter.cs" />
     <Compile Include="PageDownload.cs" />

@@ -14,15 +14,17 @@ namespace CLI_Test
             ToCharTest,
             PropertySetUsingStruct,
             PropertySetUsingClass,
-            OracleDatabaseAdapter
+            OracleDatabaseAdapter,
+            Encryptonite
         }
 
         public static void ArgCheck(string[] args, int argCount)
         {
+            // disregard the count of the class argument
             int argLength = args.Length - 1;
             if(argLength != argCount)
             {
-                throw new Exception("Argument length is shorter than required");
+                throw new Exception(string.Format("Argument length is shorter than required ({0})", argCount + 1));
             }
         }
 
@@ -134,6 +136,26 @@ namespace CLI_Test
                             Console.WriteLine("No rows were returned");
                         }
                         dataTable.Dispose();
+                        break;
+                    case ClassInArgument.Encryptonite:
+                        Program.ArgCheck(args, 3);
+                        if(string.Equals(args[1], "Encrypt", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Encryptonite encryptonite = new Encryptonite(args[2]);
+                            string encryptedStr = encryptonite.Encrypt(args[3], true);
+                            Console.WriteLine(args[2]);
+                            Console.WriteLine(args[3]);
+                            Console.WriteLine(encryptedStr);
+                        }
+                        else if (string.Equals(args[1], "Decrypt", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Encryptonite encryptonite = new Encryptonite(args[2]);
+                            string encryptedStr = encryptonite.Decrypt(args[3], true);
+                            Console.WriteLine(args[2]);
+                            Console.WriteLine(args[3]);
+                            Console.WriteLine(encryptedStr);
+                        }
+
                         break;
                 }
             }
