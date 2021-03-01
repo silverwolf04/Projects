@@ -15,7 +15,8 @@ namespace CLI_Test
             PropertySetUsingStruct,
             PropertySetUsingClass,
             OracleDatabaseAdapter,
-            Encryptonite
+            Encryptonite,
+            PdfRender
         }
 
         public static void ArgCheck(string[] args, int argCount)
@@ -155,7 +156,22 @@ namespace CLI_Test
                             Console.WriteLine(args[3]);
                             Console.WriteLine(encryptedStr);
                         }
-
+                        break;
+                    case ClassInArgument.PdfRender:
+                        Program.ArgCheck(args, 1);
+                        PdfRender pdfRender = new PdfRender();
+                        if(string.Equals(args[1], "HelloWorld", StringComparison.OrdinalIgnoreCase))
+                        {
+                            pdfRender.GenerateTest();
+                        }
+                        else if(string.Equals(args[1], "facultystaffpdf", StringComparison.OrdinalIgnoreCase))
+                        {
+                            pdfRender.FacultyStaffPDF();
+                        }
+                        else
+                        {
+                            pdfRender.GenerateTest(args[1]);
+                        }
                         break;
                 }
             }
