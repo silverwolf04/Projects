@@ -160,11 +160,7 @@ namespace CLI_Test
                     case ClassInArgument.PdfRender:
                         Program.ArgCheck(args, 1);
                         PdfRender pdfRender = new PdfRender();
-                        if(string.Equals(args[1], "HelloWorld", StringComparison.OrdinalIgnoreCase))
-                        {
-                            pdfRender.GenerateTest();
-                        }
-                        else if(string.Equals(args[1], "facultystaffpdf", StringComparison.OrdinalIgnoreCase))
+                        if(string.Equals(args[1], "facultystaffpdf", StringComparison.OrdinalIgnoreCase))
                         {
                             pdfRender.FacultyStaffPDF();
                         }
