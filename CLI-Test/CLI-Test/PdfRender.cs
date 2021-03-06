@@ -6,6 +6,7 @@ using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
 using PdfSharp.Pdf;
 using System;
+using System.Data;
 using System.Diagnostics;
 //using Microsoft.VisualBasic;
 
@@ -210,16 +211,54 @@ namespace CLI_Test
 
             Employee employee = new Employee();
 
+            DirectoryTasks directoryTasks = new DirectoryTasks();
+            directoryTasks.GetData(out DataTable dataTable);
+            Console.WriteLine("Rows: {0}", dataTable.Rows.Count);
+
+            Row row = new Row();
+            int currPageRow = 1;
+
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                PageSide pageSide;
+                if (currPageRow == 3)
+                    rowInt = 0;
+
+                if (currPageRow <= 2)
+                {
+                    pageSide = PageSide.LeftSide;
+                    row = table.AddRow();
+                }
+                else
+                {
+                    pageSide = PageSide.RightSide;
+                    row = table.Rows[rowInt];
+                }
+
+                employee.Name = dataRow["EmpName"].ToString();
+                employee.PhoneNumber = dataRow["PhoneNumber"].ToString();
+                employee.Department = dataRow["Department"].ToString();
+                employee.FaxNumber = dataRow["FaxNumber"].ToString();
+                employee.EmailAddress = dataRow["EmailAddress"].ToString();
+                employee.Title = dataRow["Title"].ToString();
+
+                GenerateRow(pageSide, employee, ref row);
+                employee.ClearAll();
+                currPageRow++;
+                rowInt++;
+            }
+            /*
             employee.Name = "Abdul, Ramin";
             employee.PhoneNumber = "(303) 754-2251";
             employee.Department = "Arithmetic";
             employee.FaxNumber = "(303) 111-3333";
             employee.EmailAddress = "rabdul@mines.edu";
 
-            var row = table.AddRow();
+            row = table.AddRow();
             GenerateRow(PageSide.LeftSide, employee, ref row);
             employee.ClearAll();
-
+            */
+            /*
             employee.Name = "Alan, Gary";
             employee.PhoneNumber = "(303) 123-4567";
             employee.Title = "Associate Professor";
@@ -254,7 +293,7 @@ namespace CLI_Test
             row = table.Rows[rowInt];
             GenerateRow(PageSide.RightSide, employee, ref row);
             employee.ClearAll();
-
+            */
             return document;
         }
 

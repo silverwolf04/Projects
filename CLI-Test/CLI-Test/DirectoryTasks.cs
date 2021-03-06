@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,5 +30,31 @@ namespace CLI_Test
 
 public class DirectoryTasks
     {
+        public void GetData(out DataTable dataTable)
+        {
+            dataTable = new DataTable();
+
+            try
+            {
+                string queryString = "select empname, department, title, phonenumber, emailaddress, faxnumber from employee";
+                string connectionString = @"Data Source=localhost\meineinstanz; Initial Catalog=testdata; Integrated Security=true";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    Console.WriteLine("State: {0}", connection.State);
+                    Console.WriteLine("Query: {0}", queryString);
+
+                    using(SqlCommand sqlCommand = new SqlCommand(queryString, connection))
+                    {
+                        SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
+                        sqlDataAdapter.Fill(dataTable);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
     }
 }
