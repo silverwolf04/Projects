@@ -22,6 +22,7 @@ namespace CLI_Test
         public static void GenerateRow(PageSide pageSide, Employee employee, ref Row row)
         {
             int cellInt = -1;
+            string concatenatedStr = string.Empty;
 
             switch (pageSide)
             {
@@ -46,6 +47,14 @@ namespace CLI_Test
                 row.Cells[cellInt].AddParagraph("Title: " + employee.Title);
             if(!string.IsNullOrWhiteSpace(employee.Department))
                 row.Cells[cellInt].AddParagraph("Dept: " + employee.Department);
+            if (!string.IsNullOrWhiteSpace(employee.Building))
+                concatenatedStr = "Bldg: " + employee.Building;
+            //row.Cells[cellInt].AddParagraph("Bldg: " + employee.Building);
+            if (!string.IsNullOrWhiteSpace(employee.Building) && !string.IsNullOrWhiteSpace(employee.Office))
+                concatenatedStr += " Office/Room: " + employee.Office;
+            //row.Cells[cellInt].AddParagraph("Office: " + employee.Office);
+            if (!string.IsNullOrEmpty(concatenatedStr))
+                row.Cells[cellInt].AddParagraph(concatenatedStr);
             if(!string.IsNullOrWhiteSpace(employee.EmailAddress))
                 row.Cells[cellInt].AddParagraph("Email: " + employee.EmailAddress);
             if (!string.IsNullOrWhiteSpace(employee.FaxNumber))
@@ -146,9 +155,38 @@ namespace CLI_Test
             return document;
         }
 
-        /// <summary>
-        /// Creates an absolutely minimalistic document.
-        /// </summary>
+        static Table AddCustomTable(Section section)
+        {
+            Table table = section.AddTable();
+            table.AddColumn("2.75cm");
+            table.AddColumn("6cm");
+            table.AddColumn("2.75cm");
+            table.AddColumn("6cm");
+            table.Borders.Visible = false;
+            table.Borders.Width = 1;
+            return table;
+        }
+
+        static void AddCustomHeader(string text, ref Section section)
+        {
+            HeaderFooter header = new HeaderFooter();
+            header.AddParagraph(text);
+            header.Format.Font.Size = 30;
+            header.Format.Font.Name = "Times-Roman";
+            header.Format.Alignment = ParagraphAlignment.Center;
+            section.Headers.Primary = header.Clone();
+        }
+
+        static void AddCustomFooter(string text, ref Section section)
+        {
+            HeaderFooter footer = new HeaderFooter();
+            footer.AddParagraph(text);
+            footer.Format.Font.Size = 10;
+            footer.Format.Font.Name = "Times-Roman";
+            footer.Format.Alignment = ParagraphAlignment.Center;
+            section.Footers.Primary = footer.Clone();
+        }
+
         static Document CreateDocument()
         {
             // Create a new MigraDoc document
@@ -181,33 +219,26 @@ namespace CLI_Test
             section.AddPageBreak();
             section = document.AddSection();
 
-            HeaderFooter header = new HeaderFooter();
-            header.AddParagraph("A");
-            header.Format.Font.Size = 30;
-            header.Format.Font.Name = "Times-Roman";
-            header.Format.Alignment = ParagraphAlignment.Center;
-            section.Headers.Primary = header.Clone();
+            AddCustomHeader("A", ref section);
 
+            string footerStr = "Need additional help?" + Environment.NewLine + "Go to " + "https://helpdesk.mines.edu";
+            AddCustomFooter(footerStr, ref section);
+            /*
             HeaderFooter footer = new HeaderFooter();
-            footer.AddParagraph("Need additional help?" + Environment.NewLine + "Go to https://helpdesk.mines.edu");
+            footer.AddParagraph(footerStr);
             footer.Format.Font.Size = 10;
             footer.Format.Font.Name = "Times-Roman";
             footer.Format.Alignment = ParagraphAlignment.Center;
             section.Footers.Primary = footer.Clone();
+            */
 
             section.AddPageBreak();
 
             // initializer for right side count
             int rowInt = 0;
 
-            //var table = section1.AddTable();
-            var table = section.AddTable();
-            table.AddColumn("2.75cm");
-            table.AddColumn("6cm");
-            table.AddColumn("2.75cm");
-            table.AddColumn("6cm");
-            table.Borders.Visible = false;
-            table.Borders.Width = 1;            
+            // add & set the table margins on the new page
+            Table table = AddCustomTable(section);
 
             Employee employee = new Employee();
 
@@ -217,21 +248,26 @@ namespace CLI_Test
 
             Row row = new Row();
             int currPageRow = 1;
-            string currHeaderStr = "A";
+            string currHeaderStr = string.Empty;
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 PageSide pageSide;
-                employee.Name = dataRow["EmpName"].ToString();
-                employee.PhoneNumber = dataRow["workphone"].ToString();
-                employee.Department = dataRow["Department"].ToString();
-                employee.FaxNumber = dataRow["faxphone"].ToString();
-                employee.EmailAddress = dataRow["email"].ToString();
-                employee.Title = dataRow["Title"].ToString();
+                employee.Name = dataRow[Properties.Settings.Default.Name].ToString();
+                employee.PhoneNumber = dataRow[Properties.Settings.Default.PhoneNumber].ToString();
+                employee.Department = dataRow[Properties.Settings.Default.Department].ToString();
+                employee.FaxNumber = dataRow[Properties.Settings.Default.FaxNumber].ToString();
+                employee.EmailAddress = dataRow[Properties.Settings.Default.EmailAddress].ToString();
+                employee.Title = dataRow[Properties.Settings.Default.Title].ToString();
+                employee.Building = dataRow[Properties.Settings.Default.Building].ToString();
+                employee.Office = dataRow[Properties.Settings.Default.Office].ToString();
 
-                if(!employee.Name.StartsWith(currHeaderStr) || currPageRow > 16)
+                if(string.IsNullOrEmpty(currHeaderStr))
+                    currHeaderStr = employee.Name.Substring(0, 1);
+
+                if (!employee.Name.StartsWith(currHeaderStr) || currPageRow > 16)
                 {
-                    // usually you would add a page break to the section only
+                    // usually you would add a page break to the section
                     // however, because we need different headers a new section is added to the document instead
                     //section.AddPageBreak();
                     section = document.AddSection();
@@ -242,21 +278,10 @@ namespace CLI_Test
                     currHeaderStr = employee.Name.Substring(0, 1);
 
                     // update page header
-                    header = new HeaderFooter();
-                    header.AddParagraph(currHeaderStr);
-                    header.Format.Font.Size = 30;
-                    header.Format.Font.Name = "Times-Roman";
-                    header.Format.Alignment = ParagraphAlignment.Center;
-                    section.Headers.Primary = header.Clone();
+                    AddCustomHeader(currHeaderStr, ref section);
 
-                    // set the table margins on the new page
-                    table = section.AddTable();
-                    table.AddColumn("2.75cm");
-                    table.AddColumn("6cm");
-                    table.AddColumn("2.75cm");
-                    table.AddColumn("6cm");
-                    table.Borders.Visible = false;
-                    table.Borders.Width = 1;
+                    // add & set the formatted on the new page
+                    table = AddCustomTable(section);
                 }    
 
                 if (currPageRow == 9)
@@ -273,44 +298,12 @@ namespace CLI_Test
                     row = table.Rows[rowInt];
                 }
 
-                /*
-                employee.Name = dataRow["EmpName"].ToString();
-                employee.PhoneNumber = dataRow["workphone"].ToString();
-                employee.Department = dataRow["Department"].ToString();
-                employee.FaxNumber = dataRow["faxphone"].ToString();
-                employee.EmailAddress = dataRow["email"].ToString();
-                employee.Title = dataRow["Title"].ToString();
-                */
                 GenerateRow(pageSide, employee, ref row);
                 employee.ClearAll();
                 Console.WriteLine("currPageRow: " + currPageRow);
                 Console.WriteLine("rowInt:" + rowInt);
                 currPageRow++;
                 rowInt++;
-
-                // create new page, only allow 16 rows to be placed on a single page; reset variables
-                /*
-                if(currPageRow > 16)
-                {
-                    // add page break
-                    section.AddPageBreak();
-                    // reset variables
-                    currPageRow = 1;
-                    rowInt = 0;
-
-                    // update page header?
-                    // TBD
-
-                    // set the table margins on the new page
-                    table = section.AddTable();
-                    table.AddColumn("2.75cm");
-                    table.AddColumn("6cm");
-                    table.AddColumn("2.75cm");
-                    table.AddColumn("6cm");
-                    table.Borders.Visible = false;
-                    table.Borders.Width = 1;
-                }
-                */
             }
             /*
             employee.Name = "Abdul, Ramin";
@@ -364,7 +357,24 @@ namespace CLI_Test
 
         public void FacultyStaffPDF()
         {
-            Console.WriteLine("This will render the Faculty/Staff PDF.");
+            /* Observations dervived from predecessor PDF generator
+             * fac_staff_dir.pdf
+             * select * from fac_staff_dir_view1 where releaseflag is null order by lname, fname
+             if ( iIDFlag <> "1" and iIDFlag <> "2" and iIDFlag <> "E" and iIDFlag <> "F" and iIDFlag <> "S" and iIDFlag <> "G" and iIDFlag <> "H" and iIDFlag <> "U" and iIDFlag <> "W" and iIDFlag <> "Y" And iIDFlag <> "?") then
+			    DisplayListing iName, iDepartment, iOffice, iBldg, iWorkTel, iHomeTel, iFAX, iBusEmail, iURL, iAddressL1, iAddressL2, iCity, iDirRestrict, iTitle, iWTitle
+			    numDisplayCalls = numDisplayCalls + 1
+		     end if
+             * 
+             if ( isNull( iName ) ) then
+		        iName = result1("LName") & ", " & result1("FName") & " " & result1("MName")
+		        if (result1("NName") <> "") then
+			        iName = iName & " (" & result1("NName") & ")"
+		        end if
+	         end if 
+             *
+            */
+
+            Console.WriteLine("This will render the Mines Faculty/Staff PDF.");
 
             // Create a MigraDoc document
             Document document = CreateDocument();
@@ -390,7 +400,7 @@ namespace CLI_Test
             const string filename = "fac_staff_dir.pdf";
             pdfRenderer.PdfDocument.Save(filename);
             // ...and start a viewer.
-            Process.Start(filename);
+            //Process.Start(filename);
         }
     }
 }

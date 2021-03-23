@@ -16,6 +16,8 @@ namespace CLI_Test
         public string Department;
         public string Title;
         public string FaxNumber;
+        public string Building;
+        public string Office;
 
         public void ClearAll()
         {
@@ -25,6 +27,8 @@ namespace CLI_Test
             Department = "";
             Title = "";
             FaxNumber = "";
+            Building = "";
+            Office = "";
         }
     }
 

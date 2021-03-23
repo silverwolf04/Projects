@@ -55,4 +55,3 @@ C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\bin\Debug\de\MigraDoc.Ren
 C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\bin\Debug\de\MigraDoc.RtfRendering.resources.dll
 C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\bin\Debug\de\PdfSharp.resources.dll
 C:\Users\derek\source\repos\Projects\CLI-Test\CLI-Test\bin\Debug\de\PdfSharp.Charting.resources.dll
-E:\github_repos\Projects\CLI-Test\CLI-Test\obj\Debug\CLI-Test.csprojAssemblyReference.cache
