@@ -3,7 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="ConnectionString" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Put Oracle Connection String here</Value>
+      <Value Profile="(Default)">Data Source=csmis3; Initial Catalog=peopletest; Integrated Security=true</Value>
+    </Setting>
+    <Setting Name="QueryString" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">select top 100 workphone, LName + ',' + Fname as EmpName, department, campusBuilding, campusOfficeNo, email, faxphone, title from fac_staff_dir_view1 where releaseflag is null order by LName, fname</Value>
+    </Setting>
+    <Setting Name="DataProvider" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">MSSQL</Value>
     </Setting>
   </Settings>
 </SettingsFile>

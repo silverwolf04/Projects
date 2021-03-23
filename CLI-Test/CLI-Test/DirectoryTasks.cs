@@ -36,8 +36,11 @@ public class DirectoryTasks
 
             try
             {
-                string queryString = "select empname, department, title, phonenumber, emailaddress, faxnumber from employee";
-                string connectionString = @"Data Source=localhost\meineinstanz; Initial Catalog=testdata; Integrated Security=true";
+                //string queryString = "select empname, department, title, phonenumber, emailaddress, faxnumber from employee";
+                string queryString = Properties.Settings.Default.QueryString;
+                string connectionString = Properties.Settings.Default.ConnectionString;
+                //if (connectionString.Length == 0)
+                 //   statusCodes = StatusCodes.ConnectionStringMissing;
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {

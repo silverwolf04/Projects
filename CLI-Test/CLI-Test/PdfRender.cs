@@ -46,10 +46,10 @@ namespace CLI_Test
                 row.Cells[cellInt].AddParagraph("Title: " + employee.Title);
             if(!string.IsNullOrWhiteSpace(employee.Department))
                 row.Cells[cellInt].AddParagraph("Dept: " + employee.Department);
-            if(!string.IsNullOrWhiteSpace(employee.FaxNumber))
-                row.Cells[cellInt].AddParagraph("Fax: " + employee.FaxNumber);
             if(!string.IsNullOrWhiteSpace(employee.EmailAddress))
                 row.Cells[cellInt].AddParagraph("Email: " + employee.EmailAddress);
+            if (!string.IsNullOrWhiteSpace(employee.FaxNumber))
+                row.Cells[cellInt].AddParagraph("Fax: " + employee.FaxNumber);
             row.Cells[cellInt].AddParagraph("");
         }
         public void GenerateTest()
@@ -217,35 +217,100 @@ namespace CLI_Test
 
             Row row = new Row();
             int currPageRow = 1;
+            string currHeaderStr = "A";
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 PageSide pageSide;
-                if (currPageRow == 3)
+                employee.Name = dataRow["EmpName"].ToString();
+                employee.PhoneNumber = dataRow["workphone"].ToString();
+                employee.Department = dataRow["Department"].ToString();
+                employee.FaxNumber = dataRow["faxphone"].ToString();
+                employee.EmailAddress = dataRow["email"].ToString();
+                employee.Title = dataRow["Title"].ToString();
+
+                if(!employee.Name.StartsWith(currHeaderStr) || currPageRow > 16)
+                {
+                    // usually you would add a page break to the section only
+                    // however, because we need different headers a new section is added to the document instead
+                    //section.AddPageBreak();
+                    section = document.AddSection();
+
+                    // reset variables
+                    currPageRow = 1;
+                    rowInt = 0;
+                    currHeaderStr = employee.Name.Substring(0, 1);
+
+                    // update page header
+                    header = new HeaderFooter();
+                    header.AddParagraph(currHeaderStr);
+                    header.Format.Font.Size = 30;
+                    header.Format.Font.Name = "Times-Roman";
+                    header.Format.Alignment = ParagraphAlignment.Center;
+                    section.Headers.Primary = header.Clone();
+
+                    // set the table margins on the new page
+                    table = section.AddTable();
+                    table.AddColumn("2.75cm");
+                    table.AddColumn("6cm");
+                    table.AddColumn("2.75cm");
+                    table.AddColumn("6cm");
+                    table.Borders.Visible = false;
+                    table.Borders.Width = 1;
+                }    
+
+                if (currPageRow == 9)
                     rowInt = 0;
 
-                if (currPageRow <= 2)
+                if (currPageRow <= 8)
                 {
                     pageSide = PageSide.LeftSide;
                     row = table.AddRow();
                 }
-                else
+                else // rows 9-16
                 {
                     pageSide = PageSide.RightSide;
                     row = table.Rows[rowInt];
                 }
 
+                /*
                 employee.Name = dataRow["EmpName"].ToString();
-                employee.PhoneNumber = dataRow["PhoneNumber"].ToString();
+                employee.PhoneNumber = dataRow["workphone"].ToString();
                 employee.Department = dataRow["Department"].ToString();
-                employee.FaxNumber = dataRow["FaxNumber"].ToString();
-                employee.EmailAddress = dataRow["EmailAddress"].ToString();
+                employee.FaxNumber = dataRow["faxphone"].ToString();
+                employee.EmailAddress = dataRow["email"].ToString();
                 employee.Title = dataRow["Title"].ToString();
-
+                */
                 GenerateRow(pageSide, employee, ref row);
                 employee.ClearAll();
+                Console.WriteLine("currPageRow: " + currPageRow);
+                Console.WriteLine("rowInt:" + rowInt);
                 currPageRow++;
                 rowInt++;
+
+                // create new page, only allow 16 rows to be placed on a single page; reset variables
+                /*
+                if(currPageRow > 16)
+                {
+                    // add page break
+                    section.AddPageBreak();
+                    // reset variables
+                    currPageRow = 1;
+                    rowInt = 0;
+
+                    // update page header?
+                    // TBD
+
+                    // set the table margins on the new page
+                    table = section.AddTable();
+                    table.AddColumn("2.75cm");
+                    table.AddColumn("6cm");
+                    table.AddColumn("2.75cm");
+                    table.AddColumn("6cm");
+                    table.Borders.Visible = false;
+                    table.Borders.Width = 1;
+                }
+                */
             }
             /*
             employee.Name = "Abdul, Ramin";
