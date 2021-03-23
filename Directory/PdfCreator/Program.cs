@@ -10,6 +10,15 @@ namespace PdfCreator
     {
         static void Main(string[] args)
         {
+            PdfRender pdfRender = new PdfRender();
+            if (string.Equals(args[0], "facultystaffpdf", StringComparison.OrdinalIgnoreCase))
+            {
+                pdfRender.FacultyStaffPDF();
+            }
+            else
+            {
+                pdfRender.GenerateTest(args[0]);
+            }
         }
     }
 }
