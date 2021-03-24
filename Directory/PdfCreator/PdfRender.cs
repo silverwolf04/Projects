@@ -1,14 +1,9 @@
-﻿//using PdfSharp.Drawing;
-//using PdfSharp.Drawing.Layout;
-//using PdfSharp.Pdf;
-using MigraDoc.DocumentObjectModel;
+﻿using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
-using PdfSharp.Pdf;
 using System;
 using System.Data;
 using System.Diagnostics;
-//using Microsoft.VisualBasic;
 
 namespace PdfCreator
 {
@@ -92,7 +87,9 @@ namespace PdfCreator
             // ========================================================================================
 
             // Create a renderer for the MigraDoc document.
+#pragma warning disable IDE0017 // Simplify object initialization
             PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode);
+#pragma warning restore IDE0017 // Simplify object initialization
 
             // Associate the MigraDoc document with a renderer
             pdfRenderer.Document = document;
