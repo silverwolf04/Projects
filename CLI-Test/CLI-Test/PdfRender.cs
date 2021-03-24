@@ -128,9 +128,6 @@ namespace CLI_Test
             */
         }
 
-        /// <summary>
-        /// Creates an absolutely minimalistic document.
-        /// </summary>
         static Document CreateTestDocument(string output)
         {
             // Create a new MigraDoc document
@@ -383,7 +380,6 @@ namespace CLI_Test
             // Create a renderer for the MigraDoc document.
             PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode)
             {
-
                 // Associate the MigraDoc document with a renderer
                 Document = document
             };

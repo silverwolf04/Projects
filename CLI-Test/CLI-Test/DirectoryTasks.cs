@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oracle.ManagedDataAccess.Client;
 
 namespace CLI_Test
 {
@@ -36,16 +33,56 @@ namespace CLI_Test
     {
         public void GetData(out DataTable dataTable)
         {
+            string queryString = Properties.Settings.Default.QueryString;
+            string connectionString = Properties.Settings.Default.ConnectionString;
+
+            if (Properties.Settings.Default.DataProvider == "Oracle")
+            {
+                Console.WriteLine("Using Oracle DataProvider");
+                GetDataOracle(out dataTable, connectionString, queryString);
+            }
+            else // MSSQL / SQL / SQLServer
+            {
+                Console.WriteLine("Using MSSQL DataProvider");
+                GetDataSQL(out dataTable, connectionString, queryString);
+            }
+        }
+        public void GetDataOracle(out DataTable dataTable, string connectionString, string queryString)
+        {
             dataTable = new DataTable();
 
             try
             {
-                //string queryString = "select empname, department, title, phonenumber, emailaddress, faxnumber from employee";
-                string queryString = Properties.Settings.Default.QueryString;
-                string connectionString = Properties.Settings.Default.ConnectionString;
-                //if (connectionString.Length == 0)
-                 //   statusCodes = StatusCodes.ConnectionStringMissing;
+                using (OracleConnection conn = new OracleConnection(connectionString))
+                {
+                    /*
+                    conn.Open();
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = conn;
+                    cmd.CommandText = queryString;
+                    cmd.CommandType = CommandType.Text;
+                    */
+                    OracleCommand cmd = new OracleCommand
+                    {
+                        Connection = conn,
+                        CommandText = queryString,
+                        CommandType = CommandType.Text
+                    };
+                    OracleDataReader dr = cmd.ExecuteReader();
+                    dataTable.Load(dr);
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        public void GetDataSQL(out DataTable dataTable, string connectionString, string queryString)
+        {
+            dataTable = new DataTable();
 
+            try
+            {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     Console.WriteLine("State: {0}", connection.State);
