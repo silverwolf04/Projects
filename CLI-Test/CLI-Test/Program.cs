@@ -115,7 +115,7 @@ namespace CLI_Test
                         propertySetUsingClass.ReadValues();
                         break;
                     case ClassInArgument.OracleDatabaseAdapter:
-                        OracleDatabaseAdapter oracleDatabaseAdapter = new OracleDatabaseAdapter();
+                        Utilities.OracleDatabaseAdapter oracleDatabaseAdapter = new Utilities.OracleDatabaseAdapter();
                         oracleDatabaseAdapter.OracleQuery(args[1], null, out DataTable dataTable);
 
                         if (dataTable.Rows.Count > 0)

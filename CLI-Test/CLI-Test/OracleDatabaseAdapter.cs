@@ -6,7 +6,7 @@ using System.Data;
 using Hyland.Unity;
 
 
-namespace CLI_Test
+namespace Utilities
 {
 	public class OracleDatabaseAdapter
 	{
@@ -55,7 +55,7 @@ namespace CLI_Test
 
 			try
             {
-				string connectionString = Properties.Settings.Default.ConnectionString;
+				string connectionString = CLI_Test.Properties.Settings.Default.ConnectionString;
 				if (connectionString.Length == 0)
 					statusCodes = StatusCodes.ConnectionStringMissing;
 

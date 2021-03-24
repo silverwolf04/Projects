@@ -32,7 +32,7 @@ namespace CLI_Test
         }
     }
 
-public class DirectoryTasks
+    public class DirectoryTasks
     {
         public void GetData(out DataTable dataTable)
         {

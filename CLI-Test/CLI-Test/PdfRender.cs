@@ -1,14 +1,9 @@
-﻿//using PdfSharp.Drawing;
-//using PdfSharp.Drawing.Layout;
-//using PdfSharp.Pdf;
-using MigraDoc.DocumentObjectModel;
+﻿using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
-using PdfSharp.Pdf;
 using System;
 using System.Data;
 using System.Diagnostics;
-//using Microsoft.VisualBasic;
 
 namespace CLI_Test
 {
