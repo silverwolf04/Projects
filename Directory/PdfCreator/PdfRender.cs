@@ -250,14 +250,14 @@ namespace PdfCreator
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 PageSide pageSide;
-                employee.Name = dataRow[Properties.Settings.Default.Name].ToString();
-                employee.PhoneNumber = dataRow[Properties.Settings.Default.PhoneNumber].ToString();
-                employee.Department = dataRow[Properties.Settings.Default.Department].ToString();
-                employee.FaxNumber = dataRow[Properties.Settings.Default.FaxNumber].ToString();
-                employee.EmailAddress = dataRow[Properties.Settings.Default.EmailAddress].ToString();
-                employee.Title = dataRow[Properties.Settings.Default.Title].ToString();
-                employee.Building = dataRow[Properties.Settings.Default.Building].ToString();
-                employee.Office = dataRow[Properties.Settings.Default.Office].ToString();
+                employee.Name = dataRow[Properties.FacStaffPdf.Default.Name].ToString();
+                employee.PhoneNumber = dataRow[Properties.FacStaffPdf.Default.PhoneNumber].ToString();
+                employee.Department = dataRow[Properties.FacStaffPdf.Default.Department].ToString();
+                employee.FaxNumber = dataRow[Properties.FacStaffPdf.Default.FaxNumber].ToString();
+                employee.EmailAddress = dataRow[Properties.FacStaffPdf.Default.EmailAddress].ToString();
+                employee.Title = dataRow[Properties.FacStaffPdf.Default.Title].ToString();
+                employee.Building = dataRow[Properties.FacStaffPdf.Default.Building].ToString();
+                employee.Office = dataRow[Properties.FacStaffPdf.Default.Office].ToString();
 
                 if(string.IsNullOrEmpty(currHeaderStr))
                     currHeaderStr = employee.Name.Substring(0, 1);
