@@ -53,7 +53,7 @@ namespace CLI_Test
                 {
                     //eprint
                     case ClassInArgument.Eprint:
-                        Program.ArgCheck(args, 5);
+                        Program.ArgCheck(args, 3);
 
                         // the inputfile to read from
                         string inputFile = args[1];

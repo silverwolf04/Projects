@@ -16,7 +16,7 @@ namespace PdfCreator
     {
         public static void GenerateRow(PageSide pageSide, Employee employee, ref Row row)
         {
-            int cellInt = -1;
+            int cellInt = 0;
             string concatenatedStr = string.Empty;
 
             switch (pageSide)
@@ -25,7 +25,8 @@ namespace PdfCreator
                     cellInt = 0;
                     break;
                 case PageSide.RightSide:
-                    cellInt = 2;
+                    //cellInt = 2;
+                    cellInt = 1;
                     break;
                 default:
                     Console.WriteLine("Invalid Page Side provided: " + pageSide.ToString());
@@ -33,25 +34,58 @@ namespace PdfCreator
 
             }
 
+            /*
             if(!string.IsNullOrWhiteSpace(employee.PhoneNumber))
                 row.Cells[cellInt].AddParagraph(employee.PhoneNumber);
-            cellInt++;
+            //cellInt++;
+            */
+            Paragraph paragraph = new Paragraph();
+            FormattedText text = new FormattedText();
+
             if (!string.IsNullOrWhiteSpace(employee.Name))
-                row.Cells[cellInt].AddParagraph(employee.Name);
+            {
+                //row.Cells[cellInt].AddParagraph(employee.Name);
+                paragraph = row.Cells[cellInt].AddParagraph();
+                paragraph.AddFormattedText(employee.Name, TextFormat.Bold);
+            }
             if(!string.IsNullOrWhiteSpace(employee.Title))
                 row.Cells[cellInt].AddParagraph("Title: " + employee.Title);
             if(!string.IsNullOrWhiteSpace(employee.Department))
                 row.Cells[cellInt].AddParagraph("Dept: " + employee.Department);
             if (!string.IsNullOrWhiteSpace(employee.Building))
                 concatenatedStr = "Bldg: " + employee.Building;
-            //row.Cells[cellInt].AddParagraph("Bldg: " + employee.Building);
             if (!string.IsNullOrWhiteSpace(employee.Building) && !string.IsNullOrWhiteSpace(employee.Office))
                 concatenatedStr += " Office/Room: " + employee.Office;
-            //row.Cells[cellInt].AddParagraph("Office: " + employee.Office);
             if (!string.IsNullOrEmpty(concatenatedStr))
                 row.Cells[cellInt].AddParagraph(concatenatedStr);
-            if(!string.IsNullOrWhiteSpace(employee.EmailAddress))
-                row.Cells[cellInt].AddParagraph("Email: " + employee.EmailAddress);
+            if (!string.IsNullOrWhiteSpace(employee.Url))
+
+            {
+                paragraph = row.Cells[cellInt].AddParagraph();
+                //paragraph.Format.Font.Color = Color.FromRgb(51, 153, 255);
+                paragraph.AddText("Home Page: ");
+                Hyperlink hyperlink = paragraph.AddHyperlink(employee.Url, HyperlinkType.Url);
+                text = hyperlink.AddFormattedText();
+                //text.AddText("Home Page: ");
+                text.Font.Color = Color.FromRgb(5, 99, 193);
+                text.AddFormattedText("Click Here", TextFormat.Underline);
+                //hyperlink.AddFormattedText("Home Page: Click Here", TextFormat.Underline);
+                //row.Cells[cellInt].AddParagraph("Home Page: " + employee.Url);
+            }
+            if (!string.IsNullOrWhiteSpace(employee.EmailAddress))
+            {
+                paragraph = row.Cells[cellInt].AddParagraph();
+                paragraph.AddText("Email Address: ");
+                Hyperlink hyperlink = paragraph.AddHyperlink("mailto:" + employee.EmailAddress, HyperlinkType.Url);
+                text = hyperlink.AddFormattedText();
+                //text.AddText("Home Page: ");
+                text.Font.Color = Color.FromRgb(5, 99, 193);
+                text.AddFormattedText(employee.EmailAddress, TextFormat.Underline);
+
+                //row.Cells[cellInt].AddParagraph("Email: " + employee.EmailAddress);
+            }
+            if (!string.IsNullOrEmpty(employee.PhoneNumber))
+                row.Cells[cellInt].AddParagraph("Phone: " + employee.PhoneNumber);
             if (!string.IsNullOrWhiteSpace(employee.FaxNumber))
                 row.Cells[cellInt].AddParagraph("Fax: " + employee.FaxNumber);
             row.Cells[cellInt].AddParagraph("");
@@ -148,6 +182,8 @@ namespace PdfCreator
 
             // Add some text to the paragraph
             paragraph.AddFormattedText(output, TextFormat.Bold);
+            Hyperlink hyperlink = paragraph.AddHyperlink("https://mines.edu", HyperlinkType.Url);
+            hyperlink.AddText("This is a test");
 
             return document;
         }
@@ -155,11 +191,16 @@ namespace PdfCreator
         static Table AddCustomTable(Section section)
         {
             Table table = section.AddTable();
+            /*
             table.AddColumn("2.75cm");
             table.AddColumn("6cm");
             table.AddColumn("2.75cm");
             table.AddColumn("6cm");
+            */
+            table.AddColumn("8.75cm");
+            table.AddColumn("8.75cm");
             table.Borders.Visible = false;
+            //table.Borders.Visible = true;
             table.Borders.Width = 1;
             return table;
         }
@@ -258,6 +299,7 @@ namespace PdfCreator
                 employee.Title = dataRow[Properties.FacStaffPdf.Default.Title].ToString();
                 employee.Building = dataRow[Properties.FacStaffPdf.Default.Building].ToString();
                 employee.Office = dataRow[Properties.FacStaffPdf.Default.Office].ToString();
+                employee.Url = dataRow[Properties.FacStaffPdf.Default.URL].ToString();
 
                 if(string.IsNullOrEmpty(currHeaderStr))
                     currHeaderStr = employee.Name.Substring(0, 1);

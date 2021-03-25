@@ -78,7 +78,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="app.config" />
     <None Include="Properties\FacStaffPdf.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>FacStaffPdf.Designer.cs</LastGenOutput>

@@ -15,6 +15,7 @@ namespace PdfCreator
         public string FaxNumber;
         public string Building;
         public string Office;
+        public string Url;
 
         public void ClearAll()
         {

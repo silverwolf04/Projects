@@ -123,5 +123,14 @@ namespace PdfCreator.Properties {
                 return ((string)(this["Office"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Url")]
+        public string URL {
+            get {
+                return ((string)(this["URL"]));
+            }
+        }
     }
 }
