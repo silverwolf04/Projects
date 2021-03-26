@@ -12,9 +12,80 @@ namespace PdfCreator
         LeftSide,
         RightSide
     }
-    class PdfRender
+    public class PdfRender
     {
-        public static void GenerateRow(PageSide pageSide, Employee employee, ref Row row)
+        public PdfRender ()
+        {
+            Console.WriteLine("No arguments passed.");
+        }
+        public PdfRender(string[] args)
+        {
+            string type = "Unknown";
+            if (args.Length > 0)
+                type = args[0].ToString();
+            SetPdfType(type);
+        }
+        public enum PdfTypes
+        {
+            Test,
+            FacultyStaff,
+            Department
+        }
+
+        public PdfTypes PdfType { get; set; }
+
+        private void SetPdfType(string argStr)
+        {
+            // if an enum is not properly parsed, the first value will be set as the enum (Unknown)
+            // Enum.TryParse<PdfTypes>(argStr, true, out PdfType);
+            if (!Enum.TryParse(argStr, true, out PdfType))
+                PdfType = PdfTypes.Test;
+        }
+        public void GenerateTest(ref Document document, string output)
+        {
+            document = CreateTestDocument(output);
+        }
+
+        static Document CreateTestDocument(string output)
+        {
+            // Create a new MigraDoc document
+            Document document = new Document();
+
+            // Add a section to the document
+            Section section = document.AddSection();
+
+            // Add a paragraph to the section
+            Paragraph paragraph = section.AddParagraph();
+
+            paragraph.Format.Font.Color = Color.FromCmyk(100, 30, 20, 50);
+
+            // Add some text to the paragraph
+            paragraph.AddFormattedText(output, TextFormat.Bold);
+            /*
+            Hyperlink hyperlink = paragraph.AddHyperlink("https://mines.edu", HyperlinkType.Url);
+            hyperlink.AddText("This is a test");
+            */
+
+            return document;
+        }
+
+        static Table AddCustomTable(Section section)
+        {
+            Table table = section.AddTable();
+            /*
+            table.AddColumn("2.75cm");
+            table.AddColumn("6cm");
+            table.AddColumn("2.75cm");
+            table.AddColumn("6cm");
+            */
+            table.AddColumn("8.75cm");
+            table.AddColumn("8.75cm");
+            table.Borders.Visible = false;
+            //table.Borders.Visible = true;
+            table.Borders.Width = 1;
+            return table;
+        }
+        private static void GenerateRow(PageSide pageSide, Employee employee, ref Row row)
         {
             int cellInt = 0;
             string concatenatedStr = string.Empty;
@@ -39,8 +110,8 @@ namespace PdfCreator
                 row.Cells[cellInt].AddParagraph(employee.PhoneNumber);
             //cellInt++;
             */
-            Paragraph paragraph = new Paragraph();
-            FormattedText text = new FormattedText();
+            Paragraph paragraph;
+            FormattedText text;
 
             if (!string.IsNullOrWhiteSpace(employee.Name))
             {
@@ -90,120 +161,6 @@ namespace PdfCreator
                 row.Cells[cellInt].AddParagraph("Fax: " + employee.FaxNumber);
             row.Cells[cellInt].AddParagraph("");
         }
-        public void GenerateTest()
-        {
-            GenerateTest("Hello World!");
-        }
-        public void GenerateTest(string output)
-        {
-            Console.WriteLine(output);
-
-            // Create a MigraDoc document
-            Document document = CreateTestDocument(output);
-            document.UseCmykColor = true;
-
-            // ===== Unicode encoding and font program embedding in MigraDoc is demonstrated here =====
-
-            // A flag indicating whether to create a Unicode PDF or a WinAnsi PDF file.
-            // This setting applies to all fonts used in the PDF document.
-            // This setting has no effect on the RTF renderer.
-            const bool unicode = false;
-
-            // An enum indicating whether to embed fonts or not.
-            // This setting applies to all font programs used in the document.
-            // This setting has no effect on the RTF renderer.
-            // (The term 'font program' is used by Adobe for a file containing a font. Technically a 'font file'
-            // is a collection of small programs and each program renders the glyph of a character when executed.
-            // Using a font in PDFsharp may lead to the embedding of one or more font programms, because each outline
-            // (regular, bold, italic, bold+italic, ...) has its own fontprogram)
-            //const PdfFontEmbedding embedding = PdfFontEmbedding.Always;
-
-            // ========================================================================================
-
-            // Create a renderer for the MigraDoc document.
-#pragma warning disable IDE0017 // Simplify object initialization
-            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode);
-#pragma warning restore IDE0017 // Simplify object initialization
-
-            // Associate the MigraDoc document with a renderer
-            pdfRenderer.Document = document;
-
-            // Layout and render document to PDF
-            pdfRenderer.RenderDocument();
-
-            // Save the document...
-            const string filename = "HelloWorld.pdf";
-            pdfRenderer.PdfDocument.Save(filename);
-            // ...and start a viewer.
-            Process.Start(filename);
-
-            /* // Use this code with PDFsharp NuGet
-            // Create a new PDF document
-            PdfDocument document = new PdfDocument();
-            document.Info.Title = "Created with PDFsharp";
-
-            // Create an empty page
-            PdfPage page = document.AddPage();
-
-            // Get an XGraphics object for drawing
-            XGraphics gfx = XGraphics.FromPdfPage(page);
-
-            // Create a font
-            XFont font = new XFont("Verdana", 20, XFontStyle.BoldItalic);
-
-            // Draw the text
-            gfx.DrawString(output, font, XBrushes.Black,
-              new XRect(0, 0, page.Width, page.Height),
-              XStringFormats.Center);
-
-            // Save the document...
-            const string filename = "HelloWorld.pdf";
-            document.Save(filename);
-            // ...and start a viewer.
-            Process.Start(filename);
-            */
-        }
-
-        /// <summary>
-        /// Creates an absolutely minimalistic document.
-        /// </summary>
-        static Document CreateTestDocument(string output)
-        {
-            // Create a new MigraDoc document
-            Document document = new Document();
-
-            // Add a section to the document
-            Section section = document.AddSection();
-
-            // Add a paragraph to the section
-            Paragraph paragraph = section.AddParagraph();
-
-            paragraph.Format.Font.Color = Color.FromCmyk(100, 30, 20, 50);
-
-            // Add some text to the paragraph
-            paragraph.AddFormattedText(output, TextFormat.Bold);
-            Hyperlink hyperlink = paragraph.AddHyperlink("https://mines.edu", HyperlinkType.Url);
-            hyperlink.AddText("This is a test");
-
-            return document;
-        }
-
-        static Table AddCustomTable(Section section)
-        {
-            Table table = section.AddTable();
-            /*
-            table.AddColumn("2.75cm");
-            table.AddColumn("6cm");
-            table.AddColumn("2.75cm");
-            table.AddColumn("6cm");
-            */
-            table.AddColumn("8.75cm");
-            table.AddColumn("8.75cm");
-            table.Borders.Visible = false;
-            //table.Borders.Visible = true;
-            table.Borders.Width = 1;
-            return table;
-        }
 
         static void AddCustomHeader(string text, ref Section section)
         {
@@ -225,10 +182,17 @@ namespace PdfCreator
             section.Footers.Primary = footer.Clone();
         }
 
-        static Document CreateDocument()
+        private void CreateDocumentDepartment(ref Document document)
+        {
+            Section section = document.AddSection();
+            //Document document = new Document();
+            //return document;
+        }
+
+        private void CreateDocumentFacultyStaff(ref Document document)
         {
             // Create a new MigraDoc document
-            Document document = new Document();
+            //Document document = new Document();
 
             // Add a section to the document
             Section section = document.AddSection();
@@ -344,81 +308,40 @@ namespace PdfCreator
                 currPageRow++;
                 rowInt++;
             }
-            /*
-            employee.Name = "Abdul, Ramin";
-            employee.PhoneNumber = "(303) 754-2251";
-            employee.Department = "Arithmetic";
-            employee.FaxNumber = "(303) 111-3333";
-            employee.EmailAddress = "rabdul@mines.edu";
 
-            row = table.AddRow();
-            GenerateRow(PageSide.LeftSide, employee, ref row);
-            employee.ClearAll();
-            */
-            /*
-            employee.Name = "Alan, Gary";
-            employee.PhoneNumber = "(303) 123-4567";
-            employee.Title = "Associate Professor";
-            employee.Department = "Engineering and Design";
-            employee.FaxNumber = "(303) 555-2233";
-            employee.EmailAddress = "galan@mines.edu";
-
-            row = table.AddRow();
-            GenerateRow(PageSide.LeftSide, employee, ref row);
-            employee.ClearAll();
-
-            // reset the right side
-            rowInt = 0;
-
-            employee.Name = "Azura, Monica";
-            employee.PhoneNumber = "(303) 999-8877";
-            employee.Department = "Engineering & Design";
-            employee.EmailAddress = "mazura1@mines.edu";
-
-            //row = table.AddRow();
-            row = table.Rows[rowInt];
-            GenerateRow(PageSide.RightSide, employee, ref row);
-            employee.ClearAll();
-
-            employee.Name = "Axelwu, Angel";
-            employee.PhoneNumber = "(303) 541-8877";
-            employee.Department = "Engineering & Design";
-            employee.EmailAddress = "axel@mines.edu";
-
-            //row = table.AddRow();
-            rowInt++;
-            row = table.Rows[rowInt];
-            GenerateRow(PageSide.RightSide, employee, ref row);
-            employee.ClearAll();
-            */
-            return document;
+            //return document;
         }
 
-        public void FacultyStaffPDF()
+        public void RequestPdf(string arg)
         {
-            /* Observations dervived from predecessor PDF generator
-             * fac_staff_dir.pdf
-             * select * from fac_staff_dir_view1 where releaseflag is null order by lname, fname
-             if ( iIDFlag <> "1" and iIDFlag <> "2" and iIDFlag <> "E" and iIDFlag <> "F" and iIDFlag <> "S" and iIDFlag <> "G" and iIDFlag <> "H" and iIDFlag <> "U" and iIDFlag <> "W" and iIDFlag <> "Y" And iIDFlag <> "?") then
-			    DisplayListing iName, iDepartment, iOffice, iBldg, iWorkTel, iHomeTel, iFAX, iBusEmail, iURL, iAddressL1, iAddressL2, iCity, iDirRestrict, iTitle, iWTitle
-			    numDisplayCalls = numDisplayCalls + 1
-		     end if
-             * 
-             if ( isNull( iName ) ) then
-		        iName = result1("LName") & ", " & result1("FName") & " " & result1("MName")
-		        if (result1("NName") <> "") then
-			        iName = iName & " (" & result1("NName") & ")"
-		        end if
-	         end if 
-             *
-            */
-
-            Console.WriteLine("This will render the Mines Faculty/Staff PDF.");
-
+            string filename = string.Empty;
             // Create a MigraDoc document
-            Document document = CreateDocument();
-            //document.UseCmykColor = true;
+            Document document = new Document();
 
+            switch(PdfType)
+            {
+                case PdfTypes.FacultyStaff:
+                    Console.WriteLine("This will render the Mines Faculty/Staff PDF.");
+                    //document = CreateDocumentFacultyStaff():
+                    CreateDocumentFacultyStaff(ref document);
+                    filename = "fac_staff_dir.pdf";
+                    break;
+                case PdfTypes.Department:
+                    Console.WriteLine("This will render the Mines Department Directory PDF");
+                    CreateDocumentDepartment(ref document);
+                    filename = "departmental_dir.pdf";
+                    break;
+                //case PdfTypes.Test:
+                default:
+                    Console.WriteLine("This will render the HelloWorld test PDF");
+                    Console.WriteLine(PdfType.ToString());
+                    GenerateTest(ref document, arg);
+                    filename = "HelloWorld.pdf";
+                    Console.WriteLine(PdfType.ToString());
+                    break;
+            }
+
+            //document.UseCmykColor = true;
             // A flag indicating whether to create a Unicode PDF or a WinAnsi PDF file.
             // This setting applies to all fonts used in the PDF document.
             // This setting has no effect on the RTF renderer.
@@ -436,10 +359,22 @@ namespace PdfCreator
             pdfRenderer.RenderDocument();
 
             // Save the document...
-            const string filename = "fac_staff_dir.pdf";
             pdfRenderer.PdfDocument.Save(filename);
-            // ...and start a viewer.
-            //Process.Start(filename);
+
+            // ...and start a viewer if testing
+            if (PdfType == PdfTypes.Test)
+                Process.Start(filename);
         }
+        /*
+        /// <summary>
+        /// Will generate a PDF with the first argument passed
+        /// </summary>
+        /// <param name="printStr">The string passed in to print to PDF</param>
+        public void RequestPdf(string printStr)
+        {
+            Console.WriteLine("Test PDF type with argument(s) is used");
+            GenerateTestPdf(printStr);
+        }
+        */
     }
 }
