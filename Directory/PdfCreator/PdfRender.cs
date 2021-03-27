@@ -32,14 +32,17 @@ namespace PdfCreator
             Department
         }
 
-        public PdfTypes PdfType { get; set; }
+        public PdfTypes PdfType;
+        private bool Viewer = false;
 
         private void SetPdfType(string argStr)
         {
             // if an enum is not properly parsed, the first value will be set as the enum (Unknown)
             // Enum.TryParse<PdfTypes>(argStr, true, out PdfType);
-            if (!Enum.TryParse(argStr, true, out PdfType))
+            if(!Enum.TryParse(argStr, true, out PdfType) || !Enum.IsDefined(typeof(PdfTypes), PdfType))
                 PdfType = PdfTypes.Test;
+            if (PdfType == PdfTypes.Test)
+                Viewer = true;
         }
         public void GenerateTest(ref Document document, string output)
         {
@@ -333,11 +336,9 @@ namespace PdfCreator
                     break;
                 //case PdfTypes.Test:
                 default:
-                    Console.WriteLine("This will render the HelloWorld test PDF");
-                    Console.WriteLine(PdfType.ToString());
+                    Console.WriteLine("This will render the Test PDF");
                     GenerateTest(ref document, arg);
                     filename = "HelloWorld.pdf";
-                    Console.WriteLine(PdfType.ToString());
                     break;
             }
 
@@ -350,7 +351,6 @@ namespace PdfCreator
             // Create a renderer for the MigraDoc document.
             PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode)
             {
-
                 // Associate the MigraDoc document with a renderer
                 Document = document
             };
@@ -362,19 +362,8 @@ namespace PdfCreator
             pdfRenderer.PdfDocument.Save(filename);
 
             // ...and start a viewer if testing
-            if (PdfType == PdfTypes.Test)
+            if(Viewer)
                 Process.Start(filename);
         }
-        /*
-        /// <summary>
-        /// Will generate a PDF with the first argument passed
-        /// </summary>
-        /// <param name="printStr">The string passed in to print to PDF</param>
-        public void RequestPdf(string printStr)
-        {
-            Console.WriteLine("Test PDF type with argument(s) is used");
-            GenerateTestPdf(printStr);
-        }
-        */
     }
 }

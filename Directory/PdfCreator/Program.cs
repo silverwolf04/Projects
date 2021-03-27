@@ -10,20 +10,32 @@ namespace PdfCreator
     {
         static void Main(string[] args)
         {
-            PdfRender pdfRender = new PdfRender(args);
-            string arg;
-
-            if(args.Length > 0)
+            try
             {
-                arg = args[0].ToString();
-            }
-            else
-            {
-                arg = "Hello World!";
-            }
+                PdfRender pdfRender = new PdfRender(args);
+                string arg;
 
-            Console.WriteLine(pdfRender.PdfType.ToString());
-            pdfRender.RequestPdf(arg);
+                if (args.Length > 0)
+                {
+                    arg = args[0].ToString();
+                }
+                else
+                {
+                    arg = "Hello World!";
+                    Console.WriteLine("Permitted arguments to pass; anything else is used for test rendering");
+                    foreach (PdfRender.PdfTypes pdfTypes in Enum.GetValues(typeof(PdfRender.PdfTypes)))
+                    {
+                        Console.WriteLine(pdfTypes.ToString());
+                    }
+                    Console.WriteLine("******************************");
+                }
+
+                pdfRender.RequestPdf(arg);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 }
