@@ -7,23 +7,20 @@ using System.Diagnostics;
 
 namespace PdfCreator
 {
-    public enum PageSide
-    {
-        LeftSide,
-        RightSide
-    }
     public class PdfRender
     {
-        public PdfRender ()
-        {
-            Console.WriteLine("No arguments passed.");
-        }
+        public PdfRender () => Console.WriteLine("No arguments passed.");
         public PdfRender(string[] args)
         {
             string type = "Unknown";
             if (args.Length > 0)
                 type = args[0].ToString();
             SetPdfType(type);
+        }
+        private enum PageSide
+        {
+            LeftSide,
+            RightSide
         }
         public enum PdfTypes
         {
@@ -32,11 +29,11 @@ namespace PdfCreator
             Department
         }
 
-        public PdfTypes _pdfType;
+        private PdfTypes _pdfType;
         public PdfTypes PdfType
         {
-            get { return _pdfType; }
-            set { _pdfType = value; }
+            get => _pdfType;
+            set => _pdfType = value;
         }
         private bool Viewer = false;
 
@@ -58,12 +55,14 @@ namespace PdfCreator
             if (PdfType == PdfTypes.Test)
                 Viewer = true;
         }
-        public void GenerateTest(ref Document document, string output)
+        private Document GenerateTest(string output)
         {
-            document = CreateTestDocument(output);
+            Document document = CreateTestDocument(output);
+            return document;
         }
 
-        static Document CreateTestDocument(string output)
+
+        private Document CreateTestDocument(string output)
         {
             // Create a new MigraDoc document
             Document document = new Document();
@@ -86,7 +85,7 @@ namespace PdfCreator
             return document;
         }
 
-        static Table AddCustomTable(Section section)
+        private Table AddCustomTable(Section section)
         {
             Table table = section.AddTable();
             /*
@@ -102,7 +101,7 @@ namespace PdfCreator
             table.Borders.Width = 1;
             return table;
         }
-        private static void GenerateRow(PageSide pageSide, Employee employee, ref Row row)
+        private void GenerateRow(PageSide pageSide, Employee employee, ref Row row)
         {
             int cellInt = 0;
             string concatenatedStr = string.Empty;
@@ -179,7 +178,7 @@ namespace PdfCreator
             row.Cells[cellInt].AddParagraph("");
         }
 
-        static void AddCustomHeader(string text, ref Section section)
+        private void AddCustomHeader(string text, ref Section section)
         {
             HeaderFooter header = new HeaderFooter();
             header.AddParagraph(text);
@@ -189,7 +188,7 @@ namespace PdfCreator
             section.Headers.Primary = header.Clone();
         }
 
-        static void AddCustomFooter(string text, ref Section section)
+        private void AddCustomFooter(string text, ref Section section)
         {
             HeaderFooter footer = new HeaderFooter();
             footer.AddParagraph(text);
@@ -199,17 +198,17 @@ namespace PdfCreator
             section.Footers.Primary = footer.Clone();
         }
 
-        private void CreateDocumentDepartment(ref Document document)
+        private Document CreateDocumentDepartment()
         {
+            Document document = new Document();
             Section section = document.AddSection();
-            //Document document = new Document();
-            //return document;
+            return document;
         }
 
-        private void CreateDocumentFacultyStaff(ref Document document)
+        private Document CreateDocumentFacultyStaff()
         {
             // Create a new MigraDoc document
-            //Document document = new Document();
+            Document document = new Document();
 
             // Add a section to the document
             Section section = document.AddSection();
@@ -326,32 +325,32 @@ namespace PdfCreator
                 rowInt++;
             }
 
-            //return document;
+            return document;
         }
 
         public void RequestPdf(string arg)
         {
-            string filename = string.Empty;
+            string filename;
             // Create a MigraDoc document
-            Document document = new Document();
+            Document document;
 
             switch(PdfType)
             {
                 case PdfTypes.FacultyStaff:
                     Console.WriteLine("This will render the Mines Faculty/Staff PDF.");
                     //document = CreateDocumentFacultyStaff():
-                    CreateDocumentFacultyStaff(ref document);
+                    document = CreateDocumentFacultyStaff();
                     filename = "fac_staff_dir.pdf";
                     break;
                 case PdfTypes.Department:
                     Console.WriteLine("This will render the Mines Department Directory PDF");
-                    CreateDocumentDepartment(ref document);
+                    document = CreateDocumentDepartment();
                     filename = "departmental_dir.pdf";
                     break;
                 //case PdfTypes.Test:
                 default:
                     Console.WriteLine("This will render the Test PDF");
-                    GenerateTest(ref document, arg);
+                    document = GenerateTest(arg);
                     filename = "HelloWorld.pdf";
                     break;
             }

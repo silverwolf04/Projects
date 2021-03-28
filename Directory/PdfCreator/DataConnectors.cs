@@ -16,10 +16,8 @@ namespace PdfCreator
             Oracle,
             Excel
         }
-        public DataConnectors()
-        {
-            DataProvider = DataProviders.MSSQL;
-        }
+        public DataConnectors() => DataProvider = DataProviders.MSSQL;
+
         public DataConnectors(string provider)
         {
             if (Enum.IsDefined(typeof(DataProviders), provider))
@@ -35,8 +33,8 @@ namespace PdfCreator
         private DataProviders _dataProviders;
         public DataProviders DataProvider
         {
-            get { return _dataProviders; }
-            set { _dataProviders = value; }
+            get => _dataProviders;
+            set => _dataProviders = value;
         }
 
         private DataTable GetDataExcel(string connectionString, string queryString)
