@@ -32,15 +32,29 @@ namespace PdfCreator
             Department
         }
 
-        public PdfTypes PdfType;
+        public PdfTypes _pdfType;
+        public PdfTypes PdfType
+        {
+            get { return _pdfType; }
+            set { _pdfType = value; }
+        }
         private bool Viewer = false;
 
         private void SetPdfType(string argStr)
         {
             // if an enum is not properly parsed, the first value will be set as the enum (Unknown)
             // Enum.TryParse<PdfTypes>(argStr, true, out PdfType);
-            if(!Enum.TryParse(argStr, true, out PdfType) || !Enum.IsDefined(typeof(PdfTypes), PdfType))
+            PdfTypes pdfTypes;
+            if(Enum.TryParse(argStr, true, out pdfTypes) || Enum.IsDefined(typeof(PdfTypes), PdfType))
+            {
+                //PdfType = (PdfTypes)Enum.Parse(typeof(PdfTypes), argStr);
+                PdfType = pdfTypes;
+            }
+            else
+            {
                 PdfType = PdfTypes.Test;
+            }
+
             if (PdfType == PdfTypes.Test)
                 Viewer = true;
         }
@@ -248,7 +262,7 @@ namespace PdfCreator
             Employee employee = new Employee();
 
             DirectoryTasks directoryTasks = new DirectoryTasks();
-            directoryTasks.GetData(out DataTable dataTable);
+            DataTable dataTable = directoryTasks.GetData();
             Console.WriteLine("Rows: {0}", dataTable.Rows.Count);
 
             Row row = new Row();

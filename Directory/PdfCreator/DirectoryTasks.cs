@@ -5,104 +5,15 @@ using Oracle.ManagedDataAccess.Client;
 
 namespace PdfCreator
 {
-    public struct Employee
+    class DirectoryTasks : DataConnectors
     {
-        public string Name { get; set; }
-        public string PhoneNumber;
-        public string EmailAddress;
-        public string Department;
-        public string Title;
-        public string FaxNumber;
-        public string Building;
-        public string Office;
-        public string Url;
-
-        public void ClearAll()
+        public DirectoryTasks()
         {
-            Name = "";
-            PhoneNumber = "";
-            EmailAddress = "";
-            Department = "";
-            Title = "";
-            FaxNumber = "";
-            Building = "";
-            Office = "";
+
         }
-    }
-
-    public class DirectoryTasks
-    {
-        public void GetData(out DataTable dataTable)
+        public DirectoryTasks(string provider)
         {
-            //string queryString = Properties.Settings.Default.QueryString;
-            //string connectionString = Properties.Settings.Default.ConnectionString;
-            string queryString = Properties.FacStaffPdf.Default.QueryString;
-            string connectionString = Properties.FacStaffPdf.Default.ConnectionString;
-            string dataProviderString = Properties.FacStaffPdf.Default.DataProvider;
 
-            if (dataProviderString == "Oracle")
-            {
-                Console.WriteLine("Using Oracle DataProvider");
-                GetDataOracle(out dataTable, connectionString, queryString);
-            }
-            else // MSSQL / SQL / SQLServer
-            {
-                Console.WriteLine("Using MSSQL DataProvider");
-                GetDataSQL(out dataTable, connectionString, queryString);
-            }
-        }
-        public void GetDataOracle(out DataTable dataTable, string connectionString, string queryString)
-        {
-            dataTable = new DataTable();
-
-            try
-            {
-                using (OracleConnection conn = new OracleConnection(connectionString))
-                {
-                    /*
-                    conn.Open();
-                    OracleCommand cmd = new OracleCommand();
-                    cmd.Connection = conn;
-                    cmd.CommandText = queryString;
-                    cmd.CommandType = CommandType.Text;
-                    */
-                    OracleCommand cmd = new OracleCommand
-                    {
-                        Connection = conn,
-                        CommandText = queryString,
-                        CommandType = CommandType.Text
-                    };
-                    OracleDataReader dr = cmd.ExecuteReader();
-                    dataTable.Load(dr);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
-        public void GetDataSQL(out DataTable dataTable, string connectionString, string queryString)
-        {
-            dataTable = new DataTable();
-
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    Console.WriteLine("State: {0}", connection.State);
-                    Console.WriteLine("Query: {0}", queryString);
-
-                    using (SqlCommand sqlCommand = new SqlCommand(queryString, connection))
-                    {
-                        SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
-                        sqlDataAdapter.Fill(dataTable);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
         }
     }
 }
