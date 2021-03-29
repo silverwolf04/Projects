@@ -30,20 +30,19 @@ namespace PdfCreator
                 Console.WriteLine("Invalid provider parsed");
             }
         }
-        private DataProviders _dataProviders;
-        public DataProviders DataProvider
-        {
-            get => _dataProviders;
-            set => _dataProviders = value;
-        }
 
-        private DataTable GetDataExcel(string connectionString, string queryString)
+        public DataProviders DataProvider { get; set; }
+        public string ConnectionString { get; set; }
+        public string QueryString { get; set; }
+
+        private DataTable GetDataExcel()
         {
             //string sheetName = "Test";
-            string sheetName = queryString.Split(' ').Last();
+            //string sheetName = queryString.Split(' ').Last();
             //string path = "Test.xlsx";
-            string path = connectionString;
-            string commandText = queryString.Substring(0, queryString.Length - sheetName.Length) + "[" + sheetName + "$]";
+            string path = ConnectionString;
+            //string commandText = queryString.Substring(0, queryString.Length - sheetName.Length) + "[" + sheetName + "$]";
+            string commandText = QueryString;
             Console.WriteLine("Command Text:{0}", commandText);
 
             using (OleDbConnection conn = new OleDbConnection())
@@ -72,30 +71,25 @@ namespace PdfCreator
             }
         }
 
-        public DataTable GetData()
+        public DataTable GetData(PdfRender.PdfTypes pdfTypes)
         {
             DataTable dataTable = new DataTable();
-            DataConnectors dataConnectors = new DataConnectors(Properties.FacStaffPdf.Default.DataProvider);
-            //string queryString = Properties.Settings.Default.QueryString;
-            //string connectionString = Properties.Settings.Default.ConnectionString;
-            string queryString = Properties.FacStaffPdf.Default.QueryString;
-            string connectionString = Properties.FacStaffPdf.Default.ConnectionString;
 
-            switch (dataConnectors.DataProvider)
+            switch (DataProvider)
             {
                 case DataConnectors.DataProviders.MSSQL:
                     Console.WriteLine("Using MSSQL DataProvider");
-                    dataTable = GetDataSQL(connectionString, queryString);
+                    dataTable = GetDataSQL();
                     break;
                 case DataConnectors.DataProviders.Oracle:
                     Console.WriteLine("Using Oracle DataProvider");
-                    dataTable = GetDataOracle(connectionString, queryString);
+                    dataTable = GetDataOracle();
                     break;
                 case DataConnectors.DataProviders.Excel:
                     // Requires Access Engine; 32bit for Any CPU or 64bit for x64 compile
                     // https://www.microsoft.com/en-us/download/details.aspx?id=13255
                     Console.WriteLine("Using Excel DataProvider");
-                    dataTable = GetDataExcel(connectionString, queryString);
+                    dataTable = GetDataExcel();
                     break;
                 default:
                     break;
@@ -103,13 +97,13 @@ namespace PdfCreator
 
             return dataTable;
         }
-        public DataTable GetDataOracle(string connectionString, string queryString)
+        public DataTable GetDataOracle()
         {
             DataTable dataTable = new DataTable();
 
             try
             {
-                using (OracleConnection conn = new OracleConnection(connectionString))
+                using (OracleConnection conn = new OracleConnection(ConnectionString))
                 {
                     /*
                     conn.Open();
@@ -121,7 +115,7 @@ namespace PdfCreator
                     OracleCommand cmd = new OracleCommand
                     {
                         Connection = conn,
-                        CommandText = queryString,
+                        CommandText = QueryString,
                         CommandType = CommandType.Text
                     };
                     OracleDataReader dr = cmd.ExecuteReader();
@@ -135,18 +129,18 @@ namespace PdfCreator
 
             return dataTable;
         }
-        public DataTable GetDataSQL(string connectionString, string queryString)
+        public DataTable GetDataSQL()
         {
             DataTable dataTable = new DataTable();
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
                     Console.WriteLine("State: {0}", connection.State);
-                    Console.WriteLine("Query: {0}", queryString);
+                    Console.WriteLine("Query: {0}", QueryString);
 
-                    using (SqlCommand sqlCommand = new SqlCommand(queryString, connection))
+                    using (SqlCommand sqlCommand = new SqlCommand(QueryString, connection))
                     {
                         SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
                         sqlDataAdapter.Fill(dataTable);

@@ -2,20 +2,19 @@
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
 using System;
+using System.Collections.Specialized;
 using System.Data;
 using System.Diagnostics;
+using System.Text;
 
 namespace PdfCreator
 {
     public class PdfRender
     {
         public PdfRender () => Console.WriteLine("No arguments passed.");
-        public PdfRender(string[] args)
+        public PdfRender(string arg)
         {
-            string type = "Unknown";
-            if (args.Length > 0)
-                type = args[0].ToString();
-            SetPdfType(type);
+            SetPdfType(arg);
         }
         private enum PageSide
         {
@@ -41,15 +40,16 @@ namespace PdfCreator
         {
             // if an enum is not properly parsed, the first value will be set as the enum (Unknown)
             // Enum.TryParse<PdfTypes>(argStr, true, out PdfType);
-            PdfTypes pdfTypes;
-            if(Enum.TryParse(argStr, true, out pdfTypes) || Enum.IsDefined(typeof(PdfTypes), PdfType))
+            if (Enum.TryParse(argStr, true, out PdfTypes pdfTypes) || Enum.IsDefined(typeof(PdfTypes), PdfType))
             {
                 //PdfType = (PdfTypes)Enum.Parse(typeof(PdfTypes), argStr);
                 PdfType = pdfTypes;
+                Console.WriteLine("Type parsed:{0} From:{1}", PdfType, pdfTypes);
             }
             else
             {
                 PdfType = PdfTypes.Test;
+                Console.WriteLine("Undefined type passed.");
             }
 
             if (PdfType == PdfTypes.Test)
@@ -57,6 +57,7 @@ namespace PdfCreator
         }
         private Document GenerateTest(string output)
         {
+            // create a new MigraDoc
             Document document = CreateTestDocument(output);
             return document;
         }
@@ -200,8 +201,75 @@ namespace PdfCreator
 
         private Document CreateDocumentDepartment()
         {
+            // create document
             Document document = new Document();
+            // create section
             Section section = document.AddSection();
+            // add paragraph
+            Paragraph paragraph = section.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+
+            paragraph.Format.Font.Color = Colors.Black;
+            paragraph.Format.Font.Name = "Times-Roman";
+            paragraph.Format.Font.Size = 32;
+
+            // Add some text to the paragraph
+            paragraph.AddText(Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine);
+            paragraph.AddFormattedText("Colorado School of Mines" + Environment.NewLine + "Department Directory", TextFormat.Bold);
+
+            // Add a paragraph to the section
+            paragraph = section.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+
+            paragraph.Format.Font.Color = Colors.Black;
+            paragraph.Format.Font.Name = "Times-Roman";
+            paragraph.Format.Font.Size = 16;
+            paragraph.AddText(Environment.NewLine + Environment.NewLine + "This document was generated at " + DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"));
+
+            section.AddPageBreak();
+            paragraph = section.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Left;
+            paragraph.Format.Font.Color = Colors.Black;
+            paragraph.Format.Font.Name = "Times-Roman";
+            paragraph.Format.Font.Size = 10;
+            StringCollection stringCollection = Properties.DepartmentPdf.Default.Introduction;
+            StringBuilder sb = new StringBuilder();
+            foreach(string line in stringCollection)
+            {
+                if (string.IsNullOrEmpty(line))
+                    sb.Append(Environment.NewLine + Environment.NewLine);
+                else
+                    sb.Append(line);
+            }
+            paragraph.AddText(sb.ToString());
+            section.AddPageBreak();
+
+            paragraph = section.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            //paragraph.Format.Font.Color = Colors.Black;
+            //paragraph.Format.Font.Name = "Times-Roman";
+            paragraph.Format.Font.Size = 12;
+
+            paragraph = section.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
+            Font largeBoldfont = new Font
+            {
+                Name = "Times-Roman",
+                Size = 14,
+                Bold = true
+            };
+            _ = paragraph.AddFormattedText("SERVICE CALLS" + Environment.NewLine, largeBoldfont);
+            paragraph = section.AddParagraph();
+            paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
+            paragraph.Format.Alignment = ParagraphAlignment.Left;
+            _ = paragraph.AddFormattedText("Facilities Management" + Environment.NewLine, largeBoldfont);
+            _ = paragraph.AddFormattedText("Normal Business hours: (303) 273-3330" + Environment.NewLine, largeBoldfont);
+            _ = paragraph.AddFormattedText("After Hours Emergency Notification:" + Environment.NewLine, largeBoldfont);
+            _ = paragraph.AddFormattedText("Order of contact for FM Response" + Environment.NewLine, largeBoldfont);
+
+            //section = document.AddSection();
+
             return document;
         }
 
@@ -260,8 +328,12 @@ namespace PdfCreator
 
             Employee employee = new Employee();
 
-            DirectoryTasks directoryTasks = new DirectoryTasks();
-            DataTable dataTable = directoryTasks.GetData();
+            DirectoryTasks directoryTasks = new DirectoryTasks(Properties.FacStaffPdf.Default.DataProvider)
+            {
+                ConnectionString = Properties.FacStaffPdf.Default.ConnectionString,
+                QueryString = Properties.FacStaffPdf.Default.QueryString
+            };
+            DataTable dataTable = directoryTasks.GetData(PdfType);
             Console.WriteLine("Rows: {0}", dataTable.Rows.Count);
 
             Row row = new Row();

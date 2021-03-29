@@ -8,30 +8,46 @@ namespace PdfCreator
         {
             try
             {
-                PdfRender pdfRender = new PdfRender(args);
+                bool emptyArray = (args == null || args.Length == 0);
                 string arg;
 
-                if (args.Length > 0)
-                {
-                    arg = args[0].ToString();
-                }
-                else
+                if (emptyArray)
                 {
                     arg = "Hello World!";
-                    Console.WriteLine("Permitted arguments to pass; anything else is used for test rendering");
-                    foreach (PdfRender.PdfTypes pdfTypes in Enum.GetValues(typeof(PdfRender.PdfTypes)))
+                    LoopParams();
+                }
+                else
+                    arg = args[0].ToString();
+ 
+                if(arg.StartsWith("-"))
+                {
+                    switch (arg)
                     {
-                        Console.WriteLine(pdfTypes.ToString());
+                        case "-help":
+                        case "-h":
+                            LoopParams();
+                            return;
+                        default:
+                            arg = arg.Remove(0, 1);
+                            break;
                     }
-                    Console.WriteLine("******************************");
                 }
 
+                PdfRender pdfRender = new PdfRender(arg);
                 pdfRender.RequestPdf(arg);
             }
             catch(Exception ex)
             {
                 Console.WriteLine(ex);
             }
+        }
+        static void LoopParams()
+        {
+            foreach (PdfRender.PdfTypes pdfTypes in Enum.GetValues(typeof(PdfRender.PdfTypes)))
+            {
+                Console.WriteLine("-" + pdfTypes.ToString());
+            }
+            Console.WriteLine("******************************");
         }
     }
 }

@@ -86,6 +86,11 @@
     <Compile Include="DataConnectors.cs" />
     <Compile Include="DirectoryTasks.cs" />
     <Compile Include="Employee.cs" />
+    <Compile Include="Properties\DepartmentPdf.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>DepartmentPdf.settings</DependentUpon>
+    </Compile>
     <Compile Include="Properties\FacStaffPdf.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -102,6 +107,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Properties\DepartmentPdf.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>DepartmentPdf.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Properties\FacStaffPdf.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>FacStaffPdf.Designer.cs</LastGenOutput>
