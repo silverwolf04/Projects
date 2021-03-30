@@ -44,7 +44,6 @@ namespace PdfCreator
             //string sheetName = "Test";
             //string sheetName = queryString.Split(' ').Last();
             //string path = "Test.xlsx";
-            string path = ConnectionString;
             //string commandText = queryString.Substring(0, queryString.Length - sheetName.Length) + "[" + sheetName + "$]";
             string commandText = QueryString;
             Console.WriteLine("Command Text:{0}", commandText);
@@ -52,7 +51,7 @@ namespace PdfCreator
             using (OleDbConnection conn = new OleDbConnection())
             {
                 DataTable dt = new DataTable();
-                string Import_FileName = path;
+                string Import_FileName = ConnectionString;
                 string fileExtension = Path.GetExtension(Import_FileName);
                 if (!File.Exists(Import_FileName))
                     Console.WriteLine("FilePath does not exist:{0}", Import_FileName);

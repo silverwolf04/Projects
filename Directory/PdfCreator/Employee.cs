@@ -4,7 +4,10 @@ namespace PdfCreator
 {
     class Employee
     {
-        public Employee() => Console.WriteLine("New Employee()");
+        public Employee()
+        {
+
+        }
 
         public string _name;
         public string _phoneNumber;
@@ -15,6 +18,9 @@ namespace PdfCreator
         public string _building;
         public string _office;
         public string _url;
+        public string _notes;
+        public string _category;
+        public string _cellnumber;
 
         public string Name
         {
@@ -61,6 +67,21 @@ namespace PdfCreator
             get => _url;
             set => _url = value;
         }
+        public string Notes
+        {
+            get => _notes;
+            set => _notes = value;
+        }
+        public string Category
+        {
+            get => _category;
+            set => _category = value;
+        }
+        public string CellNumber
+        {
+            get => _cellnumber;
+            set => _cellnumber = value;
+        }
 
         public void ClearAll()
         {
@@ -72,6 +93,8 @@ namespace PdfCreator
             FaxNumber = string.Empty;
             Building = string.Empty;
             Office = string.Empty;
+            Notes = string.Empty;
+            CellNumber = string.Empty;
         }
     }
 }

@@ -102,6 +102,32 @@ namespace PdfCreator
             table.Borders.Width = 1;
             return table;
         }
+        private Table AddDeptTable(Section section)
+        {
+            Table table = section.AddTable();
+            table.AddColumn("0.5cm");
+            table.AddColumn("5cm");
+            table.AddColumn("3cm");
+            table.AddColumn("8.5cm");
+            table.Borders.Visible = false;
+            //table.Borders.Visible = true;
+            table.Borders.Width = 1;
+            table.TopPadding = Unit.FromPoint(3);
+            return table;
+        }
+        private Table AddEmergencyTable(Section section)
+        {
+            Table table = section.AddTable();
+            table.AddColumn("6cm");
+            table.AddColumn("4cm");
+            table.AddColumn("3cm");
+            table.AddColumn("4.5cm");
+            table.Borders.Visible = false;
+            //table.Borders.Visible = true;
+            table.Borders.Width = 1;
+            table.TopPadding = Unit.FromPoint(3);
+            return table;
+        }
         private void GenerateRow(PageSide pageSide, Employee employee, ref Row row)
         {
             int cellInt = 0;
@@ -259,33 +285,109 @@ namespace PdfCreator
                 Size = 14,
                 Bold = true
             };
-            _ = paragraph.AddFormattedText("SERVICE CALLS" + Environment.NewLine, largeBoldfont);
+
+            // service calls
+            _ = paragraph.AddFormattedText("SERVICE CALLS", largeBoldfont);
+            paragraph.AddLineBreak();
             paragraph = section.AddParagraph();
-            paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
+            //paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
             paragraph.Format.Alignment = ParagraphAlignment.Left;
-            _ = paragraph.AddFormattedText("Facilities Management" + Environment.NewLine, largeBoldfont);
-            _ = paragraph.AddFormattedText("Normal Business hours: (303) 273-3330" + Environment.NewLine, largeBoldfont);
-            _ = paragraph.AddFormattedText("After Hours Emergency Notification:" + Environment.NewLine, largeBoldfont);
-            _ = paragraph.AddFormattedText("Order of contact for FM Response" + Environment.NewLine, largeBoldfont);
+            _ = paragraph.AddFormattedText("Facilities Management", largeBoldfont);
+            paragraph.AddLineBreak();
+            _ = paragraph.AddFormattedText("Normal Business hours: (303) 273-3330", largeBoldfont);
+            paragraph.AddLineBreak();
+            _ = paragraph.AddFormattedText("After Hours Emergency Notifications:", largeBoldfont);
+            //_ = paragraph.AddFormattedText("Order of contact for response" + Environment.NewLine, largeBoldfont);
 
             //section = document.AddSection();
             Employee employee = new Employee();
+            // add & set the table margins on the new page
+            Table table = AddDeptTable(section);
+            string categoryStr = string.Empty;
+            Row row;
             // the class sets the DataProvider
-            DirectoryTasks directoryTasks = new DirectoryTasks(PdfType);
+            DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
+            {
+                QueryString = Properties.DepartmentPdf.Default.ServiceQuery
+            };
             DataTable dataTable = directoryTasks.GetData();
             foreach(DataRow dataRow in dataTable.Rows)
             {
-                // change from FacStaffPdf to DepartmentPdf properties
-                employee.Name = dataRow[Properties.FacStaffPdf.Default.Name].ToString();
-                employee.PhoneNumber = dataRow[Properties.FacStaffPdf.Default.PhoneNumber].ToString();
-                employee.Department = dataRow[Properties.FacStaffPdf.Default.Department].ToString();
-                employee.FaxNumber = dataRow[Properties.FacStaffPdf.Default.FaxNumber].ToString();
-                employee.EmailAddress = dataRow[Properties.FacStaffPdf.Default.EmailAddress].ToString();
-                employee.Title = dataRow[Properties.FacStaffPdf.Default.Title].ToString();
-                employee.Building = dataRow[Properties.FacStaffPdf.Default.Building].ToString();
-                employee.Office = dataRow[Properties.FacStaffPdf.Default.Office].ToString();
-                employee.Url = dataRow[Properties.FacStaffPdf.Default.URL].ToString();
+                // DepartmentPdf properties
+                employee.Category = dataRow[Properties.DepartmentPdf.Default.Category].ToString();
+                employee.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
+                employee.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
+                //employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
+                //employee.FaxNumber = dataRow[Properties.DepartmentPdf.Default.FaxNumber].ToString();
+                //employee.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
+                employee.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
+                //employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
+                //employee.Office = dataRow[Properties.DepartmentPdf.Default.Office].ToString();
+                //employee.Url = dataRow[Properties.DepartmentPdf.Default.URL].ToString();
+                employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
+
+                if (categoryStr != employee.Category)
+                {
+                    paragraph = section.AddParagraph();
+                    categoryStr = employee.Category;
+                    _ = paragraph.AddFormattedText(Environment.NewLine + employee.Category, TextFormat.Underline);
+                    table = AddDeptTable(section);
+                }
+
+
+                row = table.AddRow();
+                if(!string.IsNullOrEmpty(employee.Title))
+                    _ = row.Cells[1].AddParagraph(employee.Title);
+                _ = row.Cells[1].AddParagraph(employee.Name);
+                _ = row.Cells[2].AddParagraph(employee.PhoneNumber);
+                _ = row.Cells[3].AddParagraph(employee.Notes);
             }
+
+            section.AddPageBreak();
+            // Emergency phone numbers
+            paragraph = section.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
+            _ = paragraph.AddFormattedText("EMERGENCY INFORMATION", largeBoldfont);
+            directoryTasks.QueryString = "select empName,department,campusBuilding,campusOfficeNo,email,faxphone," +
+                "workphone,title,url,notes,category, cellPhone from [emergency$] order by category, catsuborder";
+            dataTable = directoryTasks.GetData();
+            foreach(DataRow dataRow in dataTable.Rows)
+            {
+                // DepartmentPdf properties
+                employee.Category = dataRow[Properties.DepartmentPdf.Default.Category].ToString();
+                employee.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
+                employee.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
+                //employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
+                //employee.FaxNumber = dataRow[Properties.DepartmentPdf.Default.FaxNumber].ToString();
+                //employee.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
+                employee.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
+                //employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
+                //employee.Office = dataRow[Properties.DepartmentPdf.Default.Office].ToString();
+                //employee.Url = dataRow[Properties.DepartmentPdf.Default.URL].ToString();
+                employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
+                employee.CellNumber = dataRow[Properties.DepartmentPdf.Default.CellNumber].ToString();
+
+                if (categoryStr != employee.Category)
+                {
+                    paragraph = section.AddParagraph();
+                    categoryStr = employee.Category;
+                    paragraph.AddLineBreak();
+                    _ = paragraph.AddFormattedText(employee.Category, TextFormat.Underline);
+                    table = AddEmergencyTable(section);
+                }
+
+
+                row = table.AddRow();
+                if (!string.IsNullOrEmpty(employee.Title))
+                    _ = row.Cells[0].AddParagraph(employee.Title);
+                _ = row.Cells[0].AddParagraph(employee.Name);
+                _ = row.Cells[1].AddParagraph(employee.PhoneNumber);
+                if (!string.IsNullOrEmpty(employee.CellNumber))
+                    _ = row.Cells[2].AddParagraph(employee.CellNumber);
+                _ = row.Cells[3].AddParagraph(employee.Notes);
+            }
+
             return document;
         }
 
