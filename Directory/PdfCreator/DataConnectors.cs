@@ -75,7 +75,7 @@ namespace PdfCreator
             }
         }
 
-        public DataTable GetData(PdfRender.PdfTypes pdfTypes)
+        public DataTable GetData()
         {
             DataTable dataTable = new DataTable();
 

@@ -269,9 +269,23 @@ namespace PdfCreator
             _ = paragraph.AddFormattedText("Order of contact for FM Response" + Environment.NewLine, largeBoldfont);
 
             //section = document.AddSection();
+            Employee employee = new Employee();
             // the class sets the DataProvider
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType);
-            directoryTasks.
+            DataTable dataTable = directoryTasks.GetData();
+            foreach(DataRow dataRow in dataTable.Rows)
+            {
+                // change from FacStaffPdf to DepartmentPdf properties
+                employee.Name = dataRow[Properties.FacStaffPdf.Default.Name].ToString();
+                employee.PhoneNumber = dataRow[Properties.FacStaffPdf.Default.PhoneNumber].ToString();
+                employee.Department = dataRow[Properties.FacStaffPdf.Default.Department].ToString();
+                employee.FaxNumber = dataRow[Properties.FacStaffPdf.Default.FaxNumber].ToString();
+                employee.EmailAddress = dataRow[Properties.FacStaffPdf.Default.EmailAddress].ToString();
+                employee.Title = dataRow[Properties.FacStaffPdf.Default.Title].ToString();
+                employee.Building = dataRow[Properties.FacStaffPdf.Default.Building].ToString();
+                employee.Office = dataRow[Properties.FacStaffPdf.Default.Office].ToString();
+                employee.Url = dataRow[Properties.FacStaffPdf.Default.URL].ToString();
+            }
             return document;
         }
 
@@ -331,7 +345,7 @@ namespace PdfCreator
             Employee employee = new Employee();
             // The class sets the DataProvider, ConnectionString and QueryString
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType);
-            DataTable dataTable = directoryTasks.GetData(PdfType);
+            DataTable dataTable = directoryTasks.GetData();
             Console.WriteLine("Rows: {0}", dataTable.Rows.Count);
 
             Row row = new Row();
