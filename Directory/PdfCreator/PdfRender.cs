@@ -241,7 +241,7 @@ namespace PdfCreator
                 else
                     sb.Append(line);
             }
-            paragraph.AddText(sb.ToString());
+            _ = paragraph.AddText(sb.ToString());
             section.AddPageBreak();
 
             paragraph = section.AddParagraph();
@@ -269,7 +269,9 @@ namespace PdfCreator
             _ = paragraph.AddFormattedText("Order of contact for FM Response" + Environment.NewLine, largeBoldfont);
 
             //section = document.AddSection();
-
+            // the class sets the DataProvider
+            DirectoryTasks directoryTasks = new DirectoryTasks(PdfType);
+            directoryTasks.
             return document;
         }
 
@@ -290,8 +292,8 @@ namespace PdfCreator
             paragraph.Format.Font.Size = 32;
 
             // Add some text to the paragraph
-            paragraph.AddText(Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine);
-            paragraph.AddFormattedText("Colorado School of Mines" + Environment.NewLine + "Faculty/Staff Directory", TextFormat.Bold);
+            _ = paragraph.AddText(Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine);
+            _ = paragraph.AddFormattedText("Colorado School of Mines" + Environment.NewLine + "Faculty/Staff Directory", TextFormat.Bold);
 
             // Add a paragraph to the section
             paragraph = section.AddParagraph();
@@ -300,7 +302,7 @@ namespace PdfCreator
             paragraph.Format.Font.Color = Colors.Black;
             paragraph.Format.Font.Name = "Times-Roman";
             paragraph.Format.Font.Size = 16;
-            paragraph.AddText(Environment.NewLine + Environment.NewLine + "This document was generated at " + DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"));
+            _ = paragraph.AddText(Environment.NewLine + Environment.NewLine + "This document was generated at " + DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"));
 
             section.AddPageBreak();
             section = document.AddSection();
@@ -327,12 +329,8 @@ namespace PdfCreator
             Table table = AddCustomTable(section);
 
             Employee employee = new Employee();
-
-            DirectoryTasks directoryTasks = new DirectoryTasks(Properties.FacStaffPdf.Default.DataProvider)
-            {
-                ConnectionString = Properties.FacStaffPdf.Default.ConnectionString,
-                QueryString = Properties.FacStaffPdf.Default.QueryString
-            };
+            // The class sets the DataProvider, ConnectionString and QueryString
+            DirectoryTasks directoryTasks = new DirectoryTasks(PdfType);
             DataTable dataTable = directoryTasks.GetData(PdfType);
             Console.WriteLine("Rows: {0}", dataTable.Rows.Count);
 
@@ -410,7 +408,6 @@ namespace PdfCreator
             {
                 case PdfTypes.FacultyStaff:
                     Console.WriteLine("This will render the Mines Faculty/Staff PDF.");
-                    //document = CreateDocumentFacultyStaff():
                     document = CreateDocumentFacultyStaff();
                     filename = "fac_staff_dir.pdf";
                     break;
@@ -419,7 +416,6 @@ namespace PdfCreator
                     document = CreateDocumentDepartment();
                     filename = "departmental_dir.pdf";
                     break;
-                //case PdfTypes.Test:
                 default:
                     Console.WriteLine("This will render the Test PDF");
                     document = GenerateTest(arg);

@@ -12,7 +12,7 @@ namespace PdfCreator.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0")]
     internal sealed partial class DepartmentPdf : global::System.Configuration.ApplicationSettingsBase {
         
         private static DepartmentPdf defaultInstance = ((DepartmentPdf)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new DepartmentPdf())));
@@ -68,6 +68,15 @@ namespace PdfCreator.Properties {
         public string ServiceCallQuery {
             get {
                 return ((string)(this["ServiceCallQuery"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("TBD")]
+        public string ConnectionString {
+            get {
+                return ((string)(this["ConnectionString"]));
             }
         }
     }

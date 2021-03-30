@@ -17,8 +17,7 @@ namespace PdfCreator
             Excel
         }
         public DataConnectors() => DataProvider = DataProviders.MSSQL;
-
-        public DataConnectors(string provider)
+        public void ParseProvider(string provider)
         {
             if (Enum.IsDefined(typeof(DataProviders), provider))
             {
@@ -31,9 +30,14 @@ namespace PdfCreator
             }
         }
 
+        public DataConnectors(string provider)
+        {
+            ParseProvider(provider);
+        }
+
         public DataProviders DataProvider { get; set; }
-        public string ConnectionString { get; set; }
-        public string QueryString { get; set; }
+        public string ConnectionString { get; set; } = string.Empty;
+        public string QueryString { get; set; } = string.Empty;
 
         private DataTable GetDataExcel()
         {
