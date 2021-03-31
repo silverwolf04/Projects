@@ -12,7 +12,7 @@ namespace PdfCreator.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
     internal sealed partial class DepartmentPdf : global::System.Configuration.ApplicationSettingsBase {
         
         private static DepartmentPdf defaultInstance = ((DepartmentPdf)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new DepartmentPdf())));
@@ -47,9 +47,9 @@ namespace PdfCreator.Properties {
             "ers to whom inquiries regarding compliance may be directed, can </string>\r\n  <st" +
             "ring>be found at https://www.mines.edu/policy-library/. </string>\r\n</ArrayOfStri" +
             "ng>")]
-        public global::System.Collections.Specialized.StringCollection Introduction {
+        public global::System.Collections.Specialized.StringCollection InfoIntro {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["Introduction"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["InfoIntro"]));
             }
         }
         
@@ -198,6 +198,141 @@ namespace PdfCreator.Properties {
         public string EmergencyQuery {
             get {
                 return ((string)(this["EmergencyQuery"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
+            "tring>CSM HAS FOUR DIRECT EXCHANGES WITHIN THE TELEPHONE SYSTEM:&lt;newline&gt;<" +
+            "/string>\r\n  <string>303-273-3000 through 3999 (Administration/Faculty/Staff)&lt;" +
+            "newline&gt;</string>\r\n  <string>303-384-2000 through 2999 (Administration/Facult" +
+            "y/Staff)&lt;newline&gt;</string>\r\n  <string>303-869-5000 through 5999 (Students)" +
+            "&lt;newline&gt;</string>\r\n  <string>303-215-6100 through 6539 (Students)&lt;newl" +
+            "ine&gt;</string>\r\n  <string />\r\n  <string>GENERAL DIALING INSTRUCTIONS:&lt;newli" +
+            "ne&gt;</string>\r\n  <string>Dial \'9-1-1\' for emergencies.&lt;newline&gt;</string>" +
+            "\r\n  <string>Dial \'9\' for local access.&lt;newline&gt;</string>\r\n  <string>Dial \'" +
+            "9-1\' for long distance access.&lt;newline&gt;</string>\r\n  <string>Dial \'9-011\' f" +
+            "or international calls.&lt;newline&gt;</string>\r\n  <string>When on campus, dial " +
+            "the four-digit Extension. If you wish to place a call from the campus to an off " +
+            "campus </string>\r\n  <string>site, you must first dial a \'9\', then the ten digit " +
+            "telephone Number. Call ext. 3355 for telephone assistance or </string>\r\n  <strin" +
+            "g>dial 0 for the automated campus directory service.&lt;newline&gt;</string>\r\n  " +
+            "<string>Telecommunications web site: https://www.mines.edu/ccit/telecommunicatio" +
+            "ns/&lt;newline&gt;</string>\r\n  <string>The toll free number for general school b" +
+            "usiness is 1-800-446-9488.&lt;newline&gt;</string>\r\n  <string>The toll free numb" +
+            "er for Admissions &amp; Financial Aid is 1-888-446-9489.</string>\r\n  <string />\r" +
+            "\n  <string>VOICE MAIL SERVICE:&lt;newline&gt;</string>\r\n  <string>The OpenUC voi" +
+            "ce mailbox is part of the new OpenUC VoIP telephone system. All OpenUC sets have" +
+            " the </string>\r\n  <string>option for a voice mailbox set up at no cost, which in" +
+            "cludes a voice mail to email feature similar to Desktop </string>\r\n  <string>Mes" +
+            "saging. The off-campus access number for OpenUC is 303-384-2100 or 1-800-446-948" +
+            "8 x2100. </string>\r\n  <string>For more information, visit https://www.mines.edu/" +
+            "ccit/telecommunications/</string>\r\n  <string />\r\n  <string>ELECTRONIC MAIL (E-MA" +
+            "IL)&lt;newline&gt;</string>\r\n  <string>For help with e-mail, submit a Support Re" +
+            "quest via the Mines Help Center https://mines.teamdynamix.com/</string>\r\n  <stri" +
+            "ng>TDClient/Requests/ServiceCatalog or contact Computing, Communications, and In" +
+            "formation Technologies </string>\r\n  <string>(CCIT) at extension 3430 or 303-273-" +
+            "3430 from off campus. Your campus e-mail address will be: username@mines.edu.</s" +
+            "tring>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection InfoCampus {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["InfoCampus"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
+            "tring>For any life-threatening emergency, call 911 immediately. </string>\r\n  <st" +
+            "ring>The CSM Public Safety administrative hours are from 8:00am to 5:00pm, Monda" +
+            "y through Friday. The office</string>\r\n  <string>is located at 1922 Jones Road (" +
+            "southeast corner of 6th Avenue and 19th Street). Individuals are invited to stop" +
+            "</string>\r\n  <string>by during office hours to ask questions, or simply to meet " +
+            "the staff. Please call in advance (303-273-3333) to</string>\r\n  <string>arrange " +
+            "for administrative needs outside the structured office hours. After-hours calls " +
+            "to Public Safety are</string>\r\n  <string>routed to the Golden Police Dispatcher," +
+            " or you may call them directly at (303) 384-8045 to reach the on-duty</string>\r\n" +
+            "  <string>officer.</string>\r\n  <string />\r\n  <string>Public Safety Police Office" +
+            "rs are professional, highly trained peace officers, as established in Colorado</" +
+            "string>\r\n  <string>Revised Statutes, and retain all powers and authorities accor" +
+            "ded to any police officer in the State of Colorado.</string>\r\n  <string>Officers" +
+            " are available 24/7 to assist students and campus employees with emergencies, cr" +
+            "imes, or other safety</string>\r\n  <string>and security issues.</string>\r\n  <stri" +
+            "ng />\r\n  <string>Officers and staff are responsible for and dedicated to the saf" +
+            "ety and well-being of the students, faculty, and</string>\r\n  <string>staff at th" +
+            "e Colorado School of Mines. Contact the department by phone at 303-273-3333, or " +
+            "via the</string>\r\n  <string>department web address: https://publicsafety.mines.e" +
+            "du Mines Public Safety is committed to making its campus a </string>\r\n  <string>" +
+            "safe and secure place to live, work, and attend school. The Public Safety depart" +
+            "ment continually strives to provide proactive policing and to improve crime</str" +
+            "ing>\r\n  <string>prevention programs, like the RAD courses taught by CSM officers" +
+            ". Campus community members should be</string>\r\n  <string>aware, however, that de" +
+            "spite the best efforts of the police and administrative staff, the possibility a" +
+            "lways exists</string>\r\n  <string>for a criminal act to occur against you or some" +
+            "one else. All suspicious incidents, crimes, and safety issues</string>\r\n  <strin" +
+            "g>should be reported to the Department of Public Safety immediately. The No-Tole" +
+            "rance, Alcohol and Drug</string>\r\n  <string>Policy and Student Code of Conduct a" +
+            "re vigorously enforced by the police officers at CSM.</string>\r\n  <string>It is " +
+            "the mission of the Department of Public Safety to make the Mines campus the safe" +
+            "st campus in the state</string>\r\n  <string>of Colorado. Services provided by the" +
+            " Public Safety Department include the following:&lt;newline&gt;</string>\r\n  <str" +
+            "ing>\t•Patrol of the campus and all facilities, taking incident and crime reports" +
+            " as required&lt;newline&gt;</string>\r\n  <string>\t•Investigation of campus incide" +
+            "nts and crimes&lt;newline&gt;</string>\r\n  <string>\t•Crime prevention and securit" +
+            "y awareness programs&lt;newline&gt;</string>\r\n  <string>\t•Alcohol/drug abuse awa" +
+            "reness presentations&lt;newline&gt;</string>\r\n  <string>\t•Self defense training " +
+            "classes&lt;newline&gt;</string>\r\n  <string>\t•Consultation with campus department" +
+            "s for security and safety matters&lt;newline&gt;</string>\r\n  <string>\t•Citizen A" +
+            "ssistance services to the campus community, such as unlocking or jumpstarting&lt" +
+            ";newline&gt;</string>\r\n  <string>\tvehicles, community safe walk (escorts), build" +
+            "ing and office access,&lt;newline&gt;</string>\r\n  <string>\tbicycle registrations" +
+            ", and assistance in any medical, fire, or other emergency situation&lt;newline&g" +
+            "t;</string>\r\n  <string>\t•Dignitary protection.</string>\r\n  <string />\r\n  <string" +
+            ">MOTOR VEHICLES AND PARKING ON CAMPUS&lt;newline&gt;</string>\r\n  <string>The CSM" +
+            " vehicle operation and parking policy, approved by the Board of Trustees, mandat" +
+            "es the registration</string>\r\n  <string>of ALL motor vehicles operated or parked" +
+            " within the campus boundaries (including Mines Park, Greek lots,</string>\r\n  <st" +
+            "ring>and on city streets). Vehicles must be registered with Parking Services imm" +
+            "ediately upon bringing a vehicle</string>\r\n  <string>on campus and properly disp" +
+            "lay the registration permit while parking on campus controlled property. Student" +
+            "</string>\r\n  <string>vehicle registration fees are included in the assessed Stud" +
+            "ent Fees.</string>\r\n  <string>For your occasional campus parking needs, pay stat" +
+            "ion parking meters are available around campus for</string>\r\n  <string>students," +
+            " employees and visitors.</string>\r\n  <string />\r\n  <string>All state and municip" +
+            "al traffic codes and parking regulations are enforced on campus every day,</stri" +
+            "ng>\r\n  <string>including holiday and semester breaks. The City of Golden has imp" +
+            "lemented a permit policy in the residential areas surrounding campus. Parking by" +
+            "</string>\r\n  <string>anyone other than residents of these communities will be ti" +
+            "cketed by the City.</string>\r\n  <string>Reserved parking is available exclusivel" +
+            "y for full-time faculty and staff. A distinct Reserved parking permit is</string" +
+            ">\r\n  <string>issued to individuals who are authorized to use reserved parking sp" +
+            "aces. Members of the CSM community</string>\r\n  <string>are encouraged to use alt" +
+            "ernate means of transportation, where practical, due to limited parking spaces o" +
+            "n</string>\r\n  <string>campus.</string>\r\n  <string />\r\n  <string>Unauthorized veh" +
+            "icles are not permitted in service spaces, reserved visitor spaces, fire lanes o" +
+            "r other areas</string>\r\n  <string>denoted by signs or yellow, red, or other pain" +
+            "ted curbs. Violators are subject to ticketing and/or towing at the</string>\r\n  <" +
+            "string>owner/driver’s expense. Failure to pay campus parking fines will result i" +
+            "n an encumbrance and denial of</string>\r\n  <string>registration and/or grade rep" +
+            "orts. Faculty and staff who fail to pay for campus parking violations may result" +
+            " in</string>\r\n  <string>payroll deductions and be denied future parking permits." +
+            "</string>\r\n  <string>Inoperative, dismantled and/or abandoned vehicles are not a" +
+            "llowed to remain on campus and may be towed at</string>\r\n  <string>the owner’s e" +
+            "xpense. A vehicle is considered abandoned if it has not been moved for a period " +
+            "of 2 weeks;</string>\r\n  <string>therefore, any student living on campus who does" +
+            " not move their vehicle regularly should check on it at least</string>\r\n  <strin" +
+            "g>once per week to ensure its safety and condition.</string>\r\n  <string />\r\n  <s" +
+            "tring>For additional information, please refer to the CSM Vehicle Operation and " +
+            "Parking Policy available at https://</string>\r\n  <string>www.mines.edu/parking/ " +
+            "or directly from the Parking Services office at 1922 Jones Road, Apt. 5. Office<" +
+            "/string>\r\n  <string>hours are Monday through Friday 7:30am to 5:00pm.</string>\r\n" +
+            "</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection InfoSafety {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["InfoSafety"]));
             }
         }
     }

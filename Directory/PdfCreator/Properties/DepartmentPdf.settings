@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PdfCreator.Properties" GeneratedClassName="DepartmentPdf">
   <Profiles />
   <Settings>
-    <Setting Name="Introduction" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+    <Setting Name="InfoIntro" Type="System.Collections.Specialized.StringCollection" Scope="Application">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;string&gt;This telephone directory is generated nightly using data taken from the Banner &lt;/string&gt;
@@ -71,6 +71,109 @@
     </Setting>
     <Setting Name="EmergencyQuery" Type="System.String" Scope="Application">
       <Value Profile="(Default)">select empName,department,campusBuilding,campusOfficeNo,email,faxphone, workphone,title,url,notes,category, cellPhone from [emergency$] where empName is not null order by category, catsuborder</Value>
+    </Setting>
+    <Setting Name="InfoCampus" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;CSM HAS FOUR DIRECT EXCHANGES WITHIN THE TELEPHONE SYSTEM:&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;303-273-3000 through 3999 (Administration/Faculty/Staff)&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;303-384-2000 through 2999 (Administration/Faculty/Staff)&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;303-869-5000 through 5999 (Students)&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;303-215-6100 through 6539 (Students)&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string /&gt;
+  &lt;string&gt;GENERAL DIALING INSTRUCTIONS:&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;Dial '9-1-1' for emergencies.&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;Dial '9' for local access.&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;Dial '9-1' for long distance access.&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;Dial '9-011' for international calls.&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;When on campus, dial the four-digit Extension. If you wish to place a call from the campus to an off campus &lt;/string&gt;
+  &lt;string&gt;site, you must first dial a '9', then the ten digit telephone Number. Call ext. 3355 for telephone assistance or &lt;/string&gt;
+  &lt;string&gt;dial 0 for the automated campus directory service.&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;Telecommunications web site: https://www.mines.edu/ccit/telecommunications/&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;The toll free number for general school business is 1-800-446-9488.&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;The toll free number for Admissions &amp;amp; Financial Aid is 1-888-446-9489.&lt;/string&gt;
+  &lt;string /&gt;
+  &lt;string&gt;VOICE MAIL SERVICE:&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;The OpenUC voice mailbox is part of the new OpenUC VoIP telephone system. All OpenUC sets have the &lt;/string&gt;
+  &lt;string&gt;option for a voice mailbox set up at no cost, which includes a voice mail to email feature similar to Desktop &lt;/string&gt;
+  &lt;string&gt;Messaging. The off-campus access number for OpenUC is 303-384-2100 or 1-800-446-9488 x2100. &lt;/string&gt;
+  &lt;string&gt;For more information, visit https://www.mines.edu/ccit/telecommunications/&lt;/string&gt;
+  &lt;string /&gt;
+  &lt;string&gt;ELECTRONIC MAIL (E-MAIL)&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;For help with e-mail, submit a Support Request via the Mines Help Center https://mines.teamdynamix.com/&lt;/string&gt;
+  &lt;string&gt;TDClient/Requests/ServiceCatalog or contact Computing, Communications, and Information Technologies &lt;/string&gt;
+  &lt;string&gt;(CCIT) at extension 3430 or 303-273-3430 from off campus. Your campus e-mail address will be: username@mines.edu.&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="InfoSafety" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;For any life-threatening emergency, call 911 immediately. &lt;/string&gt;
+  &lt;string&gt;The CSM Public Safety administrative hours are from 8:00am to 5:00pm, Monday through Friday. The office&lt;/string&gt;
+  &lt;string&gt;is located at 1922 Jones Road (southeast corner of 6th Avenue and 19th Street). Individuals are invited to stop&lt;/string&gt;
+  &lt;string&gt;by during office hours to ask questions, or simply to meet the staff. Please call in advance (303-273-3333) to&lt;/string&gt;
+  &lt;string&gt;arrange for administrative needs outside the structured office hours. After-hours calls to Public Safety are&lt;/string&gt;
+  &lt;string&gt;routed to the Golden Police Dispatcher, or you may call them directly at (303) 384-8045 to reach the on-duty&lt;/string&gt;
+  &lt;string&gt;officer.&lt;/string&gt;
+  &lt;string /&gt;
+  &lt;string&gt;Public Safety Police Officers are professional, highly trained peace officers, as established in Colorado&lt;/string&gt;
+  &lt;string&gt;Revised Statutes, and retain all powers and authorities accorded to any police officer in the State of Colorado.&lt;/string&gt;
+  &lt;string&gt;Officers are available 24/7 to assist students and campus employees with emergencies, crimes, or other safety&lt;/string&gt;
+  &lt;string&gt;and security issues.&lt;/string&gt;
+  &lt;string /&gt;
+  &lt;string&gt;Officers and staff are responsible for and dedicated to the safety and well-being of the students, faculty, and&lt;/string&gt;
+  &lt;string&gt;staff at the Colorado School of Mines. Contact the department by phone at 303-273-3333, or via the&lt;/string&gt;
+  &lt;string&gt;department web address: https://publicsafety.mines.edu Mines Public Safety is committed to making its campus a &lt;/string&gt;
+  &lt;string&gt;safe and secure place to live, work, and attend school. The Public Safety department continually strives to provide proactive policing and to improve crime&lt;/string&gt;
+  &lt;string&gt;prevention programs, like the RAD courses taught by CSM officers. Campus community members should be&lt;/string&gt;
+  &lt;string&gt;aware, however, that despite the best efforts of the police and administrative staff, the possibility always exists&lt;/string&gt;
+  &lt;string&gt;for a criminal act to occur against you or someone else. All suspicious incidents, crimes, and safety issues&lt;/string&gt;
+  &lt;string&gt;should be reported to the Department of Public Safety immediately. The No-Tolerance, Alcohol and Drug&lt;/string&gt;
+  &lt;string&gt;Policy and Student Code of Conduct are vigorously enforced by the police officers at CSM.&lt;/string&gt;
+  &lt;string&gt;It is the mission of the Department of Public Safety to make the Mines campus the safest campus in the state&lt;/string&gt;
+  &lt;string&gt;of Colorado. Services provided by the Public Safety Department include the following:&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;	•Patrol of the campus and all facilities, taking incident and crime reports as required&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;	•Investigation of campus incidents and crimes&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;	•Crime prevention and security awareness programs&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;	•Alcohol/drug abuse awareness presentations&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;	•Self defense training classes&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;	•Consultation with campus departments for security and safety matters&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;	•Citizen Assistance services to the campus community, such as unlocking or jumpstarting&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;	vehicles, community safe walk (escorts), building and office access,&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;	bicycle registrations, and assistance in any medical, fire, or other emergency situation&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;	•Dignitary protection.&lt;/string&gt;
+  &lt;string /&gt;
+  &lt;string&gt;MOTOR VEHICLES AND PARKING ON CAMPUS&amp;lt;newline&amp;gt;&lt;/string&gt;
+  &lt;string&gt;The CSM vehicle operation and parking policy, approved by the Board of Trustees, mandates the registration&lt;/string&gt;
+  &lt;string&gt;of ALL motor vehicles operated or parked within the campus boundaries (including Mines Park, Greek lots,&lt;/string&gt;
+  &lt;string&gt;and on city streets). Vehicles must be registered with Parking Services immediately upon bringing a vehicle&lt;/string&gt;
+  &lt;string&gt;on campus and properly display the registration permit while parking on campus controlled property. Student&lt;/string&gt;
+  &lt;string&gt;vehicle registration fees are included in the assessed Student Fees.&lt;/string&gt;
+  &lt;string&gt;For your occasional campus parking needs, pay station parking meters are available around campus for&lt;/string&gt;
+  &lt;string&gt;students, employees and visitors.&lt;/string&gt;
+  &lt;string /&gt;
+  &lt;string&gt;All state and municipal traffic codes and parking regulations are enforced on campus every day,&lt;/string&gt;
+  &lt;string&gt;including holiday and semester breaks. The City of Golden has implemented a permit policy in the residential areas surrounding campus. Parking by&lt;/string&gt;
+  &lt;string&gt;anyone other than residents of these communities will be ticketed by the City.&lt;/string&gt;
+  &lt;string&gt;Reserved parking is available exclusively for full-time faculty and staff. A distinct Reserved parking permit is&lt;/string&gt;
+  &lt;string&gt;issued to individuals who are authorized to use reserved parking spaces. Members of the CSM community&lt;/string&gt;
+  &lt;string&gt;are encouraged to use alternate means of transportation, where practical, due to limited parking spaces on&lt;/string&gt;
+  &lt;string&gt;campus.&lt;/string&gt;
+  &lt;string /&gt;
+  &lt;string&gt;Unauthorized vehicles are not permitted in service spaces, reserved visitor spaces, fire lanes or other areas&lt;/string&gt;
+  &lt;string&gt;denoted by signs or yellow, red, or other painted curbs. Violators are subject to ticketing and/or towing at the&lt;/string&gt;
+  &lt;string&gt;owner/driver’s expense. Failure to pay campus parking fines will result in an encumbrance and denial of&lt;/string&gt;
+  &lt;string&gt;registration and/or grade reports. Faculty and staff who fail to pay for campus parking violations may result in&lt;/string&gt;
+  &lt;string&gt;payroll deductions and be denied future parking permits.&lt;/string&gt;
+  &lt;string&gt;Inoperative, dismantled and/or abandoned vehicles are not allowed to remain on campus and may be towed at&lt;/string&gt;
+  &lt;string&gt;the owner’s expense. A vehicle is considered abandoned if it has not been moved for a period of 2 weeks;&lt;/string&gt;
+  &lt;string&gt;therefore, any student living on campus who does not move their vehicle regularly should check on it at least&lt;/string&gt;
+  &lt;string&gt;once per week to ensure its safety and condition.&lt;/string&gt;
+  &lt;string /&gt;
+  &lt;string&gt;For additional information, please refer to the CSM Vehicle Operation and Parking Policy available at https://&lt;/string&gt;
+  &lt;string&gt;www.mines.edu/parking/ or directly from the Parking Services office at 1922 Jones Road, Apt. 5. Office&lt;/string&gt;
+  &lt;string&gt;hours are Monday through Friday 7:30am to 5:00pm.&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

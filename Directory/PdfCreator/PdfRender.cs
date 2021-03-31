@@ -19,7 +19,8 @@ namespace PdfCreator
         private enum PageSide
         {
             LeftSide,
-            RightSide
+            RightSide,
+            Middle
         }
         public enum PdfTypes
         {
@@ -128,6 +129,19 @@ namespace PdfCreator
             table.TopPadding = Unit.FromPoint(5);
             return table;
         }
+        private Table AddBuildingDeptTable(Section section)
+        {
+            Table table = section.AddTable();
+            table.AddColumn("5.8cm");
+            table.AddColumn("5.8cm");
+            table.AddColumn("5.8cm");
+            //table.AddColumn("4.5cm");
+            table.Borders.Visible = false;
+            //table.Borders.Visible = true;
+            table.Borders.Width = 3;
+            table.TopPadding = Unit.FromPoint(5);
+            return table;
+        }
         private void GenerateRow(PageSide pageSide, Employee employee, ref Row row)
         {
             int cellInt = 0;
@@ -145,7 +159,6 @@ namespace PdfCreator
                 default:
                     Console.WriteLine("Invalid Page Side provided: " + pageSide.ToString());
                     break;
-
             }
 
             Paragraph paragraph;
@@ -191,7 +204,72 @@ namespace PdfCreator
                 row.Cells[cellInt].AddParagraph("Fax: " + employee.FaxNumber);
             row.Cells[cellInt].AddParagraph("");
         }
+        private void GenerateRowBuildingDept(PageSide pageSide, Employee employee, ref Row row)
+        {
+            int cellInt = 0;
+            string concatenatedStr = string.Empty;
 
+            switch (pageSide)
+            {
+                case PageSide.LeftSide:
+                    cellInt = 0;
+                    break;
+                case PageSide.Middle:
+                    cellInt = 1;
+                    break;
+                case PageSide.RightSide:
+                    //cellInt = 2;
+                    cellInt = 2;
+                    break;
+                default:
+                    Console.WriteLine("Invalid Page Side provided: " + pageSide.ToString());
+                    break;
+
+            }
+
+            Paragraph paragraph;
+            FormattedText text;
+
+            if (!string.IsNullOrWhiteSpace(employee.Name))
+            {
+                paragraph = row.Cells[cellInt].AddParagraph();
+                paragraph.AddFormattedText(employee.Name, TextFormat.Bold);
+            }
+            if (!string.IsNullOrWhiteSpace(employee.Title))
+                row.Cells[cellInt].AddParagraph("Title: " + employee.Title);
+            if (!string.IsNullOrWhiteSpace(employee.Department))
+                row.Cells[cellInt].AddParagraph("Dept: " + employee.Department);
+            if (!string.IsNullOrWhiteSpace(employee.Building))
+                concatenatedStr = "Bldg: " + employee.Building;
+            if (!string.IsNullOrWhiteSpace(employee.Building) && !string.IsNullOrWhiteSpace(employee.Office))
+                concatenatedStr += " Office/Room: " + employee.Office;
+            if (!string.IsNullOrEmpty(concatenatedStr))
+                row.Cells[cellInt].AddParagraph(concatenatedStr);
+            if (!string.IsNullOrWhiteSpace(employee.Url))
+
+            {
+                paragraph = row.Cells[cellInt].AddParagraph();
+                paragraph.AddText("Home Page: ");
+                Hyperlink hyperlink = paragraph.AddHyperlink(employee.Url, HyperlinkType.Url);
+                text = hyperlink.AddFormattedText();
+                text.Font.Color = Color.FromRgb(5, 99, 193);
+                text.AddFormattedText("Click Here", TextFormat.Underline);
+            }
+            if (!string.IsNullOrWhiteSpace(employee.EmailAddress))
+            {
+                paragraph = row.Cells[cellInt].AddParagraph();
+                paragraph.AddText("Email Address: ");
+                Hyperlink hyperlink = paragraph.AddHyperlink("mailto:" + employee.EmailAddress, HyperlinkType.Url);
+                text = hyperlink.AddFormattedText();
+                text.Font.Color = Color.FromRgb(5, 99, 193);
+                text.AddFormattedText(employee.EmailAddress, TextFormat.Underline);
+            }
+            if (!string.IsNullOrEmpty(employee.PhoneNumber))
+                row.Cells[cellInt].AddParagraph("Phone: " + employee.PhoneNumber);
+            if (!string.IsNullOrWhiteSpace(employee.FaxNumber))
+                row.Cells[cellInt].AddParagraph("Fax: " + employee.FaxNumber);
+            row.Cells[cellInt].AddParagraph("");
+        }
         private void AddCustomHeader(string text, ref Section section)
         {
             HeaderFooter header = new HeaderFooter();
@@ -276,7 +354,7 @@ namespace PdfCreator
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Left;
             paragraph.Format.Font = fontSmall;
-            StringCollection stringCollection = Properties.DepartmentPdf.Default.Introduction;
+            StringCollection stringCollection = Properties.DepartmentPdf.Default.InfoIntro;
             StringBuilder sb = new StringBuilder();
             foreach(string line in stringCollection)
             {
@@ -388,6 +466,144 @@ namespace PdfCreator
                 _ = row.Cells[3].AddParagraph(employee.Notes);
             }
 
+            section.AddPageBreak();
+            paragraph = section.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            paragraph.AddFormattedText("GENERAL CAMPUS AND TELEPHONE INFORMATION", fontLargeBold);
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph = section.AddParagraph();
+            stringCollection = Properties.DepartmentPdf.Default.InfoCampus;
+            sb = new StringBuilder();
+            foreach (string line in stringCollection)
+            {
+                if (string.IsNullOrEmpty(line))
+                {
+                    //empty line between text
+                    sb.Append(Environment.NewLine + Environment.NewLine);
+                }
+                else
+                {
+                    if (line.Contains("<newline>"))
+                    {
+                        sb.Append(line.Replace("<newline>", Environment.NewLine));
+                    }
+                    else
+                    {
+                        sb.Append(line);
+                    }
+                }
+            }
+            _ = paragraph.AddText(sb.ToString());
+
+            // Public safety information
+            section.AddPageBreak();
+            paragraph = section.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            paragraph.AddFormattedText("MINES DEPARTMENT OF PUBLIC SAFETY", fontLargeBold);
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph = section.AddParagraph();
+            stringCollection = Properties.DepartmentPdf.Default.InfoSafety;
+            sb = new StringBuilder();
+            foreach (string line in stringCollection)
+            {
+                if (string.IsNullOrEmpty(line))
+                {
+                    //empty line between text
+                    sb.Append(Environment.NewLine + Environment.NewLine);
+                }
+                else
+                {
+                    if (line.Contains("<newline>"))
+                    {
+                        sb.Append(line.Replace("<newline>", Environment.NewLine));
+                    }
+                    else
+                    {
+                        sb.Append(line);
+                    }
+                }
+            }
+            _ = paragraph.AddText(sb.ToString());
+            section.AddPageBreak();
+
+            paragraph = section.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            paragraph.AddFormattedText("DEPARTMENTS BY BUILDING LOCATION", fontLargeBold);
+
+            /*
+            directoryTasks.ConnectionString = Properties.Settings.Default.ConnectionString;
+            directoryTasks.DataProvider = (DirectoryTasks.DataProviders)Enum.Parse(typeof(DirectoryTasks.DataProviders), Properties.Settings.Default.DataProvider);
+            directoryTasks.QueryString = "select BuildingName 'building', Department from tbl_aux_department " +
+                "inner join tbl_aux_building on tbl_aux_department.BID = tbl_aux_building.BID " +
+                "order by tbl_aux_building.BuildingName, tbl_aux_department.Department";
+            */
+            directoryTasks.QueryString = "select Campusbuilding, department from [buildingdept$] order by campusbuilding, department";
+            dataTable = directoryTasks.GetData();
+            table = AddBuildingDeptTable(section);
+            // initializer for right side count
+            int rowInt = 0;
+            int currPageRow = 1;
+            employee.ClearAll();
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                PageSide pageSide;
+                employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
+                employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
+
+                //row = table.AddRow();
+                //row[0].AddParagraph(employee.Building);
+                //row[0].AddParagraph(employee.Department);
+
+                // the last row allowed in the table
+                if (currPageRow > 30)
+                {
+                    // usually you would add a page break to the section
+                    // however, because we need different headers a new section is added to the document instead
+                    section.AddPageBreak();
+                    //section = document.AddSection();
+
+                    // reset variables
+                    currPageRow = 1;
+                    rowInt = 0;
+
+                    // add & set the formatted on the new page
+                    table = AddBuildingDeptTable(section);
+                }
+
+                // 2nd columns beginning value; 3rd columns beginning value
+                if (currPageRow == 11 || currPageRow == 21)
+                    rowInt = 0;
+
+                if (currPageRow <= 10)
+                {
+                    pageSide = PageSide.LeftSide;
+                    row = table.AddRow();
+                }
+                else if (currPageRow <= 20) // rows 11-20
+                {
+                    pageSide = PageSide.Middle;
+                    row = table.Rows[rowInt];
+                }
+                else // rows 21-30
+                {
+                    pageSide = PageSide.RightSide;
+                    row = table.Rows[rowInt];
+                }
+
+                GenerateRowBuildingDept(pageSide, employee, ref row);
+                Console.WriteLine(employee.Building);
+                Console.WriteLine(pageSide.ToString());
+                Console.WriteLine("currPageRow: " + currPageRow);
+                Console.WriteLine("rowInt:" + rowInt);
+                currPageRow++;
+                rowInt++;
+                employee.ClearAll();
+            }
+
+
+
             return document;
         }
 
@@ -440,6 +656,7 @@ namespace PdfCreator
 
             // initializer for right side count
             int rowInt = 0;
+            int currPageRow = 1;
 
             // add & set the table margins on the new page
             Table table = AddCustomTable(section);
@@ -451,7 +668,6 @@ namespace PdfCreator
             Console.WriteLine("Rows: {0}", dataTable.Rows.Count);
 
             Row row = new Row();
-            int currPageRow = 1;
             string currHeaderStr = string.Empty;
 
             foreach (DataRow dataRow in dataTable.Rows)
