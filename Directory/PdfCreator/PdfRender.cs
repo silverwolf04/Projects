@@ -148,17 +148,11 @@ namespace PdfCreator
 
             }
 
-            /*
-            if(!string.IsNullOrWhiteSpace(employee.PhoneNumber))
-                row.Cells[cellInt].AddParagraph(employee.PhoneNumber);
-            //cellInt++;
-            */
             Paragraph paragraph;
             FormattedText text;
 
             if (!string.IsNullOrWhiteSpace(employee.Name))
             {
-                //row.Cells[cellInt].AddParagraph(employee.Name);
                 paragraph = row.Cells[cellInt].AddParagraph();
                 paragraph.AddFormattedText(employee.Name, TextFormat.Bold);
             }
@@ -176,15 +170,11 @@ namespace PdfCreator
 
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
-                //paragraph.Format.Font.Color = Color.FromRgb(51, 153, 255);
                 paragraph.AddText("Home Page: ");
                 Hyperlink hyperlink = paragraph.AddHyperlink(employee.Url, HyperlinkType.Url);
                 text = hyperlink.AddFormattedText();
-                //text.AddText("Home Page: ");
                 text.Font.Color = Color.FromRgb(5, 99, 193);
                 text.AddFormattedText("Click Here", TextFormat.Underline);
-                //hyperlink.AddFormattedText("Home Page: Click Here", TextFormat.Underline);
-                //row.Cells[cellInt].AddParagraph("Home Page: " + employee.Url);
             }
             if (!string.IsNullOrWhiteSpace(employee.EmailAddress))
             {
@@ -192,11 +182,8 @@ namespace PdfCreator
                 paragraph.AddText("Email Address: ");
                 Hyperlink hyperlink = paragraph.AddHyperlink("mailto:" + employee.EmailAddress, HyperlinkType.Url);
                 text = hyperlink.AddFormattedText();
-                //text.AddText("Home Page: ");
                 text.Font.Color = Color.FromRgb(5, 99, 193);
                 text.AddFormattedText(employee.EmailAddress, TextFormat.Underline);
-
-                //row.Cells[cellInt].AddParagraph("Email: " + employee.EmailAddress);
             }
             if (!string.IsNullOrEmpty(employee.PhoneNumber))
                 row.Cells[cellInt].AddParagraph("Phone: " + employee.PhoneNumber);
@@ -234,70 +221,87 @@ namespace PdfCreator
             // add paragraph
             Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-
             paragraph.Format.Font.Color = Colors.Black;
             paragraph.Format.Font.Name = "Times-Roman";
             paragraph.Format.Font.Size = 32;
 
             // Add some text to the paragraph
-            paragraph.AddText(Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine);
-            paragraph.AddFormattedText("Colorado School of Mines" + Environment.NewLine + "Department Directory", TextFormat.Bold);
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("Colorado School of Mines", TextFormat.Bold);
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("Department Directory", TextFormat.Bold);
 
             // Add a paragraph to the section
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
 
-            paragraph.Format.Font.Color = Colors.Black;
-            paragraph.Format.Font.Name = "Times-Roman";
-            paragraph.Format.Font.Size = 16;
+            Font fontXLarge = new Font
+            {
+                Name = "Times-Roman",
+                Size = 16,
+                Bold = true,
+                Color = Colors.Black
+            };
+
+            Font fontLargeBold = new Font
+            {
+                Name = "Times-Roman",
+                Size = 14,
+                Bold = true,
+                Color = Colors.Black
+            };
+
+            Font fontMedium = new Font
+            {
+                Name = "Times-Roman",
+                Size = 12,
+                Color = Colors.Black
+            };
+
+            Font fontSmall = new Font
+            {
+                Name = "Times-Roman",
+                Size = 10,
+                Color = Colors.Black
+            };
+
+            paragraph.Format.Font = fontXLarge;
             paragraph.AddText(Environment.NewLine + Environment.NewLine + "This document was generated at " + DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"));
 
             section.AddPageBreak();
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Left;
-            paragraph.Format.Font.Color = Colors.Black;
-            paragraph.Format.Font.Name = "Times-Roman";
-            paragraph.Format.Font.Size = 10;
+            paragraph.Format.Font = fontSmall;
             StringCollection stringCollection = Properties.DepartmentPdf.Default.Introduction;
             StringBuilder sb = new StringBuilder();
             foreach(string line in stringCollection)
             {
                 if (string.IsNullOrEmpty(line))
+                    //empty line between text
                     sb.Append(Environment.NewLine + Environment.NewLine);
                 else
                     sb.Append(line);
             }
             _ = paragraph.AddText(sb.ToString());
             section.AddPageBreak();
-
-            paragraph = section.AddParagraph();
-            paragraph.Format.Alignment = ParagraphAlignment.Center;
-            //paragraph.Format.Font.Color = Colors.Black;
-            //paragraph.Format.Font.Name = "Times-Roman";
-            paragraph.Format.Font.Size = 12;
-
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
-            Font largeBoldfont = new Font
-            {
-                Name = "Times-Roman",
-                Size = 14,
-                Bold = true
-            };
 
             // service calls
-            _ = paragraph.AddFormattedText("SERVICE CALLS", largeBoldfont);
+            _ = paragraph.AddFormattedText("SERVICE CALLS", fontLargeBold);
             paragraph.AddLineBreak();
             paragraph = section.AddParagraph();
-            //paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
             paragraph.Format.Alignment = ParagraphAlignment.Left;
-            _ = paragraph.AddFormattedText("Facilities Management", largeBoldfont);
+            _ = paragraph.AddFormattedText("Facilities Management", fontLargeBold);
             paragraph.AddLineBreak();
-            _ = paragraph.AddFormattedText("Normal Business hours: (303) 273-3330", largeBoldfont);
+            _ = paragraph.AddFormattedText("Normal Business hours: (303) 273-3330", fontLargeBold);
             paragraph.AddLineBreak();
-            _ = paragraph.AddFormattedText("After Hours Emergency Notifications:", largeBoldfont);
-            //_ = paragraph.AddFormattedText("Order of contact for response" + Environment.NewLine, largeBoldfont);
+            _ = paragraph.AddFormattedText("After Hours Emergency Notifications:", fontLargeBold);
 
             //section = document.AddSection();
             Employee employee = new Employee();
@@ -317,13 +321,7 @@ namespace PdfCreator
                 employee.Category = dataRow[Properties.DepartmentPdf.Default.Category].ToString();
                 employee.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
                 employee.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
-                //employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
-                //employee.FaxNumber = dataRow[Properties.DepartmentPdf.Default.FaxNumber].ToString();
-                //employee.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
                 employee.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
-                //employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
-                //employee.Office = dataRow[Properties.DepartmentPdf.Default.Office].ToString();
-                //employee.Url = dataRow[Properties.DepartmentPdf.Default.URL].ToString();
                 employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
 
                 if (categoryStr != employee.Category)
@@ -333,7 +331,6 @@ namespace PdfCreator
                     _ = paragraph.AddFormattedText(Environment.NewLine + employee.Category, TextFormat.Underline);
                     table = AddDeptTable(section);
                 }
-
 
                 row = table.AddRow();
                 if(!string.IsNullOrEmpty(employee.Title))
@@ -348,9 +345,8 @@ namespace PdfCreator
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
-            _ = paragraph.AddFormattedText("EMERGENCY INFORMATION", largeBoldfont);
-            directoryTasks.QueryString = "select empName,department,campusBuilding,campusOfficeNo,email,faxphone," +
-                "workphone,title,url,notes,category, cellPhone from [emergency$] order by category, catsuborder";
+            _ = paragraph.AddFormattedText("EMERGENCY INFORMATION", fontLargeBold);
+            directoryTasks.QueryString = Properties.DepartmentPdf.Default.EmergencyQuery;
             dataTable = directoryTasks.GetData();
             foreach(DataRow dataRow in dataTable.Rows)
             {
@@ -358,24 +354,20 @@ namespace PdfCreator
                 employee.Category = dataRow[Properties.DepartmentPdf.Default.Category].ToString();
                 employee.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
                 employee.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
-                //employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
-                //employee.FaxNumber = dataRow[Properties.DepartmentPdf.Default.FaxNumber].ToString();
-                //employee.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
                 employee.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
-                //employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
-                //employee.Office = dataRow[Properties.DepartmentPdf.Default.Office].ToString();
-                //employee.Url = dataRow[Properties.DepartmentPdf.Default.URL].ToString();
                 employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
                 employee.CellNumber = dataRow[Properties.DepartmentPdf.Default.CellNumber].ToString();
 
-                // Excel file somehow contains empty rows - trap here
+                /* add 'is not null' clause in query to handle this
                 if (string.IsNullOrEmpty(employee.Name))
                 {
                     Console.WriteLine("Skipping row:{0},{1},{2},{3},{4},{5}", employee.Title, employee.Name, employee.Name,
                         employee.PhoneNumber, employee.CellNumber, employee.Notes);
                     continue;
                 }
+                */
 
+                // Print the category section one time
                 if (categoryStr != employee.Category)
                 {
                     paragraph = section.AddParagraph();
@@ -385,6 +377,7 @@ namespace PdfCreator
                     table = AddEmergencyTable(section);
                 }
 
+                // create a row in the table
                 row = table.AddRow();
                 if (!string.IsNullOrEmpty(employee.Title))
                     _ = row.Cells[0].AddParagraph(employee.Title);

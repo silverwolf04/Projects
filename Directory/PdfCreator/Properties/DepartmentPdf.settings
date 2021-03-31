@@ -28,7 +28,7 @@
       <Value Profile="(Default)">Excel</Value>
     </Setting>
     <Setting Name="ServiceQuery" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">select empName,department,campusBuilding,campusOfficeNo,email,faxphone,workphone,title,url,notes,category from [services$] order by category, catsuborder</Value>
+      <Value Profile="(Default)">select empName,department,campusBuilding,campusOfficeNo,email,faxphone,workphone,title,url,notes,category from [services$] where empName is not null order by category, catsuborder</Value>
     </Setting>
     <Setting Name="ConnectionString" Type="System.String" Scope="Application">
       <Value Profile="(Default)">DepartmentDataTransform.xlsx</Value>
@@ -68,6 +68,9 @@
     </Setting>
     <Setting Name="CellNumber" Type="System.String" Scope="Application">
       <Value Profile="(Default)">cellPhone</Value>
+    </Setting>
+    <Setting Name="EmergencyQuery" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">select empName,department,campusBuilding,campusOfficeNo,email,faxphone, workphone,title,url,notes,category, cellPhone from [emergency$] where empName is not null order by category, catsuborder</Value>
     </Setting>
   </Settings>
 </SettingsFile>

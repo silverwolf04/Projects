@@ -12,7 +12,7 @@ namespace PdfCreator.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0")]
     internal sealed partial class DepartmentPdf : global::System.Configuration.ApplicationSettingsBase {
         
         private static DepartmentPdf defaultInstance = ((DepartmentPdf)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new DepartmentPdf())));
@@ -65,7 +65,8 @@ namespace PdfCreator.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("select empName,department,campusBuilding,campusOfficeNo,email,faxphone,workphone," +
-            "title,url,notes,category from [services$] order by category, catsuborder")]
+            "title,url,notes,category from [services$] where empName is not null order by cat" +
+            "egory, catsuborder")]
         public string ServiceQuery {
             get {
                 return ((string)(this["ServiceQuery"]));
@@ -186,6 +187,17 @@ namespace PdfCreator.Properties {
         public string CellNumber {
             get {
                 return ((string)(this["CellNumber"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("select empName,department,campusBuilding,campusOfficeNo,email,faxphone, workphone" +
+            ",title,url,notes,category, cellPhone from [emergency$] where empName is not null" +
+            " order by category, catsuborder")]
+        public string EmergencyQuery {
+            get {
+                return ((string)(this["EmergencyQuery"]));
             }
         }
     }
