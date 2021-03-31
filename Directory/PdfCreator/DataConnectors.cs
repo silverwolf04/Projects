@@ -100,7 +100,7 @@ namespace PdfCreator
 
             return dataTable;
         }
-        public DataTable GetDataOracle()
+        private DataTable GetDataOracle()
         {
             DataTable dataTable = new DataTable();
 
@@ -132,7 +132,7 @@ namespace PdfCreator
 
             return dataTable;
         }
-        public DataTable GetDataSQL()
+        private DataTable GetDataSQL()
         {
             DataTable dataTable = new DataTable();
 
