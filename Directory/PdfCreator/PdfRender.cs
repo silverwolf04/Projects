@@ -124,8 +124,8 @@ namespace PdfCreator
             table.AddColumn("4.5cm");
             table.Borders.Visible = false;
             //table.Borders.Visible = true;
-            table.Borders.Width = 1;
-            table.TopPadding = Unit.FromPoint(3);
+            table.Borders.Width = 3;
+            table.TopPadding = Unit.FromPoint(5);
             return table;
         }
         private void GenerateRow(PageSide pageSide, Employee employee, ref Row row)
@@ -368,6 +368,14 @@ namespace PdfCreator
                 employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
                 employee.CellNumber = dataRow[Properties.DepartmentPdf.Default.CellNumber].ToString();
 
+                // Excel file somehow contains empty rows - trap here
+                if (string.IsNullOrEmpty(employee.Name))
+                {
+                    Console.WriteLine("Skipping row:{0},{1},{2},{3},{4},{5}", employee.Title, employee.Name, employee.Name,
+                        employee.PhoneNumber, employee.CellNumber, employee.Notes);
+                    continue;
+                }
+
                 if (categoryStr != employee.Category)
                 {
                     paragraph = section.AddParagraph();
@@ -376,7 +384,6 @@ namespace PdfCreator
                     _ = paragraph.AddFormattedText(employee.Category, TextFormat.Underline);
                     table = AddEmergencyTable(section);
                 }
-
 
                 row = table.AddRow();
                 if (!string.IsNullOrEmpty(employee.Title))
