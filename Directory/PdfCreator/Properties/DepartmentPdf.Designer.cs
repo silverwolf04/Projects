@@ -335,5 +335,14 @@ namespace PdfCreator.Properties {
                 return ((global::System.Collections.Specialized.StringCollection)(this["InfoSafety"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Address")]
+        public string Address {
+            get {
+                return ((string)(this["Address"]));
+            }
+        }
     }
 }

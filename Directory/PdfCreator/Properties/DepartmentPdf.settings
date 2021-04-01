@@ -175,5 +175,8 @@
   &lt;string&gt;hours are Monday through Friday 7:30am to 5:00pm.&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
+    <Setting Name="Address" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Address</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

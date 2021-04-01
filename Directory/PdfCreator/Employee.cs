@@ -20,6 +20,7 @@ namespace PdfCreator
         public string _notes;
         public string _category;
         public string _cellnumber;
+        public string _address;
 
         public string Name
         {
@@ -80,6 +81,11 @@ namespace PdfCreator
         {
             get => _cellnumber;
             set => _cellnumber = value;
+        }
+        public string Address
+        {
+            get => _address;
+            set => _address = value;
         }
 
         public void ClearAll()

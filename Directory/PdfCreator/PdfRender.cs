@@ -533,6 +533,8 @@ namespace PdfCreator
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             //paragraph.AddFormattedText("DEPARTMENTS BY BUILDING LOCATION", fontLargeBold);
             paragraph.AddFormattedText("DEPARTMENT LOCATIONS", fontLargeBold);
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
 
             directoryTasks.QueryString = "select Campusbuilding, department from [buildingdept$] order by department, campusbuilding";
             /*
@@ -598,6 +600,43 @@ namespace PdfCreator
                 rowInt++;
                 employee.ClearAll();
             }
+
+            section.AddPageBreak();
+            paragraph = section.AddParagraph();
+
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            //paragraph.AddFormattedText("DEPARTMENTS BY BUILDING LOCATION", fontLargeBold);
+            paragraph.AddFormattedText("BUILDING LOCATIONS", fontLargeBold);
+            paragraph = section.AddParagraph();
+            paragraph.Format.Font.Name = "Times-Roman";
+            paragraph.Format.Alignment = ParagraphAlignment.Left;
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            /*
+             * "select buildingName, address_line1 from tbl_building where address_line1 is not null order by buildingName"
+             */
+            directoryTasks.QueryString = "select campusbuilding, address from [buildings$] order by campusBuilding";
+            dataTable = directoryTasks.GetData();
+
+            foreach(DataRow dataRow in dataTable.Rows)
+            {
+                employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
+                employee.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
+
+                int elipInt = employee.Building.Length;
+                string line = employee.Building;
+                while(elipInt < 75)
+                {
+                    line += ".";
+                    elipInt++;
+                }
+
+                paragraph.AddText(line + employee.Address);
+                paragraph.AddLineBreak();
+            }
+
+
             return document;
         }
 
