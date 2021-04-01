@@ -10,6 +10,9 @@ namespace PdfCreator
 {
     class DataConnectors
     {
+        public DataProviders DataProvider { get; set; }
+        public string ConnectionString { get; set; } = string.Empty;
+        public string QueryString { get; set; } = string.Empty;
         public enum DataProviders
         {
             MSSQL,
@@ -17,63 +20,18 @@ namespace PdfCreator
             Excel
         }
         public DataConnectors() => DataProvider = DataProviders.MSSQL;
-        public void ParseProvider(string provider)
-        {
-            if (Enum.IsDefined(typeof(DataProviders), provider))
-            {
-                DataProvider = (DataProviders)Enum.Parse(typeof(DataProviders), provider, true);
-            }
-            else
-            {
-                // Always use MSSQL if invalid provider in config
-                Console.WriteLine("Invalid provider parsed");
-            }
-        }
-
         public DataConnectors(string provider)
         {
             ParseProvider(provider);
         }
-
-        public DataProviders DataProvider { get; set; }
-        public string ConnectionString { get; set; } = string.Empty;
-        public string QueryString { get; set; } = string.Empty;
-
-        private DataTable GetDataExcel()
+        public void ParseProvider(string provider)
         {
-            //string sheetName = "Test";
-            //string sheetName = queryString.Split(' ').Last();
-            //string path = "Test.xlsx";
-            //string commandText = queryString.Substring(0, queryString.Length - sheetName.Length) + "[" + sheetName + "$]";
-            string commandText = QueryString;
-            Console.WriteLine("Command Text:{0}", commandText);
-
-            using (OleDbConnection conn = new OleDbConnection())
-            {
-                DataTable dt = new DataTable();
-                string Import_FileName = ConnectionString;
-                string fileExtension = Path.GetExtension(Import_FileName);
-                if (!File.Exists(Import_FileName))
-                    Console.WriteLine("FilePath does not exist:{0}", Import_FileName);
-                if (fileExtension == ".xls")
-                    conn.ConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + Import_FileName + ";" + "Extended Properties='Excel 8.0;HDR=YES;'";
-                if (fileExtension == ".xlsx")
-                    conn.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + Import_FileName + ";" + "Extended Properties='Excel 12.0 Xml;HDR=YES;'";
-                using (OleDbCommand comm = new OleDbCommand())
-                {
-                    //comm.CommandText = "Select * from [" + sheetName + "$]";
-                    comm.CommandText = commandText;
-                    comm.Connection = conn;
-                    using (OleDbDataAdapter da = new OleDbDataAdapter())
-                    {
-                        da.SelectCommand = comm;
-                        da.Fill(dt);
-                        return dt;
-                    }
-                }
-            }
+            if (Enum.IsDefined(typeof(DataProviders), provider))
+                DataProvider = (DataProviders)Enum.Parse(typeof(DataProviders), provider, true);
+            else
+                // Always use MSSQL if invalid provider in config
+                Console.WriteLine("Invalid provider parsed");
         }
-
         public DataTable GetData()
         {
             DataTable dataTable = new DataTable();
@@ -96,6 +54,30 @@ namespace PdfCreator
                     break;
                 default:
                     break;
+            }
+            return dataTable;
+        }
+        private DataTable GetDataSQL()
+        {
+            DataTable dataTable = new DataTable();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    Console.WriteLine("State: {0}", connection.State);
+                    Console.WriteLine("Query: {0}", QueryString);
+
+                    using (SqlCommand sqlCommand = new SqlCommand(QueryString, connection))
+                    {
+                        SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
+                        sqlDataAdapter.Fill(dataTable);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
 
             return dataTable;
@@ -132,30 +114,44 @@ namespace PdfCreator
 
             return dataTable;
         }
-        private DataTable GetDataSQL()
+        private DataTable GetDataExcel()
         {
-            DataTable dataTable = new DataTable();
+            Console.WriteLine("Command Text:{0}", QueryString);
+            DataTable dt = new DataTable();
+            string Import_FileName = ConnectionString;
+            string fileExtension = Path.GetExtension(Import_FileName);
 
-            try
+            using (OleDbConnection conn = new OleDbConnection())
             {
-                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                if (!File.Exists(Import_FileName))
+                    Console.WriteLine("FilePath does not exist:{0}", Import_FileName);
+                switch (fileExtension)
                 {
-                    Console.WriteLine("State: {0}", connection.State);
-                    Console.WriteLine("Query: {0}", QueryString);
+                    case ".xls":
+                        conn.ConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + Import_FileName + ";" + "Extended Properties='Excel 8.0;HDR=YES;'";
+                        break;
+                    case ".xlsx":
+                        conn.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + Import_FileName + ";" + "Extended Properties='Excel 12.0 Xml;HDR=YES;'";
+                        break;
+                    default:
+                        Console.WriteLine("Invalid file extension:{0}", fileExtension);
+                        break;
+                }
 
-                    using (SqlCommand sqlCommand = new SqlCommand(QueryString, connection))
+                using (OleDbCommand comm = new OleDbCommand())
+                {
+                    //comm.CommandText = "Select * from [" + sheetName + "$]";
+                    comm.CommandText = QueryString;
+                    comm.Connection = conn;
+
+                    using (OleDbDataAdapter da = new OleDbDataAdapter())
                     {
-                        SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
-                        sqlDataAdapter.Fill(dataTable);
+                        da.SelectCommand = comm;
+                        da.Fill(dt);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-
-            return dataTable;
+            return dt;
         }
     }
 }
