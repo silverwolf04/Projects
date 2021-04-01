@@ -192,8 +192,8 @@ namespace PdfCreator
         {
             int cellInt = 0;
             //string concatenatedStr = string.Empty;
-            //Paragraph paragraph;
-            //FormattedText text;
+            Paragraph paragraph;
+            FormattedText text;
 
             switch (pageSide)
             {
@@ -217,10 +217,30 @@ namespace PdfCreator
             if (!string.IsNullOrWhiteSpace(employee.Title))
                 row.Cells[cellInt].AddParagraph("Title: " + employee.Title);
             */
-            if (!string.IsNullOrWhiteSpace(employee.Building))
-                row.Cells[cellInt].AddParagraph(employee.Building);
             if (!string.IsNullOrWhiteSpace(employee.Department))
-                row.Cells[cellInt].AddParagraph(employee.Department);
+            {
+                paragraph = row.Cells[cellInt].AddParagraph();
+                //TextFormat textFormat = TextFormat.Bold;
+                //textFormat = TextFormat.Underline;
+                text = paragraph.AddFormattedText();
+                text.Bold = true;
+                text.Underline = Underline.Single;
+                text.AddText(employee.Department);
+                //row.Cells[cellInt].AddParagraph("* " + employee.Department);
+            }
+            if (!string.IsNullOrWhiteSpace(employee.Building))
+            {
+                /*
+                paragraph = row.Cells[cellInt].AddParagraph();
+                //TextFormat textFormat = TextFormat.Bold;
+                //textFormat = TextFormat.Underline;
+                text = paragraph.AddFormattedText();
+                text.Bold = true;
+                text.Underline = Underline.Single;
+                text.AddText(employee.Building);
+                */
+                row.Cells[cellInt].AddParagraph(employee.Building);
+            }
             /*
             if (!string.IsNullOrWhiteSpace(employee.Building) && !string.IsNullOrWhiteSpace(employee.Office))
                 concatenatedStr += " Office/Room: " + employee.Office;
@@ -511,22 +531,22 @@ namespace PdfCreator
 
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.AddFormattedText("DEPARTMENTS BY BUILDING LOCATION", fontLargeBold);
+            //paragraph.AddFormattedText("DEPARTMENTS BY BUILDING LOCATION", fontLargeBold);
+            paragraph.AddFormattedText("DEPARTMENT LOCATIONS", fontLargeBold);
 
+            directoryTasks.QueryString = "select Campusbuilding, department from [buildingdept$] order by department, campusbuilding";
             /*
-            directoryTasks.ConnectionString = Properties.Settings.Default.ConnectionString;
-            directoryTasks.DataProvider = (DirectoryTasks.DataProviders)Enum.Parse(typeof(DirectoryTasks.DataProviders), Properties.Settings.Default.DataProvider);
-            directoryTasks.QueryString = "select BuildingName 'building', Department from tbl_aux_department " +
-                "inner join tbl_aux_building on tbl_aux_department.BID = tbl_aux_building.BID " +
-                "order by tbl_aux_building.BuildingName, tbl_aux_department.Department";
-            */
-            directoryTasks.QueryString = "select Campusbuilding, department from [buildingdept$] order by campusbuilding, department";
+             * "select BuildingName, DeptID, Department from tbl_aux_department inner join tbl_aux_building on 
+             * tbl_aux_department.BID = tbl_aux_building.BID order by tbl_aux_building.BuildingName, tbl_aux_department.Department"
+             */
+
             dataTable = directoryTasks.GetData();
             table = AddTableBuildingDept(section);
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
             employee.ClearAll();
+
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 PageSide pageSide;
@@ -538,7 +558,7 @@ namespace PdfCreator
                 //row[0].AddParagraph(employee.Department);
 
                 // the last row allowed in the table
-                if (currPageRow > 30)
+                if (currPageRow > 45)
                 {
                     // usually you would add a page break to the section
                     // however, because we need different headers a new section is added to the document instead
@@ -554,20 +574,20 @@ namespace PdfCreator
                 }
 
                 // 2nd columns beginning value; 3rd columns beginning value
-                if (currPageRow == 11 || currPageRow == 21)
+                if (currPageRow == 16 || currPageRow == 31)
                     rowInt = 0;
 
-                if (currPageRow <= 10)
+                if (currPageRow <= 15) // rows 1-15
                 {
                     pageSide = PageSide.LeftSide;
                     row = table.AddRow();
                 }
-                else if (currPageRow <= 20) // rows 11-20
+                else if (currPageRow <= 30) // rows 16-30
                 {
                     pageSide = PageSide.Middle;
                     row = table.Rows[rowInt];
                 }
-                else // rows 21-30
+                else // rows 31-45
                 {
                     pageSide = PageSide.RightSide;
                     row = table.Rows[rowInt];

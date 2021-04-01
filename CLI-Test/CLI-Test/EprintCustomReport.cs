@@ -58,6 +58,8 @@ namespace CLI_Test
 
             // strip the 'FUND:' or 'ORG:' reference from the input string
             fundOrgInput = fundOrgInput.ToUpper().Replace(enumFundOrg.ToString() + ":", "");
+            // remove spaces from input string (1234, 5678, 3333 becomes 1234,5678,3333)
+            fundOrgInput = fundOrgInput.Replace(" ", string.Empty);
 
             // build the search list from the string input
             if (!CreateSearchList(fundOrgInput, out intSearchList))
