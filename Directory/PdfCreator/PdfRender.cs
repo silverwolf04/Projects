@@ -203,14 +203,7 @@ namespace PdfCreator
                     break;
             }
 
-            row.Cells[cellInt].AddParagraph(concateStr);
-            /*
-            if (!string.IsNullOrWhiteSpace(employee.Title))
-                row.Cells[cellInt].AddParagraph("Title: " + employee.Title);
-            if (!string.IsNullOrWhiteSpace(employee.Department))
-                row.Cells[cellInt].AddParagraph("Dept: " + employee.Department);
-            */
-            row.Cells[cellInt].AddParagraph("");
+            row.Cells[cellInt].AddParagraph(concateStr).AddLineBreak();
         }
         private void GenerateRowBuildingDept(PageSide pageSide, Employee employee, ref Row row)
         {
@@ -239,10 +232,9 @@ namespace PdfCreator
                 text.Underline = Underline.Single;
                 text.AddText(employee.Department);
             }
+
             if (!string.IsNullOrWhiteSpace(employee.Building))
-            {
                 row.Cells[cellInt].AddParagraph(employee.Building);
-            }
         }
         private void GenerateRowBuildingLocate(PageSide pageSide, Employee employee, ref Row row)
         {
@@ -271,17 +263,18 @@ namespace PdfCreator
                 //text.Underline = Underline.Single;
                 text.AddText(employee.Building);
             }
+
             if (!string.IsNullOrWhiteSpace(employee.Address))
-            {
                 row.Cells[cellInt].AddParagraph(employee.Address);
-            }
         }
         private void AddHeaderCustom(string text, ref Section section)
         {
             HeaderFooter header = new HeaderFooter();
             _ = header.AddParagraph(text);
-            header.Format.Font.Size = 30;
-            header.Format.Font.Name = "Times-Roman";
+            Font font = new Font();
+            font.Size = 30;
+            font.Name = "Times-Roman";
+            header.Format.Font = font;
             header.Format.Alignment = ParagraphAlignment.Center;
             section.Headers.Primary = header.Clone();
         }
@@ -362,8 +355,9 @@ namespace PdfCreator
             };
 
             paragraph.Format.Font = fontXLarge;
-            paragraph.AddText(Environment.NewLine + Environment.NewLine + "This document was generated at " + DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"));
-
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddText("This document was generated at " + DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"));
             section.AddPageBreak();
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Left;
@@ -379,10 +373,11 @@ namespace PdfCreator
                     sb.Append(line);
             }
             _ = paragraph.AddText(sb.ToString());
-            section.AddPageBreak();
+            section = document.AddSection();
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
+            AddFooterHelpDesk(ref section);
 
             // service calls
             _ = paragraph.AddFormattedText("SERVICE CALLS", fontLargeBold);
@@ -542,10 +537,10 @@ namespace PdfCreator
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
-            employee.ClearAll();
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
+                employee.ClearAll();
                 employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
                 employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
 
@@ -588,7 +583,6 @@ namespace PdfCreator
                 GenerateRowBuildingDept(pageSide, employee, ref row);
                 currPageRow++;
                 rowInt++;
-                employee.ClearAll();
             }
 
             section.AddPageBreak();
@@ -608,10 +602,10 @@ namespace PdfCreator
             // initializer for right side count
             rowInt = 0;
             currPageRow = 1;
-            employee.ClearAll();
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
+                employee.ClearAll();
                 employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
                 employee.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
 
@@ -654,12 +648,10 @@ namespace PdfCreator
                 GenerateRowBuildingLocate(pageSide, employee, ref row);
                 currPageRow++;
                 rowInt++;
-                employee.ClearAll();
             }
 
             section.AddPageBreak();
             paragraph = section.AddParagraph();
-
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.AddFormattedText("DEPARMENTAL MAIL CODES", fontLargeBold);
             paragraph.AddLineBreak();
@@ -672,10 +664,10 @@ namespace PdfCreator
             // initializer for right side count
             rowInt = 0;
             currPageRow = 1;
-            employee.ClearAll();
 
             foreach(DataRow dataRow in dataTable.Rows)
             {
+                employee.ClearAll();
                 employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
                 employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
 
@@ -709,7 +701,6 @@ namespace PdfCreator
                 }
 
                 GenerateRowDeptCodes(pageSide, employee, ref row);
-                employee.ClearAll();
                 currPageRow++;
                 rowInt++;
 
@@ -767,6 +758,7 @@ namespace PdfCreator
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
+                employee.ClearAll();
                 employee.Name = dataRow[Properties.FacStaffPdf.Default.Name].ToString();
                 employee.PhoneNumber = dataRow[Properties.FacStaffPdf.Default.PhoneNumber].ToString();
                 employee.Department = dataRow[Properties.FacStaffPdf.Default.Department].ToString();
@@ -779,20 +771,19 @@ namespace PdfCreator
 
                 if (!employee.Name.StartsWith(currHeaderStr) || currPageRow > 16)
                 {
+                    // reset variables
+                    currPageRow = 1;
+                    rowInt = 0;
+                    currHeaderStr = employee.Name.Substring(0, 1);
+
                     // usually you would add a page break to the section
                     // however, because we need different headers a new section is added to the document instead
                     //section.AddPageBreak();
                     section = document.AddSection();
                     AddFooterHelpDesk(ref section);
 
-                    // reset variables
-                    currPageRow = 1;
-                    rowInt = 0;
-                    currHeaderStr = employee.Name.Substring(0, 1);
-
                     // update page header
                     AddHeaderCustom(currHeaderStr, ref section);
-
                     // add & set the formatted on the new page
                     table = AddTableFacStaff(section);
                 }
@@ -815,7 +806,6 @@ namespace PdfCreator
                 }
 
                 GenerateRow(pageSide, employee, ref row);
-                employee.ClearAll();
                 currPageRow++;
                 rowInt++;
             }
