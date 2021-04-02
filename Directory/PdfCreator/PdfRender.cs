@@ -279,17 +279,24 @@ namespace PdfCreator
         private void AddHeaderCustom(string text, ref Section section)
         {
             HeaderFooter header = new HeaderFooter();
-            header.AddParagraph(text);
+            _ = header.AddParagraph(text);
             header.Format.Font.Size = 30;
             header.Format.Font.Name = "Times-Roman";
             header.Format.Alignment = ParagraphAlignment.Center;
             section.Headers.Primary = header.Clone();
         }
 
-        private void AddFooterCustom(string text, ref Section section)
+        private void AddFooterHelpDesk(ref Section section)
         {
+            string text = "Need additional help?" + Environment.NewLine + "Go to ";
+            string link = "https://helpdesk.mines.edu";
             HeaderFooter footer = new HeaderFooter();
-            footer.AddParagraph(text);
+            Paragraph paragraph = footer.AddParagraph();
+            _ = paragraph.AddText(text);
+            Hyperlink hyperlink = paragraph.AddHyperlink(link, HyperlinkType.Url);
+            FormattedText formattedText = hyperlink.AddFormattedText();
+            formattedText.Font.Color = Color.FromRgb(5, 99, 193);
+            formattedText.AddFormattedText(link, TextFormat.Underline);
             footer.Format.Font.Size = 10;
             footer.Format.Font.Name = "Times-Roman";
             footer.Format.Alignment = ParagraphAlignment.Center;
@@ -298,6 +305,7 @@ namespace PdfCreator
 
         private Document CreateDocumentDepartment()
         {
+            PageSide pageSide;
             // create document
             Document document = new Document();
             // create section
@@ -338,14 +346,14 @@ namespace PdfCreator
                 Bold = true,
                 Color = Colors.Black
             };
-
+            /*
             Font fontMedium = new Font
             {
                 Name = "Times-Roman",
                 Size = 12,
                 Color = Colors.Black
             };
-
+            */
             Font fontSmall = new Font
             {
                 Name = "Times-Roman",
@@ -442,15 +450,6 @@ namespace PdfCreator
                 employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
                 employee.CellNumber = dataRow[Properties.DepartmentPdf.Default.CellNumber].ToString();
 
-                /* add 'is not null' clause in query to handle this
-                if (string.IsNullOrEmpty(employee.Name))
-                {
-                    Console.WriteLine("Skipping row:{0},{1},{2},{3},{4},{5}", employee.Title, employee.Name, employee.Name,
-                        employee.PhoneNumber, employee.CellNumber, employee.Notes);
-                    continue;
-                }
-                */
-
                 // Print the category section one time
                 if (categoryStr != employee.Category)
                 {
@@ -491,13 +490,9 @@ namespace PdfCreator
                 else
                 {
                     if (line.Contains("<newline>"))
-                    {
                         sb.Append(line.Replace("<newline>", Environment.NewLine));
-                    }
                     else
-                    {
                         sb.Append(line);
-                    }
                 }
             }
             _ = paragraph.AddText(sb.ToString());
@@ -522,13 +517,9 @@ namespace PdfCreator
                 else
                 {
                     if (line.Contains("<newline>"))
-                    {
                         sb.Append(line.Replace("<newline>", Environment.NewLine));
-                    }
                     else
-                    {
                         sb.Append(line);
-                    }
                 }
             }
             _ = paragraph.AddText(sb.ToString());
@@ -555,7 +546,6 @@ namespace PdfCreator
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                PageSide pageSide;
                 employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
                 employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
 
@@ -622,7 +612,6 @@ namespace PdfCreator
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                PageSide pageSide;
                 employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
                 employee.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
 
@@ -705,8 +694,6 @@ namespace PdfCreator
                     table = AddTableFacStaff(section);
                 }
 
-                PageSide pageSide;
-
                 if (currPageRow == 26)
                     rowInt = 0;
 
@@ -748,7 +735,11 @@ namespace PdfCreator
             paragraph.Format.Font.Size = 32;
 
             // Add some text to the paragraph
-            _ = paragraph.AddText(Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine);
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
             _ = paragraph.AddFormattedText("Colorado School of Mines" + Environment.NewLine + "Faculty/Staff Directory", TextFormat.Bold);
 
             // Add a paragraph to the section
@@ -758,41 +749,21 @@ namespace PdfCreator
             paragraph.Format.Font.Color = Colors.Black;
             paragraph.Format.Font.Name = "Times-Roman";
             paragraph.Format.Font.Size = 16;
-            _ = paragraph.AddText(Environment.NewLine + Environment.NewLine + "This document was generated at " + DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"));
-
-            section.AddPageBreak();
-            section = document.AddSection();
-
-            AddHeaderCustom("A", ref section);
-
-            string footerStr = "Need additional help?" + Environment.NewLine + "Go to " + "https://helpdesk.mines.edu";
-            AddFooterCustom(footerStr, ref section);
-            /*
-            HeaderFooter footer = new HeaderFooter();
-            footer.AddParagraph(footerStr);
-            footer.Format.Font.Size = 10;
-            footer.Format.Font.Name = "Times-Roman";
-            footer.Format.Alignment = ParagraphAlignment.Center;
-            section.Footers.Primary = footer.Clone();
-            */
-
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            _ = paragraph.AddText("This document was generated at " + DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"));
             section.AddPageBreak();
 
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
-
-            // add & set the table margins on the new page
-            Table table = AddTableFacStaff(section);
-
+            Table table = new Table();
             Employee employee = new Employee();
             // The class sets the DataProvider, ConnectionString and QueryString
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType);
             DataTable dataTable = directoryTasks.GetData();
             Console.WriteLine("Rows: {0}", dataTable.Rows.Count);
-
-            Row row = new Row();
-            string currHeaderStr = string.Empty;
+            string currHeaderStr = "X";
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
@@ -806,15 +777,13 @@ namespace PdfCreator
                 employee.Office = dataRow[Properties.FacStaffPdf.Default.Office].ToString();
                 employee.Url = dataRow[Properties.FacStaffPdf.Default.URL].ToString();
 
-                if(string.IsNullOrEmpty(currHeaderStr))
-                    currHeaderStr = employee.Name.Substring(0, 1);
-
                 if (!employee.Name.StartsWith(currHeaderStr) || currPageRow > 16)
                 {
                     // usually you would add a page break to the section
                     // however, because we need different headers a new section is added to the document instead
                     //section.AddPageBreak();
                     section = document.AddSection();
+                    AddFooterHelpDesk(ref section);
 
                     // reset variables
                     currPageRow = 1;
@@ -829,6 +798,7 @@ namespace PdfCreator
                 }
 
                 PageSide pageSide;
+                Row row = new Row();
 
                 if (currPageRow == 9)
                     rowInt = 0;
