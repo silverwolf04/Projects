@@ -536,7 +536,6 @@ namespace PdfCreator
 
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            //paragraph.AddFormattedText("DEPARTMENTS BY BUILDING LOCATION", fontLargeBold);
             paragraph.AddFormattedText("DEPARTMENT LOCATIONS", fontLargeBold);
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
@@ -559,10 +558,6 @@ namespace PdfCreator
                 PageSide pageSide;
                 employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
                 employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
-
-                //row = table.AddRow();
-                //row[0].AddParagraph(employee.Building);
-                //row[0].AddParagraph(employee.Department);
 
                 // the last row allowed in the table
                 if (currPageRow > 45)
@@ -610,11 +605,7 @@ namespace PdfCreator
             paragraph = section.AddParagraph();
 
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            //paragraph.AddFormattedText("DEPARTMENTS BY BUILDING LOCATION", fontLargeBold);
             paragraph.AddFormattedText("BUILDING LOCATIONS", fontLargeBold);
-            //paragraph = section.AddParagraph();
-            //paragraph.Format.Font.Name = "Times-Roman";
-            //paragraph.Format.Alignment = ParagraphAlignment.Left;
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
 
@@ -681,11 +672,7 @@ namespace PdfCreator
             paragraph = section.AddParagraph();
 
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            //paragraph.AddFormattedText("DEPARTMENTS BY BUILDING LOCATION", fontLargeBold);
             paragraph.AddFormattedText("DEPARMENTAL MAIL CODES", fontLargeBold);
-            //paragraph = section.AddParagraph();
-            //paragraph.Format.Font.Name = "Times-Roman";
-            //paragraph.Format.Alignment = ParagraphAlignment.Left;
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
 
