@@ -36,6 +36,35 @@ namespace PdfCreator
             set => _pdfType = value;
         }
         private bool Viewer = false;
+        private readonly Font FontLargeBold = new Font
+        {
+            Name = "Times-Roman",
+            Size = 14,
+            Bold = true,
+            Color = Colors.Black
+        };
+        private readonly Font FontXLarge = new Font
+        {
+            Name = "Times-Roman",
+            Size = 16,
+            Bold = true,
+            Color = Colors.Black
+        };
+        private readonly Font FontSmall = new Font
+        {
+            Name = "Times-Roman",
+            Size = 10,
+            Color = Colors.Black
+        };
+
+        /*
+        private readonly Font FontMedium = new Font
+        {
+            Name = "Times-Roman",
+            Size = 12,
+            Color = Colors.Black
+        };
+        */
 
         private void SetPdfType(string argStr)
         {
@@ -62,7 +91,6 @@ namespace PdfCreator
             Document document = CreateTestDocument(output);
             return document;
         }
-
 
         private Document CreateTestDocument(string output)
         {
@@ -191,7 +219,7 @@ namespace PdfCreator
         private void GenerateRowDeptCodes(PageSide pageSide, Employee employee, ref Row row)
         {
             int cellInt = 0;
-            string concateStr = employee.Department + " (" + employee.Notes + ")";
+            string concateStr = employee.Department + " [" + employee.Notes + "]";
 
             switch (pageSide)
             {
@@ -271,9 +299,11 @@ namespace PdfCreator
         {
             HeaderFooter header = new HeaderFooter();
             _ = header.AddParagraph(text);
-            Font font = new Font();
-            font.Size = 30;
-            font.Name = "Times-Roman";
+            Font font = new Font
+            {
+                Size = 30,
+                Name = "Times-Roman"
+            };
             header.Format.Font = font;
             header.Format.Alignment = ParagraphAlignment.Center;
             section.Headers.Primary = header.Clone();
@@ -295,21 +325,14 @@ namespace PdfCreator
             footer.Format.Alignment = ParagraphAlignment.Center;
             section.Footers.Primary = footer.Clone();
         }
-
-        private Document CreateDocumentDepartment()
+        private void DepartmentCoverPage(ref Section section)
         {
-            PageSide pageSide;
-            // create document
-            Document document = new Document();
-            // create section
-            Section section = document.AddSection();
             // add paragraph
             Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.Font.Color = Colors.Black;
             paragraph.Format.Font.Name = "Times-Roman";
             paragraph.Format.Font.Size = 32;
-
             // Add some text to the paragraph
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
@@ -319,52 +342,23 @@ namespace PdfCreator
             paragraph.AddFormattedText("Colorado School of Mines", TextFormat.Bold);
             paragraph.AddLineBreak();
             paragraph.AddFormattedText("Department Directory", TextFormat.Bold);
-
             // Add a paragraph to the section
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-
-            Font fontXLarge = new Font
-            {
-                Name = "Times-Roman",
-                Size = 16,
-                Bold = true,
-                Color = Colors.Black
-            };
-
-            Font fontLargeBold = new Font
-            {
-                Name = "Times-Roman",
-                Size = 14,
-                Bold = true,
-                Color = Colors.Black
-            };
-            /*
-            Font fontMedium = new Font
-            {
-                Name = "Times-Roman",
-                Size = 12,
-                Color = Colors.Black
-            };
-            */
-            Font fontSmall = new Font
-            {
-                Name = "Times-Roman",
-                Size = 10,
-                Color = Colors.Black
-            };
-
-            paragraph.Format.Font = fontXLarge;
+            paragraph.Format.Font = FontXLarge;
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
             paragraph.AddText("This document was generated at " + DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"));
             section.AddPageBreak();
-            paragraph = section.AddParagraph();
+        }
+        private void DepartmentIntroPage(ref Section section)
+        {
+            Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Left;
-            paragraph.Format.Font = fontSmall;
+            paragraph.Format.Font = FontSmall;
             StringCollection stringCollection = Properties.DepartmentPdf.Default.InfoIntro;
             StringBuilder sb = new StringBuilder();
-            foreach(string line in stringCollection)
+            foreach (string line in stringCollection)
             {
                 if (string.IsNullOrEmpty(line))
                     //empty line between text
@@ -373,22 +367,25 @@ namespace PdfCreator
                     sb.Append(line);
             }
             _ = paragraph.AddText(sb.ToString());
-            section = document.AddSection();
-            paragraph = section.AddParagraph();
+        }
+        private void DepartmentServiceCalls(ref Section section)
+        {
+            section.AddPageBreak();
+            Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
-            AddFooterHelpDesk(ref section);
+            //AddFooterHelpDesk(ref section);
 
             // service calls
-            _ = paragraph.AddFormattedText("SERVICE CALLS", fontLargeBold);
+            _ = paragraph.AddFormattedText("SERVICE CALLS", FontLargeBold);
             paragraph.AddLineBreak();
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Left;
-            _ = paragraph.AddFormattedText("Facilities Management", fontLargeBold);
+            _ = paragraph.AddFormattedText("Facilities Management", FontLargeBold);
             paragraph.AddLineBreak();
-            _ = paragraph.AddFormattedText("Normal Business hours: (303) 273-3330", fontLargeBold);
+            _ = paragraph.AddFormattedText("Normal Business hours: (303) 273-3330", FontLargeBold);
             paragraph.AddLineBreak();
-            _ = paragraph.AddFormattedText("After Hours Emergency Notifications:", fontLargeBold);
+            _ = paragraph.AddFormattedText("After Hours Emergency Notifications:", FontLargeBold);
 
             //section = document.AddSection();
             Employee employee = new Employee();
@@ -402,7 +399,7 @@ namespace PdfCreator
                 QueryString = Properties.DepartmentPdf.Default.ServiceQuery
             };
             DataTable dataTable = directoryTasks.GetData();
-            foreach(DataRow dataRow in dataTable.Rows)
+            foreach (DataRow dataRow in dataTable.Rows)
             {
                 // DepartmentPdf properties
                 employee.Category = dataRow[Properties.DepartmentPdf.Default.Category].ToString();
@@ -420,22 +417,30 @@ namespace PdfCreator
                 }
 
                 row = table.AddRow();
-                if(!string.IsNullOrEmpty(employee.Title))
+                if (!string.IsNullOrEmpty(employee.Title))
                     _ = row.Cells[1].AddParagraph(employee.Title);
                 _ = row.Cells[1].AddParagraph(employee.Name);
                 _ = row.Cells[2].AddParagraph(employee.PhoneNumber);
                 _ = row.Cells[3].AddParagraph(employee.Notes);
             }
-
-            section.AddPageBreak();
+        }
+        private void DepartmentEmergencyNumbers(ref Section section)
+        {
             // Emergency phone numbers
-            paragraph = section.AddParagraph();
+            section.AddPageBreak();
+            Employee employee = new Employee();
+            Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
-            _ = paragraph.AddFormattedText("EMERGENCY INFORMATION", fontLargeBold);
-            directoryTasks.QueryString = Properties.DepartmentPdf.Default.EmergencyQuery;
-            dataTable = directoryTasks.GetData();
-            foreach(DataRow dataRow in dataTable.Rows)
+            _ = paragraph.AddFormattedText("EMERGENCY INFORMATION", FontLargeBold);
+            DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
+            {
+                QueryString = Properties.DepartmentPdf.Default.EmergencyQuery
+            };
+            string categoryStr = string.Empty;
+            DataTable dataTable = directoryTasks.GetData();
+            Table table = new Table();
+            foreach (DataRow dataRow in dataTable.Rows)
             {
                 // DepartmentPdf properties
                 employee.Category = dataRow[Properties.DepartmentPdf.Default.Category].ToString();
@@ -456,7 +461,7 @@ namespace PdfCreator
                 }
 
                 // create a row in the table
-                row = table.AddRow();
+                Row row = table.AddRow();
                 if (!string.IsNullOrEmpty(employee.Title))
                     _ = row.Cells[0].AddParagraph(employee.Title);
                 _ = row.Cells[0].AddParagraph(employee.Name);
@@ -465,16 +470,19 @@ namespace PdfCreator
                     _ = row.Cells[2].AddParagraph(employee.CellNumber);
                 _ = row.Cells[3].AddParagraph(employee.Notes);
             }
-
+        }
+        private void DepartmentGenCampusInfo(ref Section section)
+        {
+            // General campus info
             section.AddPageBreak();
-            paragraph = section.AddParagraph();
+            Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.AddFormattedText("GENERAL CAMPUS AND TELEPHONE INFORMATION", fontLargeBold);
+            paragraph.AddFormattedText("GENERAL CAMPUS AND TELEPHONE INFORMATION", FontLargeBold);
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
             paragraph = section.AddParagraph();
-            stringCollection = Properties.DepartmentPdf.Default.InfoCampus;
-            sb = new StringBuilder();
+            StringCollection stringCollection = Properties.DepartmentPdf.Default.InfoCampus;
+            StringBuilder sb = new StringBuilder();
             foreach (string line in stringCollection)
             {
                 if (string.IsNullOrEmpty(line))
@@ -491,17 +499,19 @@ namespace PdfCreator
                 }
             }
             _ = paragraph.AddText(sb.ToString());
-
+        }
+        private void DepartmentPublicSafety(ref Section section)
+        {
             // Public safety information
             section.AddPageBreak();
-            paragraph = section.AddParagraph();
+            Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.AddFormattedText("MINES DEPARTMENT OF PUBLIC SAFETY", fontLargeBold);
+            paragraph.AddFormattedText("MINES DEPARTMENT OF PUBLIC SAFETY", FontLargeBold);
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
             paragraph = section.AddParagraph();
-            stringCollection = Properties.DepartmentPdf.Default.InfoSafety;
-            sb = new StringBuilder();
+            StringCollection stringCollection = Properties.DepartmentPdf.Default.InfoSafety;
+            StringBuilder sb = new StringBuilder();
             foreach (string line in stringCollection)
             {
                 if (string.IsNullOrEmpty(line))
@@ -518,25 +528,34 @@ namespace PdfCreator
                 }
             }
             _ = paragraph.AddText(sb.ToString());
+        }
+        private void DepartmentLocations(ref Section section)
+        {
+            // Department locations
             section.AddPageBreak();
-
-            paragraph = section.AddParagraph();
+            Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.AddFormattedText("DEPARTMENT LOCATIONS", fontLargeBold);
+            paragraph.AddFormattedText("DEPARTMENT LOCATIONS", FontLargeBold);
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
 
-            directoryTasks.QueryString = "select Campusbuilding, department from [buildingdept$] order by department, campusbuilding";
+            DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
+            {
+                QueryString = "select Campusbuilding, department from [buildingdept$] order by department, campusbuilding"
+            };
             /*
              * "select BuildingName, DeptID, Department from tbl_aux_department inner join tbl_aux_building on 
              * tbl_aux_department.BID = tbl_aux_building.BID order by tbl_aux_building.BuildingName, tbl_aux_department.Department"
              */
 
-            dataTable = directoryTasks.GetData();
-            table = AddTableBuildingDept(section);
+            DataTable dataTable = directoryTasks.GetData();
+            Table table = AddTableBuildingDept(section);
+            Row row = new Row();
+            Employee employee = new Employee();
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
+            PageSide pageSide;
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
@@ -584,24 +603,32 @@ namespace PdfCreator
                 currPageRow++;
                 rowInt++;
             }
-
+        }
+        private void DepartmentBuildingLocations(ref Section section)
+        {
+            // Building locations
             section.AddPageBreak();
-            paragraph = section.AddParagraph();
-
+            Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.AddFormattedText("BUILDING LOCATIONS", fontLargeBold);
+            paragraph.AddFormattedText("BUILDING LOCATIONS", FontLargeBold);
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
 
             /*
              * "select buildingName, address_line1 from tbl_building where address_line1 is not null order by buildingName"
              */
-            directoryTasks.QueryString = "select campusbuilding, address from [buildings$] order by campusBuilding";
-            dataTable = directoryTasks.GetData();
-            table = AddTableBuildingDept(section);
+            DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
+            {
+                QueryString = "select campusbuilding, address from [buildings$] order by campusBuilding"
+            };
+            DataTable dataTable = directoryTasks.GetData();
+            Table table = AddTableBuildingDept(section);
+            Employee employee = new Employee();
+            Row row = new Row();
             // initializer for right side count
-            rowInt = 0;
-            currPageRow = 1;
+            int rowInt = 0;
+            int currPageRow = 1;
+            PageSide pageSide;
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
@@ -649,23 +676,32 @@ namespace PdfCreator
                 currPageRow++;
                 rowInt++;
             }
-
+        }
+        private void DepartmentMailCodes(ref Section section)
+        {
+            // Department mail codes
             section.AddPageBreak();
-            paragraph = section.AddParagraph();
+            Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.AddFormattedText("DEPARMENTAL MAIL CODES", fontLargeBold);
+            paragraph.AddFormattedText("DEPARMENTAL MAIL CODES", FontLargeBold);
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
 
             // "select department, mailcode from tbl_department where mailcode is not null order by department "
-            directoryTasks.QueryString = "select department, notes from [deptcodes$] order by department";
-            dataTable = directoryTasks.GetData();
-            table = AddTableFacStaff(section);
+            DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
+            {
+                QueryString = "select department, notes from [deptcodes$] order by department"
+            };
+            DataTable dataTable = directoryTasks.GetData();
+            Table table = AddTableFacStaff(section);
             // initializer for right side count
-            rowInt = 0;
-            currPageRow = 1;
+            int rowInt = 0;
+            int currPageRow = 1;
+            Employee employee = new Employee();
+            Row row = new Row();
+            PageSide pageSide;
 
-            foreach(DataRow dataRow in dataTable.Rows)
+            foreach (DataRow dataRow in dataTable.Rows)
             {
                 employee.ClearAll();
                 employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
@@ -675,8 +711,8 @@ namespace PdfCreator
                 {
                     // usually you would add a page break to the section
                     // however, because we need different headers a new section is added to the document instead
-                    //section.AddPageBreak();
-                    section = document.AddSection();
+                    section.AddPageBreak();
+                    //section = document.AddSection();
 
                     // reset variables
                     currPageRow = 1;
@@ -705,6 +741,44 @@ namespace PdfCreator
                 rowInt++;
 
             }
+        }
+
+        private Document CreateDocumentDepartment()
+        {
+            // create document
+            Document document = new Document();
+            // create section
+            Section section = document.AddSection();
+
+            // Cover page
+            DepartmentCoverPage(ref section);
+            // Introduction/preamble page
+            DepartmentIntroPage(ref section);
+
+            // new section is needed to exclude footers and headers from previous section
+            section = document.AddSection();
+            AddFooterHelpDesk(ref section);
+
+            // Service calls pages
+            DepartmentServiceCalls(ref section);
+
+            // Emergency phone numbers pages
+            DepartmentEmergencyNumbers(ref section);
+
+            // General campus info pages
+            DepartmentGenCampusInfo(ref section);
+
+            // Public safety info pages
+            DepartmentPublicSafety(ref section);
+
+            // Department location pages
+            DepartmentLocations(ref section);
+
+            // Building location pages
+            DepartmentBuildingLocations(ref section);
+
+            // Department mail code pages
+            DepartmentMailCodes(ref section);
 
             return document;
         }
