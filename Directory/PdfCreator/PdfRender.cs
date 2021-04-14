@@ -341,7 +341,7 @@ namespace PdfCreator
             if (!string.IsNullOrWhiteSpace(employee.EmailAddress))
                 row.Cells[cellInt].AddParagraph(employee.EmailAddress);
         }
-        private void GenerateRowOfficersOfAdmin(PageSide pageSide, Employee employee, ref Row row)
+        private void GenerateRowOfficersOfAdmin(PageSide pageSide, Employee employee, ref Row row, ref String deptStr)
         {
             int cellInt = 0;
             Paragraph paragraph;
@@ -360,20 +360,37 @@ namespace PdfCreator
                     break;
             }
 
-            if (!string.IsNullOrWhiteSpace(employee.Name))
+            if(deptStr != employee.Department)
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
+                deptStr = employee.Department;
                 text = paragraph.AddFormattedText();
+                text.Underline = Underline.Single;
                 text.Bold = true;
+                text.AddText(employee.Department);
+            }
+
+            if (!string.IsNullOrWhiteSpace(employee.Name))
+            {
+                row.Cells[cellInt].AddParagraph(employee.Name);
+                /*
+                paragraph = row.Cells[cellInt].AddParagraph();
+                text = paragraph.AddFormattedText();
+                //text.Bold = true;
                 //text.Underline = Underline.Single;
                 text.AddText(employee.Name);
+                */
             }
 
             if (!string.IsNullOrWhiteSpace(employee.Title))
                 row.Cells[cellInt].AddParagraph(employee.Title);
 
+            /*
             if (!string.IsNullOrWhiteSpace(employee.Department))
                 row.Cells[cellInt].AddParagraph(employee.Department);
+            */
+            if (!string.IsNullOrWhiteSpace(employee.PhoneNumber))
+                row.Cells[cellInt].AddParagraph(employee.PhoneNumber);
 
             if (!string.IsNullOrWhiteSpace(employee.Address))
                 row.Cells[cellInt].AddParagraph(employee.Address);
@@ -930,7 +947,7 @@ namespace PdfCreator
 
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
             {
-                QueryString = "select empname, title, department, address, email, workPhone from [officers$]"
+                QueryString = "select empname, title, department, address, email, workPhone from [officers$] order by catOrder"
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableBuildingDept(section);
@@ -940,6 +957,7 @@ namespace PdfCreator
             int rowInt = 0;
             int currPageRow = 1;
             PageSide pageSide;
+            string deptStr = string.Empty;
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
@@ -987,7 +1005,7 @@ namespace PdfCreator
                     row = table.Rows[rowInt];
                 }
 
-                GenerateRowOfficersOfAdmin(pageSide, employee, ref row);
+                GenerateRowOfficersOfAdmin(pageSide, employee, ref row, ref deptStr);
                 currPageRow++;
                 rowInt++;
             }
