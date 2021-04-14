@@ -257,8 +257,11 @@ namespace PdfCreator
                 paragraph = row.Cells[cellInt].AddParagraph();
                 text = paragraph.AddFormattedText();
                 text.Bold = true;
-                text.Underline = Underline.Single;
-                text.AddText(employee.Department);
+                //text.Underline = Underline.Single;
+                string concatStr = employee.Department;
+                if (!string.IsNullOrWhiteSpace(employee.Notes))
+                    concatStr += " (" + employee.Notes + ")";
+                text.AddText(concatStr);
             }
 
             if (!string.IsNullOrWhiteSpace(employee.Building))
@@ -289,11 +292,54 @@ namespace PdfCreator
                 text = paragraph.AddFormattedText();
                 text.Bold = true;
                 //text.Underline = Underline.Single;
-                text.AddText(employee.Building);
+                string concatStr = employee.Building;
+                if (!string.IsNullOrWhiteSpace(employee.Notes))
+                    concatStr += " (" + employee.Notes + ")";
+                text.AddText(concatStr);
             }
 
             if (!string.IsNullOrWhiteSpace(employee.Address))
                 row.Cells[cellInt].AddParagraph(employee.Address);
+        }
+        private void GenerateRowBoardOfTrustee(PageSide pageSide, Employee employee, ref Row row)
+        {
+            int cellInt = 0;
+            Paragraph paragraph;
+            FormattedText text;
+
+            switch (pageSide)
+            {
+                case PageSide.LeftSide:
+                    cellInt = 0;
+                    break;
+                case PageSide.Middle:
+                    cellInt = 1;
+                    break;
+                case PageSide.RightSide:
+                    cellInt = 2;
+                    break;
+            }
+
+            if (!string.IsNullOrWhiteSpace(employee.Name))
+            {
+                paragraph = row.Cells[cellInt].AddParagraph();
+                text = paragraph.AddFormattedText();
+                text.Bold = true;
+                //text.Underline = Underline.Single;
+                text.AddText(employee.Name);
+            }
+
+            if (!string.IsNullOrWhiteSpace(employee.Title))
+                row.Cells[cellInt].AddParagraph(employee.Title);
+
+            if (!string.IsNullOrWhiteSpace(employee.Department))
+                row.Cells[cellInt].AddParagraph(employee.Department);
+
+            if (!string.IsNullOrWhiteSpace(employee.Address))
+                row.Cells[cellInt].AddParagraph(employee.Address);
+
+            if (!string.IsNullOrWhiteSpace(employee.EmailAddress))
+                row.Cells[cellInt].AddParagraph(employee.EmailAddress);
         }
         private void AddHeaderCustom(string text, ref Section section)
         {
@@ -535,13 +581,13 @@ namespace PdfCreator
             section.AddPageBreak();
             Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.AddFormattedText("DEPARTMENT LOCATIONS", FontLargeBold);
+            paragraph.AddFormattedText("DEPARTMENT LOCATIONS & MAIL CODES", FontLargeBold);
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
 
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
             {
-                QueryString = "select Campusbuilding, department from [buildingdept$] order by department, campusbuilding"
+                QueryString = "select Campusbuilding, department, notes from [departments$] order by department, campusbuilding"
             };
             /*
              * "select BuildingName, DeptID, Department from tbl_aux_department inner join tbl_aux_building on 
@@ -562,6 +608,7 @@ namespace PdfCreator
                 employee.ClearAll();
                 employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
                 employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
+                employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
 
                 // the last row allowed in the table
                 if (currPageRow > 45)
@@ -610,16 +657,20 @@ namespace PdfCreator
             section.AddPageBreak();
             Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.AddFormattedText("BUILDING LOCATIONS", FontLargeBold);
+            paragraph.AddFormattedText("BUILDING LOCATIONS & ABBREVIATIONS", FontLargeBold);
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
 
             /*
              * "select buildingName, address_line1 from tbl_building where address_line1 is not null order by buildingName"
              */
+            /*
+             * "select buildingName, address_line1, BuildingCode from tbl_building where address_line1 is not null order by buildingName"
+             */
+
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
             {
-                QueryString = "select campusbuilding, address from [buildings$] order by campusBuilding"
+                QueryString = "select campusbuilding, address, notes from [buildings$] order by campusBuilding"
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableBuildingDept(section);
@@ -635,6 +686,7 @@ namespace PdfCreator
                 employee.ClearAll();
                 employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
                 employee.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
+                employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
 
                 // the last row allowed in the table
                 if (currPageRow > 45)
@@ -742,6 +794,164 @@ namespace PdfCreator
 
             }
         }
+        private void DepartmentBoardOfTrustees(ref Section section)
+        {
+            // Building locations
+            section.AddPageBreak();
+            Paragraph paragraph = section.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            paragraph.AddFormattedText("BOARD OF TRUSTEES", FontLargeBold);
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            /*
+             * "select buildingName, address_line1 from tbl_building where address_line1 is not null order by buildingName"
+             */
+            /*
+             * "select buildingName, address_line1, BuildingCode from tbl_building where address_line1 is not null order by buildingName"
+             */
+
+            DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
+            {
+                QueryString = "select empname, title, department, address, email from [trustees$] order by catOrder"
+            };
+            DataTable dataTable = directoryTasks.GetData();
+            Table table = AddTableBuildingDept(section);
+            Employee employee = new Employee();
+            Row row = new Row();
+            int rowInt = 0;
+            int currPageRow = 1;
+            PageSide pageSide;
+
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                employee.ClearAll();
+                employee.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
+                employee.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
+                employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
+                employee.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
+                employee.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
+
+                // the last row allowed in the table
+                if (currPageRow > 45)
+                {
+                    // usually you would add a page break to the section
+                    // however, because we need different headers a new section is added to the document instead
+                    section.AddPageBreak();
+                    //section = document.AddSection();
+
+                    // reset variables
+                    currPageRow = 1;
+                    rowInt = 0;
+
+                    // add & set the formatted on the new page
+                    table = AddTableBuildingDept(section);
+                }
+
+                // 2nd columns beginning value; 3rd columns beginning value
+                if (currPageRow == 16 || currPageRow == 31)
+                    rowInt = 0;
+
+                if (currPageRow <= 15) // rows 1-15
+                {
+                    pageSide = PageSide.LeftSide;
+                    row = table.AddRow();
+                }
+                else if (currPageRow <= 30) // rows 16-30
+                {
+                    pageSide = PageSide.Middle;
+                    row = table.Rows[rowInt];
+                }
+                else // rows 31-45
+                {
+                    pageSide = PageSide.RightSide;
+                    row = table.Rows[rowInt];
+                }
+
+                GenerateRowBoardOfTrustee(pageSide, employee, ref row);
+            }
+        }
+        private void DepartmentOfficersOfAdmin(ref Section section)
+        {
+            // Building locations
+            section.AddPageBreak();
+            Paragraph paragraph = section.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            paragraph.AddFormattedText("OFFICERS OF ADMINISTRATION", FontLargeBold);
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            /*
+             * "select buildingName, address_line1 from tbl_building where address_line1 is not null order by buildingName"
+             */
+            /*
+             * "select buildingName, address_line1, BuildingCode from tbl_building where address_line1 is not null order by buildingName"
+             */
+
+            DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
+            {
+                QueryString = "select empname, title, department, address, email, workPhone from [officers$]"
+            };
+            DataTable dataTable = directoryTasks.GetData();
+            Table table = AddTableBuildingDept(section);
+            Employee employee = new Employee();
+            Row row = new Row();
+            // initializer for right side count
+            int rowInt = 0;
+            int currPageRow = 1;
+            PageSide pageSide;
+
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                employee.ClearAll();
+                employee.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
+                employee.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
+                employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
+                employee.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
+                employee.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
+                employee.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
+
+                // the last row allowed in the table
+                if (currPageRow > 45)
+                {
+                    // usually you would add a page break to the section
+                    // however, because we need different headers a new section is added to the document instead
+                    section.AddPageBreak();
+                    //section = document.AddSection();
+
+                    // reset variables
+                    currPageRow = 1;
+                    rowInt = 0;
+
+                    // add & set the formatted on the new page
+                    table = AddTableBuildingDept(section);
+                }
+
+                // 2nd columns beginning value; 3rd columns beginning value
+                if (currPageRow == 16 || currPageRow == 31)
+                    rowInt = 0;
+
+                if (currPageRow <= 15) // rows 1-15
+                {
+                    pageSide = PageSide.LeftSide;
+                    row = table.AddRow();
+                }
+                else if (currPageRow <= 30) // rows 16-30
+                {
+                    pageSide = PageSide.Middle;
+                    row = table.Rows[rowInt];
+                }
+                else // rows 31-45
+                {
+                    pageSide = PageSide.RightSide;
+                    row = table.Rows[rowInt];
+                }
+
+                GenerateRowBoardOfTrustee(pageSide, employee, ref row);
+                currPageRow++;
+                rowInt++;
+            }
+        }
 
         private Document CreateDocumentDepartment()
         {
@@ -771,14 +981,30 @@ namespace PdfCreator
             // Public safety info pages
             DepartmentPublicSafety(ref section);
 
-            // Department location pages
+            // Department locations & mail codes pages
             DepartmentLocations(ref section);
 
-            // Building location pages
+            // Building locations & mail codes pages
             DepartmentBuildingLocations(ref section);
 
+            // This is being refactored into DepartmentLocations();
             // Department mail code pages
-            DepartmentMailCodes(ref section);
+            //DepartmentMailCodes(ref section);
+
+            // Board of trustees
+            DepartmentBoardOfTrustees(ref section);
+
+            /*
+             "select buildingName, BuildingCode from tbl_building where BuildingCode is not null "
+            "and BuildingCode not like '%x%' and BuildingCode not like '%y%' "
+            "and BuildingCode not in ('MO','RA','TH','WT') and BuildingCode not in ('1S','2S','3S') "
+            "and BuildingCode not in ('4C','5C') order by buildingName "
+             */
+
+            // Officers of Administration
+            DepartmentOfficersOfAdmin(ref section);
+
+
 
             return document;
         }
