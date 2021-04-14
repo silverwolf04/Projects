@@ -341,6 +341,46 @@ namespace PdfCreator
             if (!string.IsNullOrWhiteSpace(employee.EmailAddress))
                 row.Cells[cellInt].AddParagraph(employee.EmailAddress);
         }
+        private void GenerateRowOfficersOfAdmin(PageSide pageSide, Employee employee, ref Row row)
+        {
+            int cellInt = 0;
+            Paragraph paragraph;
+            FormattedText text;
+
+            switch (pageSide)
+            {
+                case PageSide.LeftSide:
+                    cellInt = 0;
+                    break;
+                case PageSide.Middle:
+                    cellInt = 1;
+                    break;
+                case PageSide.RightSide:
+                    cellInt = 2;
+                    break;
+            }
+
+            if (!string.IsNullOrWhiteSpace(employee.Name))
+            {
+                paragraph = row.Cells[cellInt].AddParagraph();
+                text = paragraph.AddFormattedText();
+                text.Bold = true;
+                //text.Underline = Underline.Single;
+                text.AddText(employee.Name);
+            }
+
+            if (!string.IsNullOrWhiteSpace(employee.Title))
+                row.Cells[cellInt].AddParagraph(employee.Title);
+
+            if (!string.IsNullOrWhiteSpace(employee.Department))
+                row.Cells[cellInt].AddParagraph(employee.Department);
+
+            if (!string.IsNullOrWhiteSpace(employee.Address))
+                row.Cells[cellInt].AddParagraph(employee.Address);
+
+            if (!string.IsNullOrWhiteSpace(employee.EmailAddress))
+                row.Cells[cellInt].AddParagraph(employee.EmailAddress);
+        }
         private void AddHeaderCustom(string text, ref Section section)
         {
             HeaderFooter header = new HeaderFooter();
@@ -912,7 +952,7 @@ namespace PdfCreator
                 employee.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
 
                 // the last row allowed in the table
-                if (currPageRow > 45)
+                if (currPageRow > 36)
                 {
                     // usually you would add a page break to the section
                     // however, because we need different headers a new section is added to the document instead
@@ -928,26 +968,26 @@ namespace PdfCreator
                 }
 
                 // 2nd columns beginning value; 3rd columns beginning value
-                if (currPageRow == 16 || currPageRow == 31)
+                if (currPageRow == 13 || currPageRow == 27)
                     rowInt = 0;
 
-                if (currPageRow <= 15) // rows 1-15
+                if (currPageRow <= 12) // rows 1-12
                 {
                     pageSide = PageSide.LeftSide;
                     row = table.AddRow();
                 }
-                else if (currPageRow <= 30) // rows 16-30
+                else if (currPageRow <= 24) // rows 13-24
                 {
                     pageSide = PageSide.Middle;
                     row = table.Rows[rowInt];
                 }
-                else // rows 31-45
+                else // rows 25-36
                 {
                     pageSide = PageSide.RightSide;
                     row = table.Rows[rowInt];
                 }
 
-                GenerateRowBoardOfTrustee(pageSide, employee, ref row);
+                GenerateRowOfficersOfAdmin(pageSide, employee, ref row);
                 currPageRow++;
                 rowInt++;
             }
