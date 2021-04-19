@@ -339,7 +339,16 @@ namespace PdfCreator
                 row.Cells[cellInt].AddParagraph(employee.Address);
 
             if (!string.IsNullOrWhiteSpace(employee.EmailAddress))
-                row.Cells[cellInt].AddParagraph(employee.EmailAddress);
+            {
+                //row.Cells[cellInt].AddParagraph(employee.EmailAddress);
+                paragraph = row.Cells[cellInt].AddParagraph();
+                Hyperlink hyperlink = paragraph.AddHyperlink("mailto:" + employee.EmailAddress, HyperlinkType.Url);
+                text = hyperlink.AddFormattedText();
+                text.Font.Color = Color.FromRgb(5, 99, 193);
+                text.AddFormattedText(employee.EmailAddress, TextFormat.Underline);
+            }
+
+            row.Cells[cellInt].AddParagraph("");
         }
         private void GenerateRowOfficersOfAdmin(PageSide pageSide, Employee employee, ref Row row, ref string deptStr)
         {
@@ -382,12 +391,25 @@ namespace PdfCreator
             if (!string.IsNullOrWhiteSpace(employee.Title))
                 row.Cells[cellInt].AddParagraph(employee.Title);
 
+            if (!string.IsNullOrWhiteSpace(employee.Url))
+            {
+                paragraph = row.Cells[cellInt].AddParagraph();
+                Hyperlink hyperlink = paragraph.AddHyperlink(employee.Url, HyperlinkType.Url);
+                FormattedText formattedText = hyperlink.AddFormattedText();
+                formattedText.Font.Color = Color.FromRgb(5, 99, 193);
+                formattedText.AddFormattedText(employee.Url, TextFormat.Underline);
+                //row.Cells[cellInt].AddParagraph(employee.Url);
+            }
+
             /*
             if (!string.IsNullOrWhiteSpace(employee.Department))
                 row.Cells[cellInt].AddParagraph(employee.Department);
             */
             if (!string.IsNullOrWhiteSpace(employee.PhoneNumber))
                 row.Cells[cellInt].AddParagraph(employee.PhoneNumber);
+
+            if (!string.IsNullOrWhiteSpace(employee.FaxNumber))
+                row.Cells[cellInt].AddParagraph("Fax: " + employee.FaxNumber);
 
             if (!string.IsNullOrWhiteSpace(employee.Address))
                 row.Cells[cellInt].AddParagraph(employee.Address);
@@ -509,6 +531,7 @@ namespace PdfCreator
                 employee.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
                 employee.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
                 employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
+                employee.Url = dataRow[Properties.DepartmentPdf.Default.URL].ToString();
 
                 if (categoryStr != employee.Category)
                 {
@@ -522,7 +545,17 @@ namespace PdfCreator
                 if (!string.IsNullOrEmpty(employee.Title))
                     _ = row.Cells[1].AddParagraph(employee.Title);
                 _ = row.Cells[1].AddParagraph(employee.Name);
-                _ = row.Cells[2].AddParagraph(employee.PhoneNumber);
+                if(!string.IsNullOrEmpty(employee.PhoneNumber))
+                    _ = row.Cells[2].AddParagraph(employee.PhoneNumber);
+                if(!string.IsNullOrEmpty(employee.Url))
+                {
+                    //_ = row.Cells[2].AddParagraph(employee.Url);
+                    paragraph = row.Cells[2].AddParagraph();
+                    Hyperlink hyperlink = paragraph.AddHyperlink(employee.Url, HyperlinkType.Url);
+                    FormattedText text = hyperlink.AddFormattedText();
+                    text.Font.Color = Color.FromRgb(5, 99, 193);
+                    text.AddFormattedText(employee.Url, TextFormat.Underline);
+                }
                 _ = row.Cells[3].AddParagraph(employee.Notes);
             }
         }
@@ -872,7 +905,7 @@ namespace PdfCreator
                 QueryString = "select empname, title, department, address, email from [trustees$] order by catOrder"
             };
             DataTable dataTable = directoryTasks.GetData();
-            Table table = AddTableBuildingDept(section);
+            Table table = AddTableFacStaff(section);
             Employee employee = new Employee();
             Row row = new Row();
             int rowInt = 0;
@@ -889,7 +922,7 @@ namespace PdfCreator
                 employee.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
 
                 // the last row allowed in the table
-                if (currPageRow > 45)
+                if (currPageRow > 20)
                 {
                     // usually you would add a page break to the section
                     // however, because we need different headers a new section is added to the document instead
@@ -901,24 +934,19 @@ namespace PdfCreator
                     rowInt = 0;
 
                     // add & set the formatted on the new page
-                    table = AddTableBuildingDept(section);
+                    table = AddTableFacStaff(section);
                 }
 
                 // 2nd columns beginning value; 3rd columns beginning value
-                if (currPageRow == 16 || currPageRow == 31)
+                if (currPageRow == 11)
                     rowInt = 0;
 
-                if (currPageRow <= 15) // rows 1-15
+                if (currPageRow <= 10) // rows 1-10
                 {
                     pageSide = PageSide.LeftSide;
                     row = table.AddRow();
                 }
-                else if (currPageRow <= 30) // rows 16-30
-                {
-                    pageSide = PageSide.Middle;
-                    row = table.Rows[rowInt];
-                }
-                else // rows 31-45
+                else // rows 11-20
                 {
                     pageSide = PageSide.RightSide;
                     row = table.Rows[rowInt];
@@ -946,7 +974,7 @@ namespace PdfCreator
 
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
             {
-                QueryString = "select empname, title, department, address, email, workPhone from [officers$] order by catOrder"
+                QueryString = "select empname, title, department, address, email, url,  workPhone, faxPhone from [officers$] order by catOrder, department, rank"
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableFacStaff(section);
@@ -967,6 +995,8 @@ namespace PdfCreator
                 employee.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
                 employee.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
                 employee.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
+                employee.Url = dataRow[Properties.DepartmentPdf.Default.URL].ToString();
+                employee.FaxNumber = dataRow[Properties.DepartmentPdf.Default.FaxNumber].ToString();
 
                 // the last row allowed in the table
                 if (currPageRow > 26)
@@ -981,7 +1011,7 @@ namespace PdfCreator
                     rowInt = 0;
 
                     // add & set the formatted on the new page
-                    table = AddTableBuildingDept(section);
+                    table = AddTableFacStaff(section);
                 }
 
                 // 2nd columns beginning value
