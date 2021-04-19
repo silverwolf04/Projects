@@ -341,7 +341,7 @@ namespace PdfCreator
             if (!string.IsNullOrWhiteSpace(employee.EmailAddress))
                 row.Cells[cellInt].AddParagraph(employee.EmailAddress);
         }
-        private void GenerateRowOfficersOfAdmin(PageSide pageSide, Employee employee, ref Row row, ref String deptStr)
+        private void GenerateRowOfficersOfAdmin(PageSide pageSide, Employee employee, ref Row row, ref string deptStr)
         {
             int cellInt = 0;
             Paragraph paragraph;
@@ -352,11 +352,8 @@ namespace PdfCreator
                 case PageSide.LeftSide:
                     cellInt = 0;
                     break;
-                case PageSide.Middle:
-                    cellInt = 1;
-                    break;
                 case PageSide.RightSide:
-                    cellInt = 2;
+                    cellInt = 1;
                     break;
             }
 
@@ -397,6 +394,8 @@ namespace PdfCreator
 
             if (!string.IsNullOrWhiteSpace(employee.EmailAddress))
                 row.Cells[cellInt].AddParagraph(employee.EmailAddress);
+
+            row.Cells[cellInt].AddParagraph("");
         }
         private void AddHeaderCustom(string text, ref Section section)
         {
@@ -950,7 +949,7 @@ namespace PdfCreator
                 QueryString = "select empname, title, department, address, email, workPhone from [officers$] order by catOrder"
             };
             DataTable dataTable = directoryTasks.GetData();
-            Table table = AddTableBuildingDept(section);
+            Table table = AddTableFacStaff(section);
             Employee employee = new Employee();
             Row row = new Row();
             // initializer for right side count
@@ -970,7 +969,7 @@ namespace PdfCreator
                 employee.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
 
                 // the last row allowed in the table
-                if (currPageRow > 36)
+                if (currPageRow > 26)
                 {
                     // usually you would add a page break to the section
                     // however, because we need different headers a new section is added to the document instead
@@ -985,21 +984,16 @@ namespace PdfCreator
                     table = AddTableBuildingDept(section);
                 }
 
-                // 2nd columns beginning value; 3rd columns beginning value
-                if (currPageRow == 13 || currPageRow == 27)
+                // 2nd columns beginning value
+                if (currPageRow == 14)
                     rowInt = 0;
 
-                if (currPageRow <= 12) // rows 1-12
+                if (currPageRow <= 13) // rows 1-13
                 {
                     pageSide = PageSide.LeftSide;
                     row = table.AddRow();
                 }
-                else if (currPageRow <= 24) // rows 13-24
-                {
-                    pageSide = PageSide.Middle;
-                    row = table.Rows[rowInt];
-                }
-                else // rows 25-36
+                else // rows 14-26
                 {
                     pageSide = PageSide.RightSide;
                     row = table.Rows[rowInt];
