@@ -54,7 +54,7 @@ namespace PdfCreator.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("EmpName")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Name")]
         public string Name {
             get {
                 return ((string)(this["Name"]));

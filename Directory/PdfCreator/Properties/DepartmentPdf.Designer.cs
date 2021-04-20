@@ -64,9 +64,9 @@ namespace PdfCreator.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("select empName,department,campusBuilding,campusOfficeNo,email,faxphone,workphone," +
-            "title,url,notes,category from [services$] where empName is not null order by cat" +
-            "egory, catsuborder")]
+        [global::System.Configuration.DefaultSettingValueAttribute("select Name,department,campusBuilding,campusOfficeNo,email,faxphone,workphone,tit" +
+            "le,url,notes,category from [services$] where Name is not null order by category," +
+            " catsuborder")]
         public string ServiceQuery {
             get {
                 return ((string)(this["ServiceQuery"]));
@@ -84,7 +84,7 @@ namespace PdfCreator.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("EmpName")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Name")]
         public string Name {
             get {
                 return ((string)(this["Name"]));
@@ -192,9 +192,9 @@ namespace PdfCreator.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("select empName,department,campusBuilding,campusOfficeNo,email,faxphone, workphone" +
-            ",title,url,notes,category, cellPhone from [emergency$] where empName is not null" +
-            " order by category, catsuborder")]
+        [global::System.Configuration.DefaultSettingValueAttribute("select Name,department,campusBuilding,campusOfficeNo,email,faxphone, workphone,ti" +
+            "tle,url,notes,category, cellPhone from [emergency$] where Name is not null order" +
+            " by category, catsuborder")]
         public string EmergencyQuery {
             get {
                 return ((string)(this["EmergencyQuery"]));
@@ -347,8 +347,8 @@ namespace PdfCreator.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("select empname, title, department, address, email from [trustees$] order by catOr" +
-            "der")]
+        [global::System.Configuration.DefaultSettingValueAttribute("select name, title, department, address, email from [trustees$] order by catOrder" +
+            "")]
         public string TrusteesQuery {
             get {
                 return ((string)(this["TrusteesQuery"]));
@@ -357,8 +357,8 @@ namespace PdfCreator.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("select empname, title, department, address, email, url,  workPhone, faxPhone from" +
-            " [officers$] order by catOrder, department, rank")]
+        [global::System.Configuration.DefaultSettingValueAttribute("select name, title, department, address, email, url,  workPhone, faxPhone from [o" +
+            "fficers$] order by catOrder, department, rank")]
         public string OfficersQuery {
             get {
                 return ((string)(this["OfficersQuery"]));

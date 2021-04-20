@@ -7,6 +7,24 @@ using Oracle.ManagedDataAccess.Client;
 
 namespace PdfCreator
 {
+    static class DataConnectorsExt
+    {
+        public static string GetValue(this DataRow dataRow, string column)
+        {
+            string fieldVal;
+            if (dataRow.Table.Columns.Contains(column))
+            {
+                fieldVal = dataRow[column].ToString();
+            }
+            else
+            {
+                Console.WriteLine("Column {0} not found in dataset", column);
+                fieldVal = null;
+            }
+
+            return fieldVal;
+        }
+    }
     class DataConnectors
     {
         public DataProviders DataProvider { get; set; }

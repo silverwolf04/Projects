@@ -74,7 +74,7 @@ namespace PdfCreator
             {
                 //PdfType = (PdfTypes)Enum.Parse(typeof(PdfTypes), argStr);
                 PdfType = pdfTypes;
-                Console.WriteLine("Type parsed:{0} From:{1}", PdfType, pdfTypes);
+                //Console.WriteLine("Type parsed:{0} From:{1}", PdfType, pdfTypes);
             }
             else
             {
@@ -160,7 +160,43 @@ namespace PdfCreator
             table.TopPadding = Unit.FromPoint(5);
             return table;
         }
-        private void GenerateRow(PageSide pageSide, Entry employee, ref Row row)
+        private Entry FacStaffFillEntry(DataRow dataRow)
+        {
+            Entry entry = new Entry
+            {
+                Name = DataConnectorsExt.GetValue(dataRow, Properties.FacStaffPdf.Default.Name),
+                Building = DataConnectorsExt.GetValue(dataRow, Properties.FacStaffPdf.Default.Building),
+                PhoneNumber = DataConnectorsExt.GetValue(dataRow, Properties.FacStaffPdf.Default.PhoneNumber),
+                Department = DataConnectorsExt.GetValue(dataRow, Properties.FacStaffPdf.Default.Department),
+                EmailAddress = DataConnectorsExt.GetValue(dataRow, Properties.FacStaffPdf.Default.EmailAddress),
+                FaxNumber = DataConnectorsExt.GetValue(dataRow, Properties.FacStaffPdf.Default.FaxNumber),
+                Office = DataConnectorsExt.GetValue(dataRow, Properties.FacStaffPdf.Default.Office),
+                Title = DataConnectorsExt.GetValue(dataRow, Properties.FacStaffPdf.Default.Title),
+                Url = DataConnectorsExt.GetValue(dataRow, Properties.FacStaffPdf.Default.URL)
+            };
+            return entry;
+        }
+        private Entry DepartmentFillEntry(DataRow dataRow)
+        {
+            Entry entry = new Entry
+            {
+                Name = DataConnectorsExt.GetValue(dataRow, Properties.DepartmentPdf.Default.Name),
+                Address = DataConnectorsExt.GetValue(dataRow, Properties.DepartmentPdf.Default.Address),
+                Building = DataConnectorsExt.GetValue(dataRow, Properties.DepartmentPdf.Default.Building),
+                PhoneNumber = DataConnectorsExt.GetValue(dataRow, Properties.DepartmentPdf.Default.PhoneNumber),
+                Category = DataConnectorsExt.GetValue(dataRow, Properties.DepartmentPdf.Default.Category),
+                CellNumber = DataConnectorsExt.GetValue(dataRow, Properties.DepartmentPdf.Default.CellNumber),
+                Department = DataConnectorsExt.GetValue(dataRow, Properties.DepartmentPdf.Default.Department),
+                EmailAddress = DataConnectorsExt.GetValue(dataRow, Properties.DepartmentPdf.Default.EmailAddress),
+                FaxNumber = DataConnectorsExt.GetValue(dataRow, Properties.DepartmentPdf.Default.FaxNumber),
+                Notes = DataConnectorsExt.GetValue(dataRow, Properties.DepartmentPdf.Default.Notes),
+                Office = DataConnectorsExt.GetValue(dataRow, Properties.DepartmentPdf.Default.Office),
+                Title = DataConnectorsExt.GetValue(dataRow, Properties.DepartmentPdf.Default.Title),
+                Url = DataConnectorsExt.GetValue(dataRow, Properties.DepartmentPdf.Default.URL)
+            };
+            return entry;
+        }
+        private void GenerateRow(PageSide pageSide, Entry entry, ref Row row)
         {
             int cellInt = 0;
             string concatenatedStr = string.Empty;
@@ -177,49 +213,49 @@ namespace PdfCreator
                     break;
             }
 
-            if (!string.IsNullOrWhiteSpace(employee.Name))
+            if (!string.IsNullOrWhiteSpace(entry.Name))
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
-                paragraph.AddFormattedText(employee.Name, TextFormat.Bold);
+                paragraph.AddFormattedText(entry.Name, TextFormat.Bold);
             }
-            if(!string.IsNullOrWhiteSpace(employee.Title))
-                row.Cells[cellInt].AddParagraph("Title: " + employee.Title);
-            if(!string.IsNullOrWhiteSpace(employee.Department))
-                row.Cells[cellInt].AddParagraph("Dept: " + employee.Department);
-            if (!string.IsNullOrWhiteSpace(employee.Building))
-                concatenatedStr = "Bldg: " + employee.Building;
-            if (!string.IsNullOrWhiteSpace(employee.Building) && !string.IsNullOrWhiteSpace(employee.Office))
-                concatenatedStr += " Office/Room: " + employee.Office;
+            if(!string.IsNullOrWhiteSpace(entry.Title))
+                row.Cells[cellInt].AddParagraph("Title: " + entry.Title);
+            if(!string.IsNullOrWhiteSpace(entry.Department))
+                row.Cells[cellInt].AddParagraph("Dept: " + entry.Department);
+            if (!string.IsNullOrWhiteSpace(entry.Building))
+                concatenatedStr = "Bldg: " + entry.Building;
+            if (!string.IsNullOrWhiteSpace(entry.Building) && !string.IsNullOrWhiteSpace(entry.Office))
+                concatenatedStr += " Office/Room: " + entry.Office;
             if (!string.IsNullOrEmpty(concatenatedStr))
                 row.Cells[cellInt].AddParagraph(concatenatedStr);
-            if (!string.IsNullOrWhiteSpace(employee.Url))
+            if (!string.IsNullOrWhiteSpace(entry.Url))
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
                 paragraph.AddText("Home Page: ");
-                Hyperlink hyperlink = paragraph.AddHyperlink(employee.Url, HyperlinkType.Url);
+                Hyperlink hyperlink = paragraph.AddHyperlink(entry.Url, HyperlinkType.Url);
                 text = hyperlink.AddFormattedText();
                 text.Font.Color = Color.FromRgb(5, 99, 193);
                 text.AddFormattedText("Click Here", TextFormat.Underline);
             }
-            if (!string.IsNullOrWhiteSpace(employee.EmailAddress))
+            if (!string.IsNullOrWhiteSpace(entry.EmailAddress))
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
                 paragraph.AddText("Email Address: ");
-                Hyperlink hyperlink = paragraph.AddHyperlink("mailto:" + employee.EmailAddress, HyperlinkType.Url);
+                Hyperlink hyperlink = paragraph.AddHyperlink("mailto:" + entry.EmailAddress, HyperlinkType.Url);
                 text = hyperlink.AddFormattedText();
                 text.Font.Color = Color.FromRgb(5, 99, 193);
-                text.AddFormattedText(employee.EmailAddress, TextFormat.Underline);
+                text.AddFormattedText(entry.EmailAddress, TextFormat.Underline);
             }
-            if (!string.IsNullOrEmpty(employee.PhoneNumber))
-                row.Cells[cellInt].AddParagraph("Phone: " + employee.PhoneNumber);
-            if (!string.IsNullOrWhiteSpace(employee.FaxNumber))
-                row.Cells[cellInt].AddParagraph("Fax: " + employee.FaxNumber);
+            if (!string.IsNullOrEmpty(entry.PhoneNumber))
+                row.Cells[cellInt].AddParagraph("Phone: " + entry.PhoneNumber);
+            if (!string.IsNullOrWhiteSpace(entry.FaxNumber))
+                row.Cells[cellInt].AddParagraph("Fax: " + entry.FaxNumber);
             row.Cells[cellInt].AddParagraph("");
         }
-        private void GenerateRowDeptCodes(PageSide pageSide, Entry employee, ref Row row)
+        private void GenerateRowDeptCodes(PageSide pageSide, Entry entry, ref Row row)
         {
             int cellInt = 0;
-            string concateStr = employee.Department + " [" + employee.Notes + "]";
+            string concateStr = entry.Department + " [" + entry.Notes + "]";
 
             switch (pageSide)
             {
@@ -233,7 +269,7 @@ namespace PdfCreator
 
             row.Cells[cellInt].AddParagraph(concateStr).AddLineBreak();
         }
-        private void GenerateRowBuildingDept(PageSide pageSide, Entry employee, ref Row row)
+        private void GenerateRowBuildingDept(PageSide pageSide, Entry entry, ref Row row)
         {
             int cellInt = 0;
             Paragraph paragraph;
@@ -252,22 +288,22 @@ namespace PdfCreator
                     break;
             }
 
-            if (!string.IsNullOrWhiteSpace(employee.Department))
+            if (!string.IsNullOrWhiteSpace(entry.Department))
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
                 text = paragraph.AddFormattedText();
                 text.Bold = true;
                 //text.Underline = Underline.Single;
-                string concatStr = employee.Department;
-                if (!string.IsNullOrWhiteSpace(employee.Notes))
-                    concatStr += " (" + employee.Notes + ")";
+                string concatStr = entry.Department;
+                if (!string.IsNullOrWhiteSpace(entry.Notes))
+                    concatStr += " (" + entry.Notes + ")";
                 text.AddText(concatStr);
             }
 
-            if (!string.IsNullOrWhiteSpace(employee.Building))
-                row.Cells[cellInt].AddParagraph(employee.Building);
+            if (!string.IsNullOrWhiteSpace(entry.Building))
+                row.Cells[cellInt].AddParagraph(entry.Building);
         }
-        private void GenerateRowBuildingLocate(PageSide pageSide, Entry employee, ref Row row)
+        private void GenerateRowBuildingLocate(PageSide pageSide, Entry entry, ref Row row)
         {
             int cellInt = 0;
             Paragraph paragraph;
@@ -286,22 +322,22 @@ namespace PdfCreator
                     break;
             }
 
-            if (!string.IsNullOrWhiteSpace(employee.Building))
+            if (!string.IsNullOrWhiteSpace(entry.Building))
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
                 text = paragraph.AddFormattedText();
                 text.Bold = true;
                 //text.Underline = Underline.Single;
-                string concatStr = employee.Building;
-                if (!string.IsNullOrWhiteSpace(employee.Notes))
-                    concatStr += " (" + employee.Notes + ")";
+                string concatStr = entry.Building;
+                if (!string.IsNullOrWhiteSpace(entry.Notes))
+                    concatStr += " (" + entry.Notes + ")";
                 text.AddText(concatStr);
             }
 
-            if (!string.IsNullOrWhiteSpace(employee.Address))
-                row.Cells[cellInt].AddParagraph(employee.Address);
+            if (!string.IsNullOrWhiteSpace(entry.Address))
+                row.Cells[cellInt].AddParagraph(entry.Address);
         }
-        private void GenerateRowBoardOfTrustee(PageSide pageSide, Entry employee, ref Row row)
+        private void GenerateRowBoardOfTrustee(PageSide pageSide, Entry entry, ref Row row)
         {
             int cellInt = 0;
             Paragraph paragraph;
@@ -320,37 +356,37 @@ namespace PdfCreator
                     break;
             }
 
-            if (!string.IsNullOrWhiteSpace(employee.Name))
+            if (!string.IsNullOrWhiteSpace(entry.Name))
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
                 text = paragraph.AddFormattedText();
                 text.Bold = true;
                 //text.Underline = Underline.Single;
-                text.AddText(employee.Name);
+                text.AddText(entry.Name);
             }
 
-            if (!string.IsNullOrWhiteSpace(employee.Title))
-                row.Cells[cellInt].AddParagraph(employee.Title);
+            if (!string.IsNullOrWhiteSpace(entry.Title))
+                row.Cells[cellInt].AddParagraph(entry.Title);
 
-            if (!string.IsNullOrWhiteSpace(employee.Department))
-                row.Cells[cellInt].AddParagraph(employee.Department);
+            if (!string.IsNullOrWhiteSpace(entry.Department))
+                row.Cells[cellInt].AddParagraph(entry.Department);
 
-            if (!string.IsNullOrWhiteSpace(employee.Address))
-                row.Cells[cellInt].AddParagraph(employee.Address);
+            if (!string.IsNullOrWhiteSpace(entry.Address))
+                row.Cells[cellInt].AddParagraph(entry.Address);
 
-            if (!string.IsNullOrWhiteSpace(employee.EmailAddress))
+            if (!string.IsNullOrWhiteSpace(entry.EmailAddress))
             {
                 //row.Cells[cellInt].AddParagraph(employee.EmailAddress);
                 paragraph = row.Cells[cellInt].AddParagraph();
-                Hyperlink hyperlink = paragraph.AddHyperlink("mailto:" + employee.EmailAddress, HyperlinkType.Url);
+                Hyperlink hyperlink = paragraph.AddHyperlink("mailto:" + entry.EmailAddress, HyperlinkType.Url);
                 text = hyperlink.AddFormattedText();
                 text.Font.Color = Color.FromRgb(5, 99, 193);
-                text.AddFormattedText(employee.EmailAddress, TextFormat.Underline);
+                text.AddFormattedText(entry.EmailAddress, TextFormat.Underline);
             }
 
             row.Cells[cellInt].AddParagraph("");
         }
-        private void GenerateRowOfficersOfAdmin(PageSide pageSide, Entry employee, ref Row row, ref string deptStr)
+        private void GenerateRowOfficersOfAdmin(PageSide pageSide, Entry entry, ref Row row, ref string deptStr)
         {
             int cellInt = 0;
             Paragraph paragraph;
@@ -366,19 +402,19 @@ namespace PdfCreator
                     break;
             }
 
-            if(deptStr != employee.Department)
+            if(deptStr != entry.Department)
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
-                deptStr = employee.Department;
+                deptStr = entry.Department;
                 text = paragraph.AddFormattedText();
                 text.Underline = Underline.Single;
                 text.Bold = true;
-                text.AddText(employee.Department);
+                text.AddText(entry.Department);
             }
 
-            if (!string.IsNullOrWhiteSpace(employee.Name))
+            if (!string.IsNullOrWhiteSpace(entry.Name))
             {
-                row.Cells[cellInt].AddParagraph(employee.Name);
+                row.Cells[cellInt].AddParagraph(entry.Name);
                 /*
                 paragraph = row.Cells[cellInt].AddParagraph();
                 text = paragraph.AddFormattedText();
@@ -388,16 +424,16 @@ namespace PdfCreator
                 */
             }
 
-            if (!string.IsNullOrWhiteSpace(employee.Title))
-                row.Cells[cellInt].AddParagraph(employee.Title);
+            if (!string.IsNullOrWhiteSpace(entry.Title))
+                row.Cells[cellInt].AddParagraph(entry.Title);
 
-            if (!string.IsNullOrWhiteSpace(employee.Url))
+            if (!string.IsNullOrWhiteSpace(entry.Url))
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
-                Hyperlink hyperlink = paragraph.AddHyperlink(employee.Url, HyperlinkType.Url);
+                Hyperlink hyperlink = paragraph.AddHyperlink(entry.Url, HyperlinkType.Url);
                 FormattedText formattedText = hyperlink.AddFormattedText();
                 formattedText.Font.Color = Color.FromRgb(5, 99, 193);
-                formattedText.AddFormattedText(employee.Url, TextFormat.Underline);
+                formattedText.AddFormattedText(entry.Url, TextFormat.Underline);
                 //row.Cells[cellInt].AddParagraph(employee.Url);
             }
 
@@ -405,17 +441,17 @@ namespace PdfCreator
             if (!string.IsNullOrWhiteSpace(employee.Department))
                 row.Cells[cellInt].AddParagraph(employee.Department);
             */
-            if (!string.IsNullOrWhiteSpace(employee.PhoneNumber))
-                row.Cells[cellInt].AddParagraph(employee.PhoneNumber);
+            if (!string.IsNullOrWhiteSpace(entry.PhoneNumber))
+                row.Cells[cellInt].AddParagraph(entry.PhoneNumber);
 
-            if (!string.IsNullOrWhiteSpace(employee.FaxNumber))
-                row.Cells[cellInt].AddParagraph("Fax: " + employee.FaxNumber);
+            if (!string.IsNullOrWhiteSpace(entry.FaxNumber))
+                row.Cells[cellInt].AddParagraph("Fax: " + entry.FaxNumber);
 
-            if (!string.IsNullOrWhiteSpace(employee.Address))
-                row.Cells[cellInt].AddParagraph(employee.Address);
+            if (!string.IsNullOrWhiteSpace(entry.Address))
+                row.Cells[cellInt].AddParagraph(entry.Address);
 
-            if (!string.IsNullOrWhiteSpace(employee.EmailAddress))
-                row.Cells[cellInt].AddParagraph(employee.EmailAddress);
+            if (!string.IsNullOrWhiteSpace(entry.EmailAddress))
+                row.Cells[cellInt].AddParagraph(entry.EmailAddress);
 
             row.Cells[cellInt].AddParagraph("");
         }
@@ -512,7 +548,7 @@ namespace PdfCreator
             _ = paragraph.AddFormattedText("After Hours Emergency Notifications:", FontLargeBold);
 
             //section = document.AddSection();
-            Entry employee = new Entry();
+            Entry entry = new Entry();
             // add & set the table margins on the new page
             Table table = AddTableDept(section);
             string categoryStr = string.Empty;
@@ -526,44 +562,44 @@ namespace PdfCreator
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 // DepartmentPdf properties
-                employee.Category = dataRow[Properties.DepartmentPdf.Default.Category].ToString();
-                employee.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
-                employee.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
-                employee.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
-                employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
-                employee.Url = dataRow[Properties.DepartmentPdf.Default.URL].ToString();
+                entry.Category = dataRow[Properties.DepartmentPdf.Default.Category].ToString();
+                entry.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
+                entry.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
+                entry.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
+                entry.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
+                entry.Url = dataRow[Properties.DepartmentPdf.Default.URL].ToString();
 
-                if (categoryStr != employee.Category)
+                if (categoryStr != entry.Category)
                 {
                     paragraph = section.AddParagraph();
-                    categoryStr = employee.Category;
-                    _ = paragraph.AddFormattedText(Environment.NewLine + employee.Category, TextFormat.Underline);
+                    categoryStr = entry.Category;
+                    _ = paragraph.AddFormattedText(Environment.NewLine + entry.Category, TextFormat.Underline);
                     table = AddTableDept(section);
                 }
 
                 row = table.AddRow();
-                if (!string.IsNullOrEmpty(employee.Title))
-                    _ = row.Cells[1].AddParagraph(employee.Title);
-                _ = row.Cells[1].AddParagraph(employee.Name);
-                if(!string.IsNullOrEmpty(employee.PhoneNumber))
-                    _ = row.Cells[2].AddParagraph(employee.PhoneNumber);
-                if(!string.IsNullOrEmpty(employee.Url))
+                if (!string.IsNullOrEmpty(entry.Title))
+                    _ = row.Cells[1].AddParagraph(entry.Title);
+                _ = row.Cells[1].AddParagraph(entry.Name);
+                if(!string.IsNullOrEmpty(entry.PhoneNumber))
+                    _ = row.Cells[2].AddParagraph(entry.PhoneNumber);
+                if(!string.IsNullOrEmpty(entry.Url))
                 {
                     //_ = row.Cells[2].AddParagraph(employee.Url);
                     paragraph = row.Cells[2].AddParagraph();
-                    Hyperlink hyperlink = paragraph.AddHyperlink(employee.Url, HyperlinkType.Url);
+                    Hyperlink hyperlink = paragraph.AddHyperlink(entry.Url, HyperlinkType.Url);
                     FormattedText text = hyperlink.AddFormattedText();
                     text.Font.Color = Color.FromRgb(5, 99, 193);
-                    text.AddFormattedText(employee.Url, TextFormat.Underline);
+                    text.AddFormattedText(entry.Url, TextFormat.Underline);
                 }
-                _ = row.Cells[3].AddParagraph(employee.Notes);
+                _ = row.Cells[3].AddParagraph(entry.Notes);
             }
         }
         private void DepartmentEmergencyNumbers(ref Section section)
         {
             // Emergency phone numbers
             section.AddPageBreak();
-            Entry employee = new Entry();
+            Entry entry = new Entry();
             Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
@@ -578,32 +614,32 @@ namespace PdfCreator
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 // DepartmentPdf properties
-                employee.Category = dataRow[Properties.DepartmentPdf.Default.Category].ToString();
-                employee.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
-                employee.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
-                employee.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
-                employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
-                employee.CellNumber = dataRow[Properties.DepartmentPdf.Default.CellNumber].ToString();
+                entry.Category = dataRow[Properties.DepartmentPdf.Default.Category].ToString();
+                entry.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
+                entry.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
+                entry.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
+                entry.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
+                entry.CellNumber = dataRow[Properties.DepartmentPdf.Default.CellNumber].ToString();
 
                 // Print the category section one time
-                if (categoryStr != employee.Category)
+                if (categoryStr != entry.Category)
                 {
                     paragraph = section.AddParagraph();
-                    categoryStr = employee.Category;
+                    categoryStr = entry.Category;
                     paragraph.AddLineBreak();
-                    _ = paragraph.AddFormattedText(employee.Category, TextFormat.Underline);
+                    _ = paragraph.AddFormattedText(entry.Category, TextFormat.Underline);
                     table = AddTableEmergency(section);
                 }
 
                 // create a row in the table
                 Row row = table.AddRow();
-                if (!string.IsNullOrEmpty(employee.Title))
-                    _ = row.Cells[0].AddParagraph(employee.Title);
-                _ = row.Cells[0].AddParagraph(employee.Name);
-                _ = row.Cells[1].AddParagraph(employee.PhoneNumber);
-                if (!string.IsNullOrEmpty(employee.CellNumber))
-                    _ = row.Cells[2].AddParagraph(employee.CellNumber);
-                _ = row.Cells[3].AddParagraph(employee.Notes);
+                if (!string.IsNullOrEmpty(entry.Title))
+                    _ = row.Cells[0].AddParagraph(entry.Title);
+                _ = row.Cells[0].AddParagraph(entry.Name);
+                _ = row.Cells[1].AddParagraph(entry.PhoneNumber);
+                if (!string.IsNullOrEmpty(entry.CellNumber))
+                    _ = row.Cells[2].AddParagraph(entry.CellNumber);
+                _ = row.Cells[3].AddParagraph(entry.Notes);
             }
         }
         private void DepartmentGenCampusInfo(ref Section section)
@@ -686,7 +722,7 @@ namespace PdfCreator
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableBuildingDept(section);
             Row row = new Row();
-            Entry employee = new Entry();
+            Entry entry = new Entry();
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
@@ -694,10 +730,10 @@ namespace PdfCreator
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                employee.ClearAll();
-                employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
-                employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
-                employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
+                entry.ClearAll();
+                entry.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
+                entry.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
+                entry.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
 
                 // the last row allowed in the table
                 if (currPageRow > 45)
@@ -735,7 +771,7 @@ namespace PdfCreator
                     row = table.Rows[rowInt];
                 }
 
-                GenerateRowBuildingDept(pageSide, employee, ref row);
+                GenerateRowBuildingDept(pageSide, entry, ref row);
                 currPageRow++;
                 rowInt++;
             }
@@ -763,7 +799,7 @@ namespace PdfCreator
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableBuildingDept(section);
-            Entry employee = new Entry();
+            Entry entry = new Entry();
             Row row = new Row();
             // initializer for right side count
             int rowInt = 0;
@@ -772,10 +808,10 @@ namespace PdfCreator
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                employee.ClearAll();
-                employee.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
-                employee.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
-                employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
+                entry.ClearAll();
+                entry.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
+                entry.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
+                entry.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
 
                 // the last row allowed in the table
                 if (currPageRow > 45)
@@ -813,7 +849,7 @@ namespace PdfCreator
                     row = table.Rows[rowInt];
                 }
 
-                GenerateRowBuildingLocate(pageSide, employee, ref row);
+                GenerateRowBuildingLocate(pageSide, entry, ref row);
                 currPageRow++;
                 rowInt++;
             }
@@ -838,15 +874,15 @@ namespace PdfCreator
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
-            Entry employee = new Entry();
+            Entry entry = new Entry();
             Row row = new Row();
             PageSide pageSide;
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                employee.ClearAll();
-                employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
-                employee.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
+                entry.ClearAll();
+                entry.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
+                entry.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
 
                 if (currPageRow > 50)
                 {
@@ -877,7 +913,7 @@ namespace PdfCreator
                     row = table.Rows[rowInt];
                 }
 
-                GenerateRowDeptCodes(pageSide, employee, ref row);
+                GenerateRowDeptCodes(pageSide, entry, ref row);
                 currPageRow++;
                 rowInt++;
 
@@ -906,7 +942,7 @@ namespace PdfCreator
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableFacStaff(section);
-            Entry employee = new Entry();
+            Entry entry = new Entry();
             Row row = new Row();
             int rowInt = 0;
             int currPageRow = 1;
@@ -914,12 +950,12 @@ namespace PdfCreator
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                employee.ClearAll();
-                employee.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
-                employee.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
-                employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
-                employee.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
-                employee.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
+                entry.ClearAll();
+                entry.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
+                entry.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
+                entry.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
+                entry.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
+                entry.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
 
                 // the last row allowed in the table
                 if (currPageRow > 20)
@@ -952,7 +988,7 @@ namespace PdfCreator
                     row = table.Rows[rowInt];
                 }
 
-                GenerateRowBoardOfTrustee(pageSide, employee, ref row);
+                GenerateRowBoardOfTrustee(pageSide, entry, ref row);
             }
         }
         private void DepartmentOfficersOfAdmin(ref Section section)
@@ -978,7 +1014,7 @@ namespace PdfCreator
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableFacStaff(section);
-            Entry employee = new Entry();
+            Entry entry = new Entry();
             Row row = new Row();
             // initializer for right side count
             int rowInt = 0;
@@ -988,18 +1024,18 @@ namespace PdfCreator
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                employee.ClearAll();
-                employee.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
-                employee.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
-                employee.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
-                employee.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
-                employee.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
-                employee.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
-                employee.Url = dataRow[Properties.DepartmentPdf.Default.URL].ToString();
-                employee.FaxNumber = dataRow[Properties.DepartmentPdf.Default.FaxNumber].ToString();
+                entry.ClearAll();
+                entry.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
+                entry.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
+                entry.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
+                entry.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
+                entry.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
+                entry.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
+                entry.Url = dataRow[Properties.DepartmentPdf.Default.URL].ToString();
+                entry.FaxNumber = dataRow[Properties.DepartmentPdf.Default.FaxNumber].ToString();
 
                 // the last row allowed in the table
-                if (currPageRow > 26)
+                if (currPageRow > 24)
                 {
                     // usually you would add a page break to the section
                     // however, because we need different headers a new section is added to the document instead
@@ -1015,21 +1051,21 @@ namespace PdfCreator
                 }
 
                 // 2nd columns beginning value
-                if (currPageRow == 14)
+                if (currPageRow == 13)
                     rowInt = 0;
 
-                if (currPageRow <= 13) // rows 1-13
+                if (currPageRow <= 12) // rows 1-12
                 {
                     pageSide = PageSide.LeftSide;
                     row = table.AddRow();
                 }
-                else // rows 14-26
+                else // rows 13-24
                 {
                     pageSide = PageSide.RightSide;
                     row = table.Rows[rowInt];
                 }
 
-                GenerateRowOfficersOfAdmin(pageSide, employee, ref row, ref deptStr);
+                GenerateRowOfficersOfAdmin(pageSide, entry, ref row, ref deptStr);
                 currPageRow++;
                 rowInt++;
             }
@@ -1086,8 +1122,6 @@ namespace PdfCreator
             // Officers of Administration
             DepartmentOfficersOfAdmin(ref section);
 
-
-
             return document;
         }
 
@@ -1131,32 +1165,22 @@ namespace PdfCreator
             int rowInt = 0;
             int currPageRow = 1;
             Table table = new Table();
-            Entry employee = new Entry();
             // The class sets the DataProvider, ConnectionString and QueryString
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType);
             DataTable dataTable = directoryTasks.GetData();
             Console.WriteLine("Rows: {0}", dataTable.Rows.Count);
-            string currHeaderStr = "X";
+            string currHeaderStr = " ";
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                employee.ClearAll();
-                employee.Name = dataRow[Properties.FacStaffPdf.Default.Name].ToString();
-                employee.PhoneNumber = dataRow[Properties.FacStaffPdf.Default.PhoneNumber].ToString();
-                employee.Department = dataRow[Properties.FacStaffPdf.Default.Department].ToString();
-                employee.FaxNumber = dataRow[Properties.FacStaffPdf.Default.FaxNumber].ToString();
-                employee.EmailAddress = dataRow[Properties.FacStaffPdf.Default.EmailAddress].ToString();
-                employee.Title = dataRow[Properties.FacStaffPdf.Default.Title].ToString();
-                employee.Building = dataRow[Properties.FacStaffPdf.Default.Building].ToString();
-                employee.Office = dataRow[Properties.FacStaffPdf.Default.Office].ToString();
-                employee.Url = dataRow[Properties.FacStaffPdf.Default.URL].ToString();
+                Entry entry = FacStaffFillEntry(dataRow);
 
-                if (!employee.Name.StartsWith(currHeaderStr) || currPageRow > 16)
+                if (!entry.Name.StartsWith(currHeaderStr) || currPageRow > 16)
                 {
                     // reset variables
                     currPageRow = 1;
                     rowInt = 0;
-                    currHeaderStr = employee.Name.Substring(0, 1);
+                    currHeaderStr = entry.Name.Substring(0, 1);
 
                     // usually you would add a page break to the section
                     // however, because we need different headers a new section is added to the document instead
@@ -1187,7 +1211,7 @@ namespace PdfCreator
                     row = table.Rows[rowInt];
                 }
 
-                GenerateRow(pageSide, employee, ref row);
+                GenerateRow(pageSide, entry, ref row);
                 currPageRow++;
                 rowInt++;
             }

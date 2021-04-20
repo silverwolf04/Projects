@@ -12,7 +12,7 @@
       <Value Profile="(Default)">MSSQL</Value>
     </Setting>
     <Setting Name="Name" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">EmpName</Value>
+      <Value Profile="(Default)">Name</Value>
     </Setting>
     <Setting Name="PhoneNumber" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Workphone</Value>
