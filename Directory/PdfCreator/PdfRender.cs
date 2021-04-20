@@ -160,7 +160,7 @@ namespace PdfCreator
             table.TopPadding = Unit.FromPoint(5);
             return table;
         }
-        private void GenerateRow(PageSide pageSide, Employee employee, ref Row row)
+        private void GenerateRow(PageSide pageSide, Entry employee, ref Row row)
         {
             int cellInt = 0;
             string concatenatedStr = string.Empty;
@@ -216,7 +216,7 @@ namespace PdfCreator
                 row.Cells[cellInt].AddParagraph("Fax: " + employee.FaxNumber);
             row.Cells[cellInt].AddParagraph("");
         }
-        private void GenerateRowDeptCodes(PageSide pageSide, Employee employee, ref Row row)
+        private void GenerateRowDeptCodes(PageSide pageSide, Entry employee, ref Row row)
         {
             int cellInt = 0;
             string concateStr = employee.Department + " [" + employee.Notes + "]";
@@ -233,7 +233,7 @@ namespace PdfCreator
 
             row.Cells[cellInt].AddParagraph(concateStr).AddLineBreak();
         }
-        private void GenerateRowBuildingDept(PageSide pageSide, Employee employee, ref Row row)
+        private void GenerateRowBuildingDept(PageSide pageSide, Entry employee, ref Row row)
         {
             int cellInt = 0;
             Paragraph paragraph;
@@ -267,7 +267,7 @@ namespace PdfCreator
             if (!string.IsNullOrWhiteSpace(employee.Building))
                 row.Cells[cellInt].AddParagraph(employee.Building);
         }
-        private void GenerateRowBuildingLocate(PageSide pageSide, Employee employee, ref Row row)
+        private void GenerateRowBuildingLocate(PageSide pageSide, Entry employee, ref Row row)
         {
             int cellInt = 0;
             Paragraph paragraph;
@@ -301,7 +301,7 @@ namespace PdfCreator
             if (!string.IsNullOrWhiteSpace(employee.Address))
                 row.Cells[cellInt].AddParagraph(employee.Address);
         }
-        private void GenerateRowBoardOfTrustee(PageSide pageSide, Employee employee, ref Row row)
+        private void GenerateRowBoardOfTrustee(PageSide pageSide, Entry employee, ref Row row)
         {
             int cellInt = 0;
             Paragraph paragraph;
@@ -350,7 +350,7 @@ namespace PdfCreator
 
             row.Cells[cellInt].AddParagraph("");
         }
-        private void GenerateRowOfficersOfAdmin(PageSide pageSide, Employee employee, ref Row row, ref string deptStr)
+        private void GenerateRowOfficersOfAdmin(PageSide pageSide, Entry employee, ref Row row, ref string deptStr)
         {
             int cellInt = 0;
             Paragraph paragraph;
@@ -512,7 +512,7 @@ namespace PdfCreator
             _ = paragraph.AddFormattedText("After Hours Emergency Notifications:", FontLargeBold);
 
             //section = document.AddSection();
-            Employee employee = new Employee();
+            Entry employee = new Entry();
             // add & set the table margins on the new page
             Table table = AddTableDept(section);
             string categoryStr = string.Empty;
@@ -563,7 +563,7 @@ namespace PdfCreator
         {
             // Emergency phone numbers
             section.AddPageBreak();
-            Employee employee = new Employee();
+            Entry employee = new Entry();
             Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
@@ -686,7 +686,7 @@ namespace PdfCreator
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableBuildingDept(section);
             Row row = new Row();
-            Employee employee = new Employee();
+            Entry employee = new Entry();
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
@@ -763,7 +763,7 @@ namespace PdfCreator
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableBuildingDept(section);
-            Employee employee = new Employee();
+            Entry employee = new Entry();
             Row row = new Row();
             // initializer for right side count
             int rowInt = 0;
@@ -838,7 +838,7 @@ namespace PdfCreator
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
-            Employee employee = new Employee();
+            Entry employee = new Entry();
             Row row = new Row();
             PageSide pageSide;
 
@@ -906,7 +906,7 @@ namespace PdfCreator
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableFacStaff(section);
-            Employee employee = new Employee();
+            Entry employee = new Entry();
             Row row = new Row();
             int rowInt = 0;
             int currPageRow = 1;
@@ -978,7 +978,7 @@ namespace PdfCreator
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableFacStaff(section);
-            Employee employee = new Employee();
+            Entry employee = new Entry();
             Row row = new Row();
             // initializer for right side count
             int rowInt = 0;
@@ -1131,7 +1131,7 @@ namespace PdfCreator
             int rowInt = 0;
             int currPageRow = 1;
             Table table = new Table();
-            Employee employee = new Employee();
+            Entry employee = new Entry();
             // The class sets the DataProvider, ConnectionString and QueryString
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType);
             DataTable dataTable = directoryTasks.GetData();

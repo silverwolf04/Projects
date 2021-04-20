@@ -85,7 +85,7 @@
   <ItemGroup>
     <Compile Include="DataConnectors.cs" />
     <Compile Include="DirectoryTasks.cs" />
-    <Compile Include="Employee.cs" />
+    <Compile Include="Entry.cs" />
     <Compile Include="Properties\DepartmentPdf.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

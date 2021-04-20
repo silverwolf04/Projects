@@ -1,9 +1,9 @@
 ﻿
 namespace PdfCreator
 {
-    class Employee
+    class Entry
     {
-        public Employee()
+        public Entry()
         {
 
         }

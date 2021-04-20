@@ -44,4 +44,3 @@ E:\github_repos\Projects\Directory\PdfCreator\obj\Debug\PdfCreator.csproj.CoreCo
 E:\github_repos\Projects\Directory\PdfCreator\obj\Debug\PdfCreator.csproj.CopyComplete
 E:\github_repos\Projects\Directory\PdfCreator\obj\Debug\PdfCreator.exe
 E:\github_repos\Projects\Directory\PdfCreator\obj\Debug\PdfCreator.pdb
-E:\github_repos\Projects\Directory\PdfCreator\obj\Debug\PdfCreator.csprojAssemblyReference.cache

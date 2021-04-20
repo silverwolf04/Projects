@@ -4,7 +4,6 @@ using System.Data.OleDb;
 using System.IO;
 using System.Data.SqlClient;
 using Oracle.ManagedDataAccess.Client;
-using System.Linq;
 
 namespace PdfCreator
 {
