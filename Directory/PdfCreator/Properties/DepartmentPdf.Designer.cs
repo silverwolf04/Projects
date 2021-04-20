@@ -344,5 +344,44 @@ namespace PdfCreator.Properties {
                 return ((string)(this["Address"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("select empname, title, department, address, email from [trustees$] order by catOr" +
+            "der")]
+        public string TrusteesQuery {
+            get {
+                return ((string)(this["TrusteesQuery"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("select empname, title, department, address, email, url,  workPhone, faxPhone from" +
+            " [officers$] order by catOrder, department, rank")]
+        public string OfficersQuery {
+            get {
+                return ((string)(this["OfficersQuery"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("select Campusbuilding, department, notes from [departments$] order by department," +
+            " campusbuilding")]
+        public string DepartmentQuery {
+            get {
+                return ((string)(this["DepartmentQuery"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("select campusbuilding, address, notes from [buildings$] order by campusBuilding")]
+        public string BuildingQuery {
+            get {
+                return ((string)(this["BuildingQuery"]));
+            }
+        }
     }
 }

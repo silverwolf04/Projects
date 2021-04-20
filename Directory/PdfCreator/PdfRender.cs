@@ -676,7 +676,7 @@ namespace PdfCreator
 
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
             {
-                QueryString = "select Campusbuilding, department, notes from [departments$] order by department, campusbuilding"
+                QueryString = Properties.DepartmentPdf.Default.DepartmentQuery
             };
             /*
              * "select BuildingName, DeptID, Department from tbl_aux_department inner join tbl_aux_building on 
@@ -759,7 +759,7 @@ namespace PdfCreator
 
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
             {
-                QueryString = "select campusbuilding, address, notes from [buildings$] order by campusBuilding"
+                QueryString = Properties.DepartmentPdf.Default.BuildingQuery
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableBuildingDept(section);
@@ -902,7 +902,7 @@ namespace PdfCreator
 
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
             {
-                QueryString = "select empname, title, department, address, email from [trustees$] order by catOrder"
+                QueryString = Properties.DepartmentPdf.Default.TrusteesQuery
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableFacStaff(section);
@@ -974,7 +974,7 @@ namespace PdfCreator
 
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
             {
-                QueryString = "select empname, title, department, address, email, url,  workPhone, faxPhone from [officers$] order by catOrder, department, rank"
+                QueryString = Properties.DepartmentPdf.Default.OfficersQuery
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableFacStaff(section);

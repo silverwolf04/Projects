@@ -35,6 +35,7 @@ namespace PdfCreator
         public DataTable GetData()
         {
             DataTable dataTable = new DataTable();
+            Console.WriteLine("Query: {0}", QueryString);
 
             switch (DataProvider)
             {
@@ -66,7 +67,6 @@ namespace PdfCreator
                 using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
                     Console.WriteLine("State: {0}", connection.State);
-                    Console.WriteLine("Query: {0}", QueryString);
 
                     using (SqlCommand sqlCommand = new SqlCommand(QueryString, connection))
                     {
@@ -116,7 +116,6 @@ namespace PdfCreator
         }
         private DataTable GetDataExcel()
         {
-            Console.WriteLine("Command Text:{0}", QueryString);
             DataTable dt = new DataTable();
             string Import_FileName = ConnectionString;
             string fileExtension = Path.GetExtension(Import_FileName);
