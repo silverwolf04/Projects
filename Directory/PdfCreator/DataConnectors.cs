@@ -18,7 +18,7 @@ namespace PdfCreator
             }
             else
             {
-                Console.WriteLine("Column {0} not found in dataset", column);
+                //Console.WriteLine("Column {0} not found in dataset", column);
                 fieldVal = null;
             }
 

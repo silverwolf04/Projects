@@ -633,7 +633,8 @@ namespace PdfCreator
                 _ = row.Cells[1].AddParagraph(entry.PhoneNumber);
                 if (!string.IsNullOrEmpty(entry.CellNumber))
                     _ = row.Cells[2].AddParagraph(entry.CellNumber);
-                _ = row.Cells[3].AddParagraph(entry.Notes);
+                if(!string.IsNullOrEmpty(entry.Notes))
+                    _ = row.Cells[3].AddParagraph(entry.Notes);
             }
         }
         private void DepartmentGenCampusInfo(ref Section section)

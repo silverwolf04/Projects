@@ -28,7 +28,7 @@
       <Value Profile="(Default)">Excel</Value>
     </Setting>
     <Setting Name="ServiceQuery" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">select Name,department,campusBuilding,campusOfficeNo,email,faxphone,workphone,title,url,notes,category from [services$] where Name is not null order by category, catsuborder</Value>
+      <Value Profile="(Default)">select Name,workphone,title,url,notes,category from [services$] where Name is not null order by rank, category, catsuborder</Value>
     </Setting>
     <Setting Name="ConnectionString" Type="System.String" Scope="Application">
       <Value Profile="(Default)">DepartmentDataTransform.xlsx</Value>
@@ -70,7 +70,7 @@
       <Value Profile="(Default)">cellPhone</Value>
     </Setting>
     <Setting Name="EmergencyQuery" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">select Name,department,campusBuilding,campusOfficeNo,email,faxphone, workphone,title,url,notes,category, cellPhone from [emergency$] where Name is not null order by category, catsuborder</Value>
+      <Value Profile="(Default)">select Name, workphone,title,category, cellPhone from [emergency$] where Name is not null order by category, catsuborder</Value>
     </Setting>
     <Setting Name="InfoCampus" Type="System.Collections.Specialized.StringCollection" Scope="Application">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
@@ -182,10 +182,10 @@
       <Value Profile="(Default)">select name, title, department, address, email from [trustees$] order by catOrder</Value>
     </Setting>
     <Setting Name="OfficersQuery" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">select name, title, department, address, email, url,  workPhone, faxPhone from [officers$] order by catOrder, department, rank</Value>
+      <Value Profile="(Default)">select name, title, department, url,  workPhone, faxPhone from [officers$] order by catOrder, department, rank</Value>
     </Setting>
     <Setting Name="DepartmentQuery" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">select Campusbuilding, department, notes from [departments$] order by department, campusbuilding</Value>
+      <Value Profile="(Default)">select Campusbuilding, department from [departments$] order by department, campusbuilding</Value>
     </Setting>
     <Setting Name="BuildingQuery" Type="System.String" Scope="Application">
       <Value Profile="(Default)">select campusbuilding, address, notes from [buildings$] order by campusBuilding</Value>
