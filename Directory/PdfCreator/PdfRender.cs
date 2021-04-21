@@ -599,7 +599,6 @@ namespace PdfCreator
         {
             // Emergency phone numbers
             section.AddPageBreak();
-            Entry entry = new Entry();
             Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.LineSpacingRule = LineSpacingRule.Double;
@@ -614,12 +613,7 @@ namespace PdfCreator
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 // DepartmentPdf properties
-                entry.Category = dataRow[Properties.DepartmentPdf.Default.Category].ToString();
-                entry.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
-                entry.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
-                entry.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
-                entry.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
-                entry.CellNumber = dataRow[Properties.DepartmentPdf.Default.CellNumber].ToString();
+                Entry entry = DepartmentFillEntry(dataRow);
 
                 // Print the category section one time
                 if (categoryStr != entry.Category)
@@ -722,7 +716,6 @@ namespace PdfCreator
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableBuildingDept(section);
             Row row = new Row();
-            Entry entry = new Entry();
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
@@ -730,10 +723,7 @@ namespace PdfCreator
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                entry.ClearAll();
-                entry.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
-                entry.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
-                entry.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
+                Entry entry = DepartmentFillEntry(dataRow);
 
                 // the last row allowed in the table
                 if (currPageRow > 45)
@@ -799,7 +789,6 @@ namespace PdfCreator
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableBuildingDept(section);
-            Entry entry = new Entry();
             Row row = new Row();
             // initializer for right side count
             int rowInt = 0;
@@ -808,10 +797,7 @@ namespace PdfCreator
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                entry.ClearAll();
-                entry.Building = dataRow[Properties.DepartmentPdf.Default.Building].ToString();
-                entry.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
-                entry.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
+                Entry entry = DepartmentFillEntry(dataRow);
 
                 // the last row allowed in the table
                 if (currPageRow > 45)
@@ -874,15 +860,12 @@ namespace PdfCreator
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
-            Entry entry = new Entry();
             Row row = new Row();
             PageSide pageSide;
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                entry.ClearAll();
-                entry.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
-                entry.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
+                Entry entry = DepartmentFillEntry(dataRow);
 
                 if (currPageRow > 50)
                 {
@@ -942,7 +925,6 @@ namespace PdfCreator
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableFacStaff(section);
-            Entry entry = new Entry();
             Row row = new Row();
             int rowInt = 0;
             int currPageRow = 1;
@@ -950,12 +932,7 @@ namespace PdfCreator
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                entry.ClearAll();
-                entry.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
-                entry.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
-                entry.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
-                entry.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
-                entry.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
+                Entry entry = DepartmentFillEntry(dataRow);
 
                 // the last row allowed in the table
                 if (currPageRow > 20)
@@ -1014,7 +991,6 @@ namespace PdfCreator
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableFacStaff(section);
-            Entry entry = new Entry();
             Row row = new Row();
             // initializer for right side count
             int rowInt = 0;
@@ -1024,15 +1000,7 @@ namespace PdfCreator
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                entry.ClearAll();
-                entry.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
-                entry.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
-                entry.Department = dataRow[Properties.DepartmentPdf.Default.Department].ToString();
-                entry.Address = dataRow[Properties.DepartmentPdf.Default.Address].ToString();
-                entry.EmailAddress = dataRow[Properties.DepartmentPdf.Default.EmailAddress].ToString();
-                entry.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
-                entry.Url = dataRow[Properties.DepartmentPdf.Default.URL].ToString();
-                entry.FaxNumber = dataRow[Properties.DepartmentPdf.Default.FaxNumber].ToString();
+                Entry entry = DepartmentFillEntry(dataRow);
 
                 // the last row allowed in the table
                 if (currPageRow > 24)
