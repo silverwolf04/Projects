@@ -17,7 +17,7 @@ namespace PdfCreator
                     LoopParams();
                 }
                 else
-                    arg = args[0].ToString();
+                    arg = args[0].ToString().ToLower();
  
                 if(arg.StartsWith("-"))
                 {

@@ -538,21 +538,13 @@ namespace PdfCreator
 
             // service calls
             _ = paragraph.AddFormattedText("SERVICE CALLS", FontLargeBold);
-            paragraph.AddLineBreak();
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Left;
-            _ = paragraph.AddFormattedText("Facilities Management", FontLargeBold);
-            paragraph.AddLineBreak();
-            _ = paragraph.AddFormattedText("Normal Business hours: (303) 273-3330", FontLargeBold);
-            paragraph.AddLineBreak();
-            _ = paragraph.AddFormattedText("After Hours Emergency Notifications:", FontLargeBold);
 
             //section = document.AddSection();
-            Entry entry = new Entry();
             // add & set the table margins on the new page
             Table table = AddTableDept(section);
             string categoryStr = string.Empty;
-            Row row;
             // the class sets the DataProvider
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
             {
@@ -562,12 +554,7 @@ namespace PdfCreator
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 // DepartmentPdf properties
-                entry.Category = dataRow[Properties.DepartmentPdf.Default.Category].ToString();
-                entry.Name = dataRow[Properties.DepartmentPdf.Default.Name].ToString();
-                entry.PhoneNumber = dataRow[Properties.DepartmentPdf.Default.PhoneNumber].ToString();
-                entry.Title = dataRow[Properties.DepartmentPdf.Default.Title].ToString();
-                entry.Notes = dataRow[Properties.DepartmentPdf.Default.Notes].ToString();
-                entry.Url = dataRow[Properties.DepartmentPdf.Default.URL].ToString();
+                Entry entry = DepartmentFillEntry(dataRow);
 
                 if (categoryStr != entry.Category)
                 {
@@ -577,7 +564,7 @@ namespace PdfCreator
                     table = AddTableDept(section);
                 }
 
-                row = table.AddRow();
+                Row row = table.AddRow();
                 if (!string.IsNullOrEmpty(entry.Title))
                     _ = row.Cells[1].AddParagraph(entry.Title);
                 _ = row.Cells[1].AddParagraph(entry.Name);
@@ -716,7 +703,6 @@ namespace PdfCreator
 
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableBuildingDept(section);
-            Row row = new Row();
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
@@ -745,6 +731,7 @@ namespace PdfCreator
                 // 2nd columns beginning value; 3rd columns beginning value
                 if (currPageRow == 16 || currPageRow == 31)
                     rowInt = 0;
+                Row row = new Row();
 
                 if (currPageRow <= 15) // rows 1-15
                 {
@@ -790,7 +777,6 @@ namespace PdfCreator
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableBuildingDept(section);
-            Row row = new Row();
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
@@ -819,6 +805,7 @@ namespace PdfCreator
                 // 2nd columns beginning value; 3rd columns beginning value
                 if (currPageRow == 16 || currPageRow == 31)
                     rowInt = 0;
+                Row row = new Row();
 
                 if (currPageRow <= 15) // rows 1-15
                 {
@@ -861,7 +848,6 @@ namespace PdfCreator
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
-            Row row = new Row();
             PageSide pageSide;
 
             foreach (DataRow dataRow in dataTable.Rows)
@@ -885,6 +871,7 @@ namespace PdfCreator
 
                 if (currPageRow == 26)
                     rowInt = 0;
+                Row row = new Row();
 
                 if (currPageRow <= 25) // rows 1-25
                 {
@@ -926,7 +913,6 @@ namespace PdfCreator
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableFacStaff(section);
-            Row row = new Row();
             int rowInt = 0;
             int currPageRow = 1;
             PageSide pageSide;
@@ -954,6 +940,7 @@ namespace PdfCreator
                 // 2nd columns beginning value; 3rd columns beginning value
                 if (currPageRow == 11)
                     rowInt = 0;
+                Row row = new Row();
 
                 if (currPageRow <= 10) // rows 1-10
                 {
@@ -992,7 +979,6 @@ namespace PdfCreator
             };
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableFacStaff(section);
-            Row row = new Row();
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
@@ -1022,6 +1008,7 @@ namespace PdfCreator
                 // 2nd columns beginning value
                 if (currPageRow == 13)
                     rowInt = 0;
+                Row row = new Row();
 
                 if (currPageRow <= 12) // rows 1-12
                 {
@@ -1051,43 +1038,26 @@ namespace PdfCreator
             DepartmentCoverPage(ref section);
             // Introduction/preamble page
             DepartmentIntroPage(ref section);
-
             // new section is needed to exclude footers and headers from previous section
             section = document.AddSection();
             AddFooterHelpDesk(ref section);
-
             // Service calls pages
             DepartmentServiceCalls(ref section);
-
             // Emergency phone numbers pages
             DepartmentEmergencyNumbers(ref section);
-
             // General campus info pages
             DepartmentGenCampusInfo(ref section);
-
             // Public safety info pages
             DepartmentPublicSafety(ref section);
-
             // Department locations & mail codes pages
             DepartmentLocations(ref section);
-
             // Building locations & mail codes pages
             DepartmentBuildingLocations(ref section);
-
             // This is being refactored into DepartmentLocations();
             // Department mail code pages
             //DepartmentMailCodes(ref section);
-
             // Board of trustees
             DepartmentBoardOfTrustees(ref section);
-
-            /*
-             "select buildingName, BuildingCode from tbl_building where BuildingCode is not null "
-            "and BuildingCode not like '%x%' and BuildingCode not like '%y%' "
-            "and BuildingCode not in ('MO','RA','TH','WT') and BuildingCode not in ('1S','2S','3S') "
-            "and BuildingCode not in ('4C','5C') order by buildingName "
-             */
-
             // Officers of Administration
             DepartmentOfficersOfAdmin(ref section);
 

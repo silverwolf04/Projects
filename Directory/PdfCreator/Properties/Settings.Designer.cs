@@ -34,17 +34,6 @@ namespace PdfCreator.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("select top 100 workphone, LName + \',\' + Fname as EmpName, department, campusBuild" +
-            "ing, campusOfficeNo, email, faxphone, title from fac_staff_dir_view1 where relea" +
-            "seflag is null order by LName, fname")]
-        public string QueryString {
-            get {
-                return ((string)(this["QueryString"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("MSSQL")]
         public string DataProvider {
             get {

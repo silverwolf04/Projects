@@ -11,16 +11,9 @@ namespace PdfCreator
     {
         public static string GetValue(this DataRow dataRow, string column)
         {
-            string fieldVal;
+            string fieldVal = null;
             if (dataRow.Table.Columns.Contains(column))
-            {
                 fieldVal = dataRow[column].ToString();
-            }
-            else
-            {
-                //Console.WriteLine("Column {0} not found in dataset", column);
-                fieldVal = null;
-            }
 
             return fieldVal;
         }
@@ -53,21 +46,19 @@ namespace PdfCreator
         {
             DataTable dataTable = new DataTable();
             Console.WriteLine("Query: {0}", QueryString);
+            Console.WriteLine("Using {0} DataProvider", DataProvider.ToString());
 
             switch (DataProvider)
             {
                 case DataConnectors.DataProviders.MSSQL:
-                    Console.WriteLine("Using MSSQL DataProvider");
                     dataTable = GetDataSQL();
                     break;
                 case DataConnectors.DataProviders.Oracle:
-                    Console.WriteLine("Using Oracle DataProvider");
                     dataTable = GetDataOracle();
                     break;
                 case DataConnectors.DataProviders.Excel:
                     // Requires Access Engine; 32bit for Any CPU or 64bit for x64 compile
                     // https://www.microsoft.com/en-us/download/details.aspx?id=13255
-                    Console.WriteLine("Using Excel DataProvider");
                     dataTable = GetDataExcel();
                     break;
                 default:
@@ -133,21 +124,21 @@ namespace PdfCreator
         }
         private DataTable GetDataExcel()
         {
-            DataTable dt = new DataTable();
-            string Import_FileName = ConnectionString;
-            string fileExtension = Path.GetExtension(Import_FileName);
+            DataTable dataTable = new DataTable();
+            string importFilename = ConnectionString;
+            string fileExtension = Path.GetExtension(importFilename);
 
             using (OleDbConnection conn = new OleDbConnection())
             {
-                if (!File.Exists(Import_FileName))
-                    Console.WriteLine("FilePath does not exist:{0}", Import_FileName);
+                if (!File.Exists(importFilename))
+                    Console.WriteLine("FilePath does not exist:{0}", importFilename);
                 switch (fileExtension)
                 {
                     case ".xls":
-                        conn.ConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + Import_FileName + ";" + "Extended Properties='Excel 8.0;HDR=YES;'";
+                        conn.ConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + importFilename + ";" + "Extended Properties='Excel 8.0;HDR=YES;'";
                         break;
                     case ".xlsx":
-                        conn.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + Import_FileName + ";" + "Extended Properties='Excel 12.0 Xml;HDR=YES;'";
+                        conn.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + importFilename + ";" + "Extended Properties='Excel 12.0 Xml;HDR=YES;'";
                         break;
                     default:
                         Console.WriteLine("Invalid file extension:{0}", fileExtension);
@@ -163,11 +154,11 @@ namespace PdfCreator
                     using (OleDbDataAdapter da = new OleDbDataAdapter())
                     {
                         da.SelectCommand = comm;
-                        da.Fill(dt);
+                        da.Fill(dataTable);
                     }
                 }
             }
-            return dt;
+            return dataTable;
         }
     }
 }
