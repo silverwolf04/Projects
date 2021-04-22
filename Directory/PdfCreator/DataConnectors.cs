@@ -14,7 +14,6 @@ namespace PdfCreator
             string fieldVal = null;
             if (dataRow.Table.Columns.Contains(column))
                 fieldVal = dataRow[column].ToString();
-
             return fieldVal;
         }
     }
@@ -39,87 +38,73 @@ namespace PdfCreator
             if (Enum.IsDefined(typeof(DataProviders), provider))
                 DataProvider = (DataProviders)Enum.Parse(typeof(DataProviders), provider, true);
             else
-                // Always use MSSQL if invalid provider in config
                 Console.WriteLine("Invalid provider parsed");
         }
         public DataTable GetData()
         {
             DataTable dataTable = new DataTable();
             Console.WriteLine("Query: {0}", QueryString);
-            Console.WriteLine("Using {0} DataProvider", DataProvider.ToString());
+            Console.WriteLine("DataProvider:{0}", DataProvider.ToString());
 
-            switch (DataProvider)
+            try
             {
-                case DataConnectors.DataProviders.MSSQL:
-                    dataTable = GetDataSQL();
-                    break;
-                case DataConnectors.DataProviders.Oracle:
-                    dataTable = GetDataOracle();
-                    break;
-                case DataConnectors.DataProviders.Excel:
-                    // Requires Access Engine; 32bit for Any CPU or 64bit for x64 compile
-                    // https://www.microsoft.com/en-us/download/details.aspx?id=13255
-                    dataTable = GetDataExcel();
-                    break;
-                default:
-                    break;
+                switch (DataProvider)
+                {
+                    case DataConnectors.DataProviders.MSSQL:
+                        dataTable = GetDataSQL();
+                        break;
+                    case DataConnectors.DataProviders.Oracle:
+                        dataTable = GetDataOracle();
+                        break;
+                    case DataConnectors.DataProviders.Excel:
+                        // Requires Access Engine; 32bit for Any CPU or 64bit for x64 compile
+                        // https://www.microsoft.com/en-us/download/details.aspx?id=13255
+                        dataTable = GetDataExcel();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
             }
             return dataTable;
         }
         private DataTable GetDataSQL()
         {
             DataTable dataTable = new DataTable();
-
-            try
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                using (SqlCommand sqlCommand = new SqlCommand(QueryString, connection))
                 {
-                    Console.WriteLine("State: {0}", connection.State);
-
-                    using (SqlCommand sqlCommand = new SqlCommand(QueryString, connection))
-                    {
-                        SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
-                        sqlDataAdapter.Fill(dataTable);
-                    }
+                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
+                    sqlDataAdapter.Fill(dataTable);
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-
             return dataTable;
         }
         private DataTable GetDataOracle()
         {
             DataTable dataTable = new DataTable();
-
-            try
+            using (OracleConnection conn = new OracleConnection(ConnectionString))
             {
-                using (OracleConnection conn = new OracleConnection(ConnectionString))
+                /*
+                conn.Open();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = queryString;
+                cmd.CommandType = CommandType.Text;
+                */
+                OracleCommand cmd = new OracleCommand
                 {
-                    /*
-                    conn.Open();
-                    OracleCommand cmd = new OracleCommand();
-                    cmd.Connection = conn;
-                    cmd.CommandText = queryString;
-                    cmd.CommandType = CommandType.Text;
-                    */
-                    OracleCommand cmd = new OracleCommand
-                    {
-                        Connection = conn,
-                        CommandText = QueryString,
-                        CommandType = CommandType.Text
-                    };
-                    OracleDataReader dr = cmd.ExecuteReader();
-                    dataTable.Load(dr);
-                }
+                    Connection = conn,
+                    CommandText = QueryString,
+                    CommandType = CommandType.Text
+                };
+                OracleDataReader dr = cmd.ExecuteReader();
+                dataTable.Load(dr);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-
             return dataTable;
         }
         private DataTable GetDataExcel()
@@ -127,11 +112,11 @@ namespace PdfCreator
             DataTable dataTable = new DataTable();
             string importFilename = ConnectionString;
             string fileExtension = Path.GetExtension(importFilename);
+            if (!File.Exists(importFilename))
+                Console.WriteLine("FilePath does not exist:{0}", importFilename);
 
             using (OleDbConnection conn = new OleDbConnection())
             {
-                if (!File.Exists(importFilename))
-                    Console.WriteLine("FilePath does not exist:{0}", importFilename);
                 switch (fileExtension)
                 {
                     case ".xls":

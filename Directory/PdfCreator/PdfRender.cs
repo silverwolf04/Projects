@@ -513,10 +513,10 @@ namespace PdfCreator
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
             paragraph.AddText("This document was generated at " + DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"));
-            section.AddPageBreak();
         }
         private void DepartmentIntroPage(ref Section section)
         {
+            section.AddPageBreak();
             Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Left;
             paragraph.Format.Font = FontSmall;
@@ -939,7 +939,6 @@ namespace PdfCreator
             int rowInt = 0;
             int currPageRow = 1;
             Table table = new Table();
-            // The class sets the DataProvider, ConnectionString and QueryString
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType);
             DataTable dataTable = directoryTasks.GetData();
             string currHeaderStr = " ";

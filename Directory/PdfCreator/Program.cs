@@ -8,18 +8,10 @@ namespace PdfCreator
         {
             try
             {
-                bool emptyArray = (args == null || args.Length == 0);
-                string arg;
+                string testString = "Hello World!";
+                string arg = args.Length >= 1 ? args[0].ToString() : testString;
 
-                if (emptyArray)
-                {
-                    arg = "Hello World!";
-                    LoopParams();
-                }
-                else
-                    arg = args[0].ToString().ToLower();
- 
-                if(arg.StartsWith("-"))
+                if (arg.StartsWith("-"))
                 {
                     switch (arg)
                     {
@@ -32,12 +24,16 @@ namespace PdfCreator
                             break;
                     }
                 }
-
+                Console.WriteLine("Argument: " + arg);
                 PdfRender pdfRender = new PdfRender(arg);
-                // pass 2nd argument as input string
-                if (pdfRender.PdfType == PdfRender.PdfTypes.Test)
-                    if (args.Length >= 2)
+                if(pdfRender.PdfType == PdfRender.PdfTypes.Test)
+                {
+                    LoopParams();
+                    if (args.Length == 2)
                         arg = args[1].ToString();
+                    else
+                        arg = testString;
+                }
                 pdfRender.RequestPdf(arg);
             }
             catch(Exception ex)
