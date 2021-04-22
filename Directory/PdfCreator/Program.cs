@@ -34,6 +34,10 @@ namespace PdfCreator
                 }
 
                 PdfRender pdfRender = new PdfRender(arg);
+                // pass 2nd argument as input string
+                if (pdfRender.PdfType == PdfRender.PdfTypes.Test)
+                    if (args.Length >= 2)
+                        arg = args[1].ToString();
                 pdfRender.RequestPdf(arg);
             }
             catch(Exception ex)
