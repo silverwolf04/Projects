@@ -88,10 +88,8 @@ namespace PdfCreator
         private void SetPdfType(string argStr)
         {
             // if an enum is not properly parsed, the first value will be set as the enum (Unknown)
-            // Enum.TryParse<PdfTypes>(argStr, true, out PdfType);
             if (Enum.TryParse(argStr, true, out PdfTypes pdfTypes) || Enum.IsDefined(typeof(PdfTypes), PdfType))
             {
-                //PdfType = (PdfTypes)Enum.Parse(typeof(PdfTypes), argStr);
                 PdfType = pdfTypes;
             }
             else
@@ -99,16 +97,52 @@ namespace PdfCreator
                 PdfType = PdfTypes.Test;
                 Console.WriteLine("Undefined type passed.");
             }
-
             if (PdfType == PdfTypes.Test)
                 Viewer = true;
+        }
+        private StringBuilder DepartmentStringBuild(StringCollection stringCollection)
+        {
+            // read multi-string collection from properties; let the flag "<newline>" set a new line
+            StringBuilder sb = new StringBuilder();
+            foreach (string line in stringCollection)
+            {
+                if (string.IsNullOrEmpty(line))
+                {
+                    //empty line between text
+                    sb.Append(Environment.NewLine + Environment.NewLine);
+                }
+                else
+                {
+                    if (line.Contains("<newline>"))
+                        sb.Append(line.Replace("<newline>", Environment.NewLine));
+                    else
+                        sb.Append(line);
+                }
+            }
+            return sb;
+        }
+        private void AddEmailAddress(ref Paragraph paragraph, string email)
+        {
+            Hyperlink hyperlink = paragraph.AddHyperlink("mailto:" + email, HyperlinkType.Url);
+            FormattedText formattedText = hyperlink.AddFormattedText();
+            formattedText.Font.Color = Color.FromRgb(5, 99, 193);
+            formattedText.AddFormattedText(email, TextFormat.Underline);
+        }
+        private void AddUrl(ref Paragraph paragraph, string url, string linkText = null)
+        {
+            Hyperlink hyperlink = paragraph.AddHyperlink(url, HyperlinkType.Url);
+            FormattedText formattedText = hyperlink.AddFormattedText();
+            formattedText.Font.Color = Color.FromRgb(5, 99, 193);
+            if(linkText == null)
+                linkText = url;
+            formattedText.AddFormattedText(linkText, TextFormat.Underline);
         }
         /// <summary>
         /// Generates a test PDF based on input string passed
         /// </summary>
         /// <param name="output"></param>
         /// <returns></returns>
-        private Document CreateTestDocument(string output)
+        private Document CreateDocumentTest(string output)
         {
             // Create a new MigraDoc document
             Document document = new Document();
@@ -239,7 +273,6 @@ namespace PdfCreator
             int cellInt = 0;
             string concatenatedStr = string.Empty;
             Paragraph paragraph;
-            FormattedText text;
 
             switch (pageSide)
             {
@@ -270,19 +303,13 @@ namespace PdfCreator
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
                 paragraph.AddText("Home Page: ");
-                Hyperlink hyperlink = paragraph.AddHyperlink(entry.Url, HyperlinkType.Url);
-                text = hyperlink.AddFormattedText();
-                text.Font.Color = Color.FromRgb(5, 99, 193);
-                text.AddFormattedText("Click Here", TextFormat.Underline);
+                AddUrl(ref paragraph, entry.Url, "Click Here");
             }
             if (!string.IsNullOrWhiteSpace(entry.EmailAddress))
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
                 paragraph.AddText("Email Address: ");
-                Hyperlink hyperlink = paragraph.AddHyperlink("mailto:" + entry.EmailAddress, HyperlinkType.Url);
-                text = hyperlink.AddFormattedText();
-                text.Font.Color = Color.FromRgb(5, 99, 193);
-                text.AddFormattedText(entry.EmailAddress, TextFormat.Underline);
+                AddEmailAddress(ref paragraph, entry.EmailAddress);
             }
             if (!string.IsNullOrEmpty(entry.PhoneNumber))
                 row.Cells[cellInt].AddParagraph("Phone: " + entry.PhoneNumber);
@@ -327,8 +354,6 @@ namespace PdfCreator
         private void GenerateRowBuildingLocate(PageSide pageSide, Entry entry, ref Row row)
         {
             int cellInt = 0;
-            Paragraph paragraph;
-            FormattedText text;
 
             switch (pageSide)
             {
@@ -345,14 +370,13 @@ namespace PdfCreator
 
             if (!string.IsNullOrWhiteSpace(entry.Building))
             {
-                paragraph = row.Cells[cellInt].AddParagraph();
-                text = paragraph.AddFormattedText();
-                text.Bold = true;
-                //text.Underline = Underline.Single;
+                Paragraph paragraph = row.Cells[cellInt].AddParagraph();
+                FormattedText formattedText = paragraph.AddFormattedText();
+                formattedText.Bold = true;
                 string concatStr = entry.Building;
                 if (!string.IsNullOrWhiteSpace(entry.Notes))
                     concatStr += " (" + entry.Notes + ")";
-                text.AddText(concatStr);
+                formattedText.AddText(concatStr);
             }
 
             if (!string.IsNullOrWhiteSpace(entry.Address))
@@ -382,7 +406,6 @@ namespace PdfCreator
                 paragraph = row.Cells[cellInt].AddParagraph();
                 text = paragraph.AddFormattedText();
                 text.Bold = true;
-                //text.Underline = Underline.Single;
                 text.AddText(entry.Name);
             }
 
@@ -395,10 +418,7 @@ namespace PdfCreator
             if (!string.IsNullOrWhiteSpace(entry.EmailAddress))
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
-                Hyperlink hyperlink = paragraph.AddHyperlink("mailto:" + entry.EmailAddress, HyperlinkType.Url);
-                text = hyperlink.AddFormattedText();
-                text.Font.Color = Color.FromRgb(5, 99, 193);
-                text.AddFormattedText(entry.EmailAddress, TextFormat.Underline);
+                AddEmailAddress(ref paragraph, entry.EmailAddress);
             }
 
             row.Cells[cellInt].AddParagraph("");
@@ -428,34 +448,26 @@ namespace PdfCreator
                 formattedText.Bold = true;
                 formattedText.AddText(entry.Department);
             }
-
             if (!string.IsNullOrWhiteSpace(entry.Name))
                 row.Cells[cellInt].AddParagraph(entry.Name);
-
             if (!string.IsNullOrWhiteSpace(entry.Title))
                 row.Cells[cellInt].AddParagraph(entry.Title);
-
             if (!string.IsNullOrWhiteSpace(entry.Url))
             {
                 paragraph = row.Cells[cellInt].AddParagraph();
-                Hyperlink hyperlink = paragraph.AddHyperlink(entry.Url, HyperlinkType.Url);
-                formattedText = hyperlink.AddFormattedText();
-                formattedText.Font.Color = Color.FromRgb(5, 99, 193);
-                formattedText.AddFormattedText(entry.Url, TextFormat.Underline);
+                AddUrl(ref paragraph, entry.Url);
             }
-
             if (!string.IsNullOrWhiteSpace(entry.PhoneNumber))
                 row.Cells[cellInt].AddParagraph(entry.PhoneNumber);
-
             if (!string.IsNullOrWhiteSpace(entry.FaxNumber))
                 row.Cells[cellInt].AddParagraph("Fax: " + entry.FaxNumber);
-
             if (!string.IsNullOrWhiteSpace(entry.Address))
                 row.Cells[cellInt].AddParagraph(entry.Address);
-
             if (!string.IsNullOrWhiteSpace(entry.EmailAddress))
-                row.Cells[cellInt].AddParagraph(entry.EmailAddress);
-
+            {
+                paragraph = row.Cells[cellInt].AddParagraph();
+                AddEmailAddress(ref paragraph, entry.EmailAddress);
+            }
             row.Cells[cellInt].AddParagraph("");
         }
         private void AddHeaderCustom(string text, ref Section section)
@@ -474,10 +486,7 @@ namespace PdfCreator
             HeaderFooter footer = new HeaderFooter();
             Paragraph paragraph = footer.AddParagraph();
             _ = paragraph.AddText(text);
-            Hyperlink hyperlink = paragraph.AddHyperlink(link, HyperlinkType.Url);
-            FormattedText formattedText = hyperlink.AddFormattedText();
-            formattedText.Font.Color = Color.FromRgb(5, 99, 193);
-            formattedText.AddFormattedText(link, TextFormat.Underline);
+            AddUrl(ref paragraph, link);
             footer.Format.Font = FontSmall.Clone();
             footer.Format.Alignment = ParagraphAlignment.Center;
             section.Footers.Primary = footer.Clone();
@@ -511,16 +520,7 @@ namespace PdfCreator
             Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Left;
             paragraph.Format.Font = FontSmall;
-            StringCollection stringCollection = Properties.DepartmentPdf.Default.InfoIntro;
-            StringBuilder sb = new StringBuilder();
-            foreach (string line in stringCollection)
-            {
-                if (string.IsNullOrEmpty(line))
-                    //empty line between text
-                    sb.Append(Environment.NewLine + Environment.NewLine);
-                else
-                    sb.Append(line);
-            }
+            StringBuilder sb = DepartmentStringBuild(Properties.DepartmentPdf.Default.InfoIntro);
             _ = paragraph.AddText(sb.ToString());
         }
         private void DepartmentServiceCalls(ref Section section)
@@ -547,7 +547,6 @@ namespace PdfCreator
             {
                 // DepartmentPdf properties
                 Entry entry = DepartmentFillEntry(dataRow);
-
                 if (categoryStr != entry.Category)
                 {
                     paragraph = section.AddParagraph();
@@ -556,7 +555,6 @@ namespace PdfCreator
                     _ = paragraph.AddFormattedText(entry.Category, TextFormat.Underline);
                     table = AddTableDept(section);
                 }
-
                 Row row = table.AddRow();
                 if (!string.IsNullOrEmpty(entry.Title))
                     _ = row.Cells[1].AddParagraph(entry.Title);
@@ -566,10 +564,7 @@ namespace PdfCreator
                 if(!string.IsNullOrEmpty(entry.Url))
                 {
                     paragraph = row.Cells[2].AddParagraph();
-                    Hyperlink hyperlink = paragraph.AddHyperlink(entry.Url, HyperlinkType.Url);
-                    FormattedText text = hyperlink.AddFormattedText();
-                    text.Font.Color = Color.FromRgb(5, 99, 193);
-                    text.AddFormattedText(entry.Url, TextFormat.Underline);
+                    AddUrl(ref paragraph, entry.Url);
                 }
                 if(!string.IsNullOrEmpty(entry.Notes))
                    _ = row.Cells[3].AddParagraph(entry.Notes);
@@ -598,7 +593,6 @@ namespace PdfCreator
             {
                 // DepartmentPdf properties
                 Entry entry = DepartmentFillEntry(dataRow);
-
                 // Print the category section one time
                 if (categoryStr != entry.Category)
                 {
@@ -608,7 +602,6 @@ namespace PdfCreator
                     _ = paragraph.AddFormattedText(entry.Category, TextFormat.Underline);
                     table = AddTableEmergency(section);
                 }
-
                 // create a row in the table
                 Row row = table.AddRow();
                 if (!string.IsNullOrEmpty(entry.Title))
@@ -621,6 +614,10 @@ namespace PdfCreator
                     _ = row.Cells[3].AddParagraph(entry.Notes);
             }
         }
+        /// <summary>
+        /// General campus information in the department PDF
+        /// </summary>
+        /// <param name="section"></param>
         private void DepartmentGenCampusInfo(ref Section section)
         {
             // General campus info
@@ -631,23 +628,7 @@ namespace PdfCreator
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
             paragraph = section.AddParagraph();
-            StringCollection stringCollection = Properties.DepartmentPdf.Default.InfoCampus;
-            StringBuilder sb = new StringBuilder();
-            foreach (string line in stringCollection)
-            {
-                if (string.IsNullOrEmpty(line))
-                {
-                    //empty line between text
-                    sb.Append(Environment.NewLine + Environment.NewLine);
-                }
-                else
-                {
-                    if (line.Contains("<newline>"))
-                        sb.Append(line.Replace("<newline>", Environment.NewLine));
-                    else
-                        sb.Append(line);
-                }
-            }
+            StringBuilder sb = DepartmentStringBuild(Properties.DepartmentPdf.Default.InfoCampus);
             _ = paragraph.AddText(sb.ToString());
         }
         private void DepartmentPublicSafety(ref Section section)
@@ -660,23 +641,7 @@ namespace PdfCreator
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
             paragraph = section.AddParagraph();
-            StringCollection stringCollection = Properties.DepartmentPdf.Default.InfoSafety;
-            StringBuilder sb = new StringBuilder();
-            foreach (string line in stringCollection)
-            {
-                if (string.IsNullOrEmpty(line))
-                {
-                    //empty line between text
-                    sb.Append(Environment.NewLine + Environment.NewLine);
-                }
-                else
-                {
-                    if (line.Contains("<newline>"))
-                        sb.Append(line.Replace("<newline>", Environment.NewLine));
-                    else
-                        sb.Append(line);
-                }
-            }
+            StringBuilder sb = DepartmentStringBuild(Properties.DepartmentPdf.Default.InfoSafety);
             _ = paragraph.AddText(sb.ToString());
         }
         private void DepartmentLocations(ref Section section)
@@ -688,16 +653,10 @@ namespace PdfCreator
             paragraph.AddFormattedText("DEPARTMENT LOCATIONS & MAIL CODES", FontLargeBold);
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
-
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
             {
                 QueryString = Properties.DepartmentPdf.Default.DepartmentQuery
             };
-            /*
-             * "select BuildingName, DeptID, Department from tbl_aux_department inner join tbl_aux_building on 
-             * tbl_aux_department.BID = tbl_aux_building.BID order by tbl_aux_building.BuildingName, tbl_aux_department.Department"
-             */
-
             DataTable dataTable = directoryTasks.GetData();
             Table table = AddTableThreeColumns(section);
             // initializer for right side count
@@ -708,7 +667,6 @@ namespace PdfCreator
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 Entry entry = DepartmentFillEntry(dataRow);
-
                 // the last row allowed in the table
                 if (currPageRow > 45)
                 {
@@ -716,20 +674,16 @@ namespace PdfCreator
                     // however, because we need different headers a new section is added to the document instead
                     section.AddPageBreak();
                     //section = document.AddSection();
-
                     // reset variables
                     currPageRow = 1;
                     rowInt = 0;
-
                     // add & set the formatted on the new page
                     table = AddTableThreeColumns(section);
                 }
-
                 // 2nd columns beginning value; 3rd columns beginning value
                 if (currPageRow == 16 || currPageRow == 31)
                     rowInt = 0;
                 Row row = new Row();
-
                 if (currPageRow <= 15) // rows 1-15
                 {
                     pageSide = PageSide.LeftSide;
@@ -745,7 +699,6 @@ namespace PdfCreator
                     pageSide = PageSide.RightSide;
                     row = table.Rows[rowInt];
                 }
-
                 GenerateRowBuildingDept(pageSide, entry, ref row);
                 currPageRow++;
                 rowInt++;
@@ -760,14 +713,6 @@ namespace PdfCreator
             paragraph.AddFormattedText("BUILDING LOCATIONS & ABBREVIATIONS", FontLargeBold);
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
-
-            /*
-             * "select buildingName, address_line1 from tbl_building where address_line1 is not null order by buildingName"
-             */
-            /*
-             * "select buildingName, address_line1, BuildingCode from tbl_building where address_line1 is not null order by buildingName"
-             */
-
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
             {
                 QueryString = Properties.DepartmentPdf.Default.BuildingQuery
@@ -782,7 +727,6 @@ namespace PdfCreator
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 Entry entry = DepartmentFillEntry(dataRow);
-
                 // the last row allowed in the table
                 if (currPageRow > 45)
                 {
@@ -790,20 +734,16 @@ namespace PdfCreator
                     // however, because we need different headers a new section is added to the document instead
                     section.AddPageBreak();
                     //section = document.AddSection();
-
                     // reset variables
                     currPageRow = 1;
                     rowInt = 0;
-
                     // add & set the formatted on the new page
                     table = AddTableThreeColumns(section);
                 }
-
                 // 2nd columns beginning value; 3rd columns beginning value
                 if (currPageRow == 16 || currPageRow == 31)
                     rowInt = 0;
                 Row row = new Row();
-
                 if (currPageRow <= 15) // rows 1-15
                 {
                     pageSide = PageSide.LeftSide;
@@ -819,7 +759,6 @@ namespace PdfCreator
                     pageSide = PageSide.RightSide;
                     row = table.Rows[rowInt];
                 }
-
                 GenerateRowBuildingLocate(pageSide, entry, ref row);
                 currPageRow++;
                 rowInt++;
@@ -834,14 +773,6 @@ namespace PdfCreator
             paragraph.AddFormattedText("BOARD OF TRUSTEES", FontLargeBold);
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
-
-            /*
-             * "select buildingName, address_line1 from tbl_building where address_line1 is not null order by buildingName"
-             */
-            /*
-             * "select buildingName, address_line1, BuildingCode from tbl_building where address_line1 is not null order by buildingName"
-             */
-
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
             {
                 QueryString = Properties.DepartmentPdf.Default.TrusteesQuery
@@ -855,7 +786,6 @@ namespace PdfCreator
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 Entry entry = DepartmentFillEntry(dataRow);
-
                 // the last row allowed in the table
                 if (currPageRow > 20)
                 {
@@ -863,11 +793,9 @@ namespace PdfCreator
                     // however, because we need different headers a new section is added to the document instead
                     section.AddPageBreak();
                     //section = document.AddSection();
-
                     // reset variables
                     currPageRow = 1;
                     rowInt = 0;
-
                     // add & set the formatted on the new page
                     table = AddTableTwoColumns(section);
                 }
@@ -876,7 +804,6 @@ namespace PdfCreator
                 if (currPageRow == 11)
                     rowInt = 0;
                 Row row = new Row();
-
                 if (currPageRow <= 10) // rows 1-10
                 {
                     pageSide = PageSide.LeftSide;
@@ -887,8 +814,9 @@ namespace PdfCreator
                     pageSide = PageSide.RightSide;
                     row = table.Rows[rowInt];
                 }
-
                 GenerateRowBoardOfTrustee(pageSide, entry, ref row);
+                currPageRow++;
+                rowInt++;
             }
         }
         private void DepartmentOfficersOfAdmin(ref Section section)
@@ -900,14 +828,6 @@ namespace PdfCreator
             paragraph.AddFormattedText("OFFICERS OF ADMINISTRATION", FontLargeBold);
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
-
-            /*
-             * "select buildingName, address_line1 from tbl_building where address_line1 is not null order by buildingName"
-             */
-            /*
-             * "select buildingName, address_line1, BuildingCode from tbl_building where address_line1 is not null order by buildingName"
-             */
-
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType)
             {
                 QueryString = Properties.DepartmentPdf.Default.OfficersQuery
@@ -923,7 +843,6 @@ namespace PdfCreator
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 Entry entry = DepartmentFillEntry(dataRow);
-
                 // the last row allowed in the table
                 if (currPageRow > 24)
                 {
@@ -931,15 +850,12 @@ namespace PdfCreator
                     // however, because we need different headers a new section is added to the document instead
                     section.AddPageBreak();
                     //section = document.AddSection();
-
                     // reset variables
                     currPageRow = 1;
                     rowInt = 0;
-
                     // add & set the formatted on the new page
                     table = AddTableTwoColumns(section);
                 }
-
                 // 2nd columns beginning value
                 if (currPageRow == 13)
                     rowInt = 0;
@@ -968,7 +884,6 @@ namespace PdfCreator
             Document document = new Document();
             // create section
             Section section = document.AddSection();
-
             // Cover page
             DepartmentCoverPage(ref section);
             // Introduction/preamble page
@@ -988,14 +903,10 @@ namespace PdfCreator
             DepartmentLocations(ref section);
             // Building locations & mail codes pages
             DepartmentBuildingLocations(ref section);
-            // This is being refactored into DepartmentLocations();
-            // Department mail code pages
-            //DepartmentMailCodes(ref section);
             // Board of trustees
             DepartmentBoardOfTrustees(ref section);
             // Officers of Administration
             DepartmentOfficersOfAdmin(ref section);
-
             return document;
         }
 
@@ -1003,18 +914,12 @@ namespace PdfCreator
         {
             // Create a new MigraDoc document
             Document document = new Document();
-
             // Add a section to the document
             Section section = document.AddSection();
-
             // Add a paragraph to the section
             Paragraph paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-
-            paragraph.Format.Font.Color = Colors.Black;
-            paragraph.Format.Font.Name = "Times-Roman";
-            paragraph.Format.Font.Size = 32;
-
+            paragraph.Format.Font = FontCoverPage.Clone();
             // Add some text to the paragraph
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
@@ -1022,19 +927,14 @@ namespace PdfCreator
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
             _ = paragraph.AddFormattedText("Colorado School of Mines" + Environment.NewLine + "Faculty/Staff Directory", TextFormat.Bold);
-
             // Add a paragraph to the section
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-
-            paragraph.Format.Font.Color = Colors.Black;
-            paragraph.Format.Font.Name = "Times-Roman";
-            paragraph.Format.Font.Size = 16;
+            paragraph.Format.Font = FontXLarge.Clone();
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
             _ = paragraph.AddText("This document was generated at " + DateTime.Now.ToString("M/d/yyyy h:mm:ss tt"));
             section.AddPageBreak();
-
             // initializer for right side count
             int rowInt = 0;
             int currPageRow = 1;
@@ -1042,26 +942,22 @@ namespace PdfCreator
             // The class sets the DataProvider, ConnectionString and QueryString
             DirectoryTasks directoryTasks = new DirectoryTasks(PdfType);
             DataTable dataTable = directoryTasks.GetData();
-            Console.WriteLine("Rows: {0}", dataTable.Rows.Count);
             string currHeaderStr = " ";
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 Entry entry = FacStaffFillEntry(dataRow);
-
                 if (!entry.Name.StartsWith(currHeaderStr) || currPageRow > 16)
                 {
                     // reset variables
                     currPageRow = 1;
                     rowInt = 0;
                     currHeaderStr = entry.Name.Substring(0, 1);
-
                     // usually you would add a page break to the section
                     // however, because we need different headers a new section is added to the document instead
                     //section.AddPageBreak();
                     section = document.AddSection();
                     AddFooterHelpDesk(ref section);
-
                     // update page header
                     AddHeaderCustom(currHeaderStr, ref section);
                     // add & set the formatted on the new page
@@ -1084,7 +980,6 @@ namespace PdfCreator
                     pageSide = PageSide.RightSide;
                     row = table.Rows[rowInt];
                 }
-
                 GenerateRowFacStaff(pageSide, entry, ref row);
                 currPageRow++;
                 rowInt++;
@@ -1112,7 +1007,7 @@ namespace PdfCreator
                     break;
                 default:
                     Console.WriteLine("This will render the Test PDF");
-                    document = CreateTestDocument(arg);
+                    document = CreateDocumentTest(arg);
                     filename = "Test.pdf";
                     break;
             }
