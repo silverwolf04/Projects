@@ -185,10 +185,13 @@
       <Value Profile="(Default)">select name, title, department, url,  workPhone, faxPhone from [officers$] order by catOrder, department, rank</Value>
     </Setting>
     <Setting Name="DepartmentQuery" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">select Campusbuilding, department from [departments$] order by department, campusbuilding</Value>
+      <Value Profile="(Default)">select Campusbuilding, department, notes from [departments$] order by department, campusbuilding</Value>
     </Setting>
     <Setting Name="BuildingQuery" Type="System.String" Scope="Application">
       <Value Profile="(Default)">select campusbuilding, address, notes from [buildings$] order by campusBuilding</Value>
+    </Setting>
+    <Setting Name="Filename" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">departmental_dir.pdf</Value>
     </Setting>
   </Settings>
 </SettingsFile>

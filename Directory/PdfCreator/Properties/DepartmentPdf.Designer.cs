@@ -365,8 +365,8 @@ namespace PdfCreator.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("select Campusbuilding, department from [departments$] order by department, campus" +
-            "building")]
+        [global::System.Configuration.DefaultSettingValueAttribute("select Campusbuilding, department, notes from [departments$] order by department," +
+            " campusbuilding")]
         public string DepartmentQuery {
             get {
                 return ((string)(this["DepartmentQuery"]));
@@ -379,6 +379,15 @@ namespace PdfCreator.Properties {
         public string BuildingQuery {
             get {
                 return ((string)(this["BuildingQuery"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("departmental_dir.pdf")]
+        public string Filename {
+            get {
+                return ((string)(this["Filename"]));
             }
         }
     }

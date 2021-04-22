@@ -132,5 +132,14 @@ namespace PdfCreator.Properties {
                 return ((string)(this["URL"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("fac_staff_dir.pdf")]
+        public string Filename {
+            get {
+                return ((string)(this["Filename"]));
+            }
+        }
     }
 }

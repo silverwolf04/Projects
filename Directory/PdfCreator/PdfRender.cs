@@ -85,16 +85,6 @@ namespace PdfCreator
             Size = 32,
             Color = Colors.Black
         };
-
-        /*
-        private readonly Font FontMedium = new Font
-        {
-            Name = "Times-Roman",
-            Size = 12,
-            Color = Colors.Black
-        };
-        */
-
         private void SetPdfType(string argStr)
         {
             // if an enum is not properly parsed, the first value will be set as the enum (Unknown)
@@ -131,7 +121,11 @@ namespace PdfCreator
             paragraph.AddFormattedText(output, TextFormat.Bold);
             return document;
         }
-
+        /// <summary>
+        /// Two columns each at 8.75cm
+        /// </summary>
+        /// <param name="section"></param>
+        /// <returns></returns>
         private Table AddTableTwoColumns(Section section)
         {
             Table table = section.AddTable();
@@ -192,6 +186,12 @@ namespace PdfCreator
             table.TopPadding = Unit.FromPoint(5);
             return table;
         }
+        /// <summary>
+        /// Fill the faculty/staff entry properties from the row.
+        /// Only properties within the row will be filled
+        /// </summary>
+        /// <param name="dataRow"></param>
+        /// <returns></returns>
         private Entry FacStaffFillEntry(DataRow dataRow)
         {
             Entry entry = new Entry
@@ -208,6 +208,12 @@ namespace PdfCreator
             };
             return entry;
         }
+        /// <summary>
+        /// Fill the department entry properties from the row.
+        /// Only properties within the row will be filled
+        /// </summary>
+        /// <param name="dataRow"></param>
+        /// <returns></returns>
         private Entry DepartmentFillEntry(DataRow dataRow)
         {
             Entry entry = new Entry
@@ -228,7 +234,7 @@ namespace PdfCreator
             };
             return entry;
         }
-        private void GenerateRow(PageSide pageSide, Entry entry, ref Row row)
+        private void GenerateRowFacStaff(PageSide pageSide, Entry entry, ref Row row)
         {
             int cellInt = 0;
             string concatenatedStr = string.Empty;
@@ -1079,7 +1085,7 @@ namespace PdfCreator
                     row = table.Rows[rowInt];
                 }
 
-                GenerateRow(pageSide, entry, ref row);
+                GenerateRowFacStaff(pageSide, entry, ref row);
                 currPageRow++;
                 rowInt++;
             }
@@ -1097,17 +1103,17 @@ namespace PdfCreator
                 case PdfTypes.FacultyStaff:
                     Console.WriteLine("This will render the Mines Faculty/Staff PDF.");
                     document = CreateDocumentFacultyStaff();
-                    filename = "fac_staff_dir.pdf";
+                    filename = Properties.FacStaffPdf.Default.Filename;
                     break;
                 case PdfTypes.Department:
                     Console.WriteLine("This will render the Mines Department Directory PDF");
                     document = CreateDocumentDepartment();
-                    filename = "departmental_dir.pdf";
+                    filename = Properties.DepartmentPdf.Default.Filename;
                     break;
                 default:
                     Console.WriteLine("This will render the Test PDF");
                     document = CreateTestDocument(arg);
-                    filename = "HelloWorld.pdf";
+                    filename = "Test.pdf";
                     break;
             }
 
@@ -1116,20 +1122,16 @@ namespace PdfCreator
             // This setting applies to all fonts used in the PDF document.
             // This setting has no effect on the RTF renderer.
             const bool unicode = false;
-
             // Create a renderer for the MigraDoc document.
             PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode)
             {
                 // Associate the MigraDoc document with a renderer
                 Document = document
             };
-
             // Layout and render document to PDF
             pdfRenderer.RenderDocument();
-
             // Save the document...
             pdfRenderer.PdfDocument.Save(filename);
-
             // ...and start a viewer if testing
             if(Viewer)
                 Process.Start(filename);
