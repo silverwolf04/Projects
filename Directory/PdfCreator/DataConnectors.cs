@@ -89,13 +89,8 @@ namespace PdfCreator
             DataTable dataTable = new DataTable();
             using (OracleConnection conn = new OracleConnection(ConnectionString))
             {
-                /*
+                
                 conn.Open();
-                OracleCommand cmd = new OracleCommand();
-                cmd.Connection = conn;
-                cmd.CommandText = queryString;
-                cmd.CommandType = CommandType.Text;
-                */
                 OracleCommand cmd = new OracleCommand
                 {
                     Connection = conn,
