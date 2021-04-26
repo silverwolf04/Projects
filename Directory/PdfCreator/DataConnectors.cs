@@ -43,6 +43,7 @@ namespace PdfCreator
         public DataTable GetData()
         {
             DataTable dataTable = new DataTable();
+            Console.WriteLine("***********************");
             Console.WriteLine("DataProvider:{0}", DataProvider.ToString());
             Console.WriteLine("Query: {0}", QueryString);
 
@@ -69,6 +70,7 @@ namespace PdfCreator
             {
                 Console.WriteLine(ex);
             }
+            Console.WriteLine("Number of Rows:{0}", dataTable.Rows.Count);
             return dataTable;
         }
         private DataTable GetDataSQL()
