@@ -43,8 +43,8 @@ namespace PdfCreator
         public DataTable GetData()
         {
             DataTable dataTable = new DataTable();
-            Console.WriteLine("Query: {0}", QueryString);
             Console.WriteLine("DataProvider:{0}", DataProvider.ToString());
+            Console.WriteLine("Query: {0}", QueryString);
 
             try
             {
