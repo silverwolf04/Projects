@@ -24,11 +24,12 @@ namespace PdfCreator
         public string QueryString { get; set; } = string.Empty;
         public enum DataProviders
         {
+            Unknown,
             MSSQL,
             Oracle,
             Excel
         }
-        public DataConnectors() => DataProvider = DataProviders.MSSQL;
+        public DataConnectors() => DataProvider = DataProviders.Unknown;
         public DataConnectors(string provider)
         {
             ParseProvider(provider);
@@ -37,8 +38,6 @@ namespace PdfCreator
         {
             if (Enum.IsDefined(typeof(DataProviders), provider))
                 DataProvider = (DataProviders)Enum.Parse(typeof(DataProviders), provider, true);
-            else
-                Console.WriteLine("Invalid provider parsed");
         }
         public DataTable GetData()
         {

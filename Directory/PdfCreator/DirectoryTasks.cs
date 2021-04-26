@@ -1,4 +1,5 @@
-﻿namespace PdfCreator
+﻿
+namespace PdfCreator
 {
     class DirectoryTasks : DataConnectors
     {
@@ -19,14 +20,22 @@
             switch(pdfTypes)
             {
                 case PdfRender.PdfTypes.Department:
-                    if(DataProvider == DataProviders.MSSQL)
-                        ParseProvider(Properties.DepartmentPdf.Default.DataProvider);
+                    ParseProvider(Properties.DepartmentPdf.Default.DataProvider);
+                    if(DataProvider == DataProviders.Unknown)
+                    {
+                        ParseProvider(Properties.Settings.Default.DataProvider);
+                        ConnectionString = Properties.Settings.Default.ConnectionString;
+                    }
                     if (string.IsNullOrEmpty(ConnectionString))
                         ConnectionString = Properties.DepartmentPdf.Default.ConnectionString;
                     break;
                 case PdfRender.PdfTypes.FacultyStaff:
-                    if(DataProvider == DataProviders.MSSQL)
-                        ParseProvider(Properties.FacStaffPdf.Default.DataProvider);
+                    ParseProvider(Properties.FacStaffPdf.Default.DataProvider);
+                    if(DataProvider == DataProviders.Unknown)
+                    {
+                        ParseProvider(Properties.Settings.Default.DataProvider);
+                        ConnectionString = Properties.Settings.Default.ConnectionString;
+                    }
                     if(string.IsNullOrEmpty(ConnectionString))
                         ConnectionString = Properties.FacStaffPdf.Default.ConnectionString;
                     // a single query string exists for Faculty Staff
