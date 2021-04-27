@@ -995,17 +995,17 @@ namespace PdfCreator
             switch(PdfType)
             {
                 case PdfTypes.FacultyStaff:
-                    Console.WriteLine("This will render the Mines Faculty/Staff PDF.");
+                    Console.WriteLine("Faculty/Staff PDF.");
                     document = CreateDocumentFacultyStaff();
                     filename = Properties.FacStaffPdf.Default.Filename;
                     break;
                 case PdfTypes.Department:
-                    Console.WriteLine("This will render the Mines Department Directory PDF");
+                    Console.WriteLine("Department Directory PDF");
                     document = CreateDocumentDepartment();
                     filename = Properties.DepartmentPdf.Default.Filename;
                     break;
                 default:
-                    Console.WriteLine("This will render the Test PDF");
+                    Console.WriteLine("Test PDF");
                     document = CreateDocumentTest(arg);
                     filename = "Test.pdf";
                     break;

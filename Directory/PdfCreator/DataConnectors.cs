@@ -62,7 +62,7 @@ namespace PdfCreator
                         dataTable = GetDataExcel();
                         break;
                     default:
-                        Console.WriteLine("Invalid DataProvider was used; expected:");
+                        Console.WriteLine("Invalid DataProvider was referenced.");
                         Console.WriteLine("MSSQL, Oracle, or Excel");
                         break;
                 }
